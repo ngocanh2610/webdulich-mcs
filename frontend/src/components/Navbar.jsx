@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Map as MapIcon, Compass, User, LogOut, ShieldCheck } from 'lucide-react';
+import { Map as MapIcon, Compass, User, LogOut, ShieldCheck, Sparkles } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import NotificationDropdown from './NotificationDropdown';
 
@@ -37,10 +37,31 @@ const Navbar = () => {
           </span>
         </Link>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <Link to="/" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Trang Chủ</Link>
           <Link to="/provinces" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
             Khám Phá {mode} Tỉnh
+          </Link>
+
+          <Link 
+            to="/planner" 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.4rem', 
+              background: 'linear-gradient(135deg, rgba(255, 56, 92, 0.12), rgba(244, 63, 94, 0.08))', 
+              color: 'var(--accent-primary)', 
+              padding: '0.45rem 1rem', 
+              borderRadius: '20px', 
+              fontWeight: 700, 
+              fontSize: '0.9rem',
+              border: '1px solid rgba(255, 56, 92, 0.25)',
+              boxShadow: '0 2px 8px rgba(255, 56, 92, 0.08)',
+              textDecoration: 'none'
+            }}
+          >
+            <Sparkles size={16} color="var(--accent-primary)" />
+            <span>Lập Kế Hoạch AI</span>
           </Link>
           
           <div style={{ 

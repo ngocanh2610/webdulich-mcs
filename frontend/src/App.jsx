@@ -9,6 +9,7 @@ import ProvinceDetailPage from './pages/ProvinceDetailPage';
 import LocationDetailPage from './pages/LocationDetailPage';
 import AuthPage from './pages/AuthPage';
 import AdminApprovalPage from './pages/AdminApprovalPage';
+import TravelPlannerPage from './pages/TravelPlannerPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ChatWidget from './components/ChatWidget';
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/provinces" element={<ProvincesPage />} />
           <Route path="/provinces/:slug" element={<ProvinceDetailPage />} />
           <Route path="/locations/:id" element={<LocationDetailPage />} />
+          <Route path="/planner" element={<TravelPlannerPage />} />
           <Route path="/admin/approvals" element={<AdminApprovalPage />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="*" element={<NotFoundPage />} />
