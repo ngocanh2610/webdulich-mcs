@@ -13,7 +13,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import ChatWidget from './components/ChatWidget';
 
 function App() {
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID_HERE";
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "290652647677-hm7715ipm0ufh8c5lck7vc59qjq80jna.apps.googleusercontent.com";
   
   return (
     <GoogleOAuthProvider clientId={clientId}>

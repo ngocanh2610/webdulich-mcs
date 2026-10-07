@@ -29,6 +29,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-290652647677-hm7715ipm0ufh8c5lck7vc59qjq80jna.apps.googleusercontent.com}
     container_name: vn-tourism-frontend
     env_file:
       - .env
