@@ -90,10 +90,10 @@ app.post('/api/media/upload', upload.array('images', 50), (req, res) => {
   }
 
   // Generate public URLs for the uploaded files
-  const host = req.get('host'); // will be something like localhost:8080 or domain
+  const host = req.get('host'); // will be something like localhost:2222 or domain
   const protocol = req.protocol; // http or https
   
-  // Since this sits behind api-gateway on port 8080/80, host might be localhost:8080
+  // Since this sits behind api-gateway on port 2222/80, host might be localhost:2222
   // But let's construct relative URLs for the frontend to use, or absolute paths
   const urls = req.files.map(file => `/api/media/uploads/${file.filename}`);
 

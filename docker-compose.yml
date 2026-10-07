@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: vn-tourism-gateway
     ports:
-      - "8080:80"
+      - "2222:80"
     depends_on:
       - frontend
       - province-service
