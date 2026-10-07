@@ -28,7 +28,7 @@ Dự án được phân tách thành các dịch vụ độc lập:
 
 | Service | Công nghệ / Nền tảng | Cổng nội bộ | Mô tả nhiệm vụ |
 | :--- | :--- | :--- | :--- |
-| **API Gateway** | Nginx Reverse Proxy | `8080` (Host: 8080 -> 80) | Cổng giao tiếp trung tâm, định tuyến request và cân bằng tải giữa Frontend & các Services |
+| **API Gateway** | Nginx Reverse Proxy | `2222` (Host: 2222 -> 80) | Cổng giao tiếp trung tâm, định tuyến request và cân bằng tải giữa Frontend & các Services |
 | **Frontend** | React 18, Vite, Lucide Icons | `80` | Giao diện người dùng hiện đại, responsive, hỗ trợ đăng nhập Google OAuth, tìm kiếm & đánh giá |
 | **Province Service** | Node.js, Express, MySQL | `3001` | Quản lý danh mục 63 tỉnh/thành phố, diện tích, dân số, thông tin vùng miền |
 | **Location Service** | Node.js, Express, MySQL | `3002` | Quản lý danh sách địa điểm du lịch, hình ảnh, bài đánh giá, duyệt bài đăng |
@@ -92,7 +92,7 @@ web/
    ```
 
 6. **Truy cập ứng dụng:**
-   - Mở trình duyệt và truy cập: **`http://localhost:8080`**
+   - Mở trình duyệt và truy cập: **`http://localhost:2222`**
 
 ---
 
