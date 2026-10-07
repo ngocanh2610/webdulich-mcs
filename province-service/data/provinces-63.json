@@ -1,0 +1,1115 @@
+[
+  {
+    "id": "ha-noi",
+    "slug": "ha-noi",
+    "name": "Hà Nội",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hà Nội",
+    "area": 3358.6,
+    "population": 8246600,
+    "description": "Thủ đô nghìn năm văn hiến của Việt Nam – trung tâm chính trị, văn hóa, lịch sử với Hồ Hoàn Kiếm, Phố Cổ 36 phố phường và hàng trăm di tích quý giá.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Hanoi_Skyline_-_NKS.jpg/1280px-Hanoi_Skyline_-_NKS.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 12,
+    "highlights": [
+      "Hồ Hoàn Kiếm",
+      "Văn Miếu - Quốc Tử Giám",
+      "Phố Cổ 36 phố phường"
+    ]
+  },
+  {
+    "id": "hai-phong",
+    "slug": "hai-phong",
+    "name": "Hải Phòng",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hải Phòng",
+    "area": 1527.4,
+    "population": 2028514,
+    "description": "Thành phố cảng lớn nhất miền Bắc với Cát Bà xanh ngát, đảo Bạch Long Vĩ xa xôi và ẩm thực đặc sắc như bánh đa cua.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Haiphong2020.jpg/1280px-Haiphong2020.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 5,
+    "highlights": [
+      "Đảo Cát Bà",
+      "Đồ Sơn",
+      "Bạch Long Vĩ"
+    ]
+  },
+  {
+    "id": "ha-giang",
+    "slug": "ha-giang",
+    "name": "Hà Giang",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hà Giang",
+    "area": 7945.8,
+    "population": 854679,
+    "description": "Tỉnh địa đầu cực Bắc Tổ quốc với Cao nguyên đá Đồng Văn, Đèo Mã Pí Lèng hùng vĩ và sắc màu văn hóa của 22 dân tộc thiểu số.",
+    "image": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&q=80",
+    "locationCount": 4,
+    "highlights": [
+      "Cao nguyên đá Đồng Văn",
+      "Đèo Mã Pí Lèng",
+      "Ruộng bậc thang Hoàng Su Phì"
+    ]
+  },
+  {
+    "id": "cao-bang",
+    "slug": "cao-bang",
+    "name": "Cao Bằng",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Cao Bằng",
+    "area": 6700.3,
+    "population": 535658,
+    "description": "Vùng đất huyền thoại Pác Bó, thác Bản Giốc hùng tráng và rừng nguyên sinh Trùng Khánh – thiên đường của du khách yêu thiên nhiên.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Ban_Gioc_-_Detian_Falls2.jpg/1280px-Ban_Gioc_-_Detian_Falls2.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Thác Bản Giốc",
+      "Hang Pác Bó",
+      "Hồ Thang Hen"
+    ]
+  },
+  {
+    "id": "bac-kan",
+    "slug": "bac-kan",
+    "name": "Bắc Kạn",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Bắc Kạn",
+    "area": 4859.4,
+    "population": 313905,
+    "description": "Tỉnh trung du với hồ Ba Bể tuyệt đẹp – hồ nước ngọt tự nhiên lớn nhất Việt Nam, được UNESCO công nhận là khu vực đất ngập nước Ramsar.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Hồ Ba Bể",
+      "Vườn QG Ba Bể"
+    ]
+  },
+  {
+    "id": "tuyen-quang",
+    "slug": "tuyen-quang",
+    "name": "Tuyên Quang",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Tuyên Quang",
+    "area": 5867.9,
+    "population": 779800,
+    "description": "Quê hương cách mạng, nơi có Căn cứ địa Việt Bắc lịch sử, thác Mơ thơ mộng và suối khoáng Mỹ Lâm nổi tiếng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/C%E1%BB%99t_C%E1%BB%9D.jpg/1280px-C%E1%BB%99t_C%E1%BB%9D.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Tân Trào",
+      "Thác Mơ",
+      "Suối Khoáng Mỹ Lâm"
+    ]
+  },
+  {
+    "id": "lao-cai",
+    "slug": "lao-cai",
+    "name": "Lào Cai",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Lào Cai",
+    "area": 6364,
+    "population": 740427,
+    "description": "Vùng núi tây bắc với Sa Pa mờ sương, đỉnh Fansipan 3143m – nóc nhà Đông Dương và những ruộng bậc thang tuyệt đẹp.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Fansipan_summit_2_in_sunrise.jpg/1280px-Fansipan_summit_2_in_sunrise.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 5,
+    "highlights": [
+      "Sa Pa",
+      "Đỉnh Fansipan",
+      "Thị trấn Sa Pa"
+    ]
+  },
+  {
+    "id": "dien-bien",
+    "slug": "dien-bien",
+    "name": "Điện Biên",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Điện Biên Phủ",
+    "area": 9562.9,
+    "population": 598856,
+    "description": "Mảnh đất lịch sử với chiến trường Điện Biên Phủ lừng danh và bản sắc văn hóa phong phú của các dân tộc Thái, H'Mông, Mường.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/M%C6%B0%E1%BB%9Dng_Thanh_Valley.jpg/1280px-M%C6%B0%E1%BB%9Dng_Thanh_Valley.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Di tích Điện Biên Phủ",
+      "Mường Phăng",
+      "Hồ Pá Khoang"
+    ]
+  },
+  {
+    "id": "lai-chau",
+    "slug": "lai-chau",
+    "name": "Lai Châu",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Lai Châu",
+    "area": 9068.8,
+    "population": 474428,
+    "description": "Miền núi hoang sơ với đỉnh Putaleng 3049m, vườn quốc gia Hoàng Liên và nét văn hóa nguyên sơ của người Thái trắng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Laichautown.jpg/1280px-Laichautown.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Đỉnh Putaleng",
+      "Sìn Hồ",
+      "Thác Tắc Tình"
+    ]
+  },
+  {
+    "id": "son-la",
+    "slug": "son-la",
+    "name": "Sơn La",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Sơn La",
+    "area": 14174.4,
+    "population": 1282895,
+    "description": "Tây Bắc hùng vĩ với cao nguyên Mộc Châu mộng mơ, đồi chè bát ngát và hồ Hòa Bình xanh ngắt.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/S%E1%BB%91ng_l%C6%B0ng_kh%E1%BB%A7ng_long_T%C3%A0_X%C3%B9a.jpg/1280px-S%E1%BB%91ng_l%C6%B0ng_kh%E1%BB%A7ng_long_T%C3%A0_X%C3%B9a.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Cao Nguyên Mộc Châu",
+      "Thủy Điện Sơn La",
+      "Đèo Pha Đin"
+    ]
+  },
+  {
+    "id": "yen-bai",
+    "slug": "yen-bai",
+    "name": "Yên Bái",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Yên Bái",
+    "area": 6899.5,
+    "population": 828180,
+    "description": "Nổi tiếng với ruộng bậc thang Mù Cang Chải mỗi mùa lúa chín vàng, hồ Thác Bà và bản làng người H'Mông thơ mộng.",
+    "image": "https://images.unsplash.com/photo-1557750255-c76072a7aad1?w=800&q=80",
+    "locationCount": 3,
+    "highlights": [
+      "Mù Cang Chải",
+      "Hồ Thác Bà",
+      "Nghĩa Lộ"
+    ]
+  },
+  {
+    "id": "hoa-binh",
+    "slug": "hoa-binh",
+    "name": "Hòa Bình",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hòa Bình",
+    "area": 4595.5,
+    "population": 830975,
+    "description": "Vùng đất văn hóa Mường với hồ Hòa Bình thơ mộng, làng Giang Mỗ truyền thống và suối khoáng Kim Bôi.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Hồ Hòa Bình",
+      "Kim Bôi",
+      "Làng Giang Mỗ"
+    ]
+  },
+  {
+    "id": "thai-nguyen",
+    "slug": "thai-nguyen",
+    "name": "Thái Nguyên",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Thái Nguyên",
+    "area": 3531,
+    "population": 1286900,
+    "description": "Thủ phủ trà Việt Nam với đồi chè Tân Cương nổi tiếng, hồ Núi Cốc lãng mạn và di tích ATK Định Hóa.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/1/19/TN_VNG_QT.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 3,
+    "highlights": [
+      "Hồ Núi Cốc",
+      "Chè Tân Cương",
+      "ATK Định Hóa"
+    ]
+  },
+  {
+    "id": "lang-son",
+    "slug": "lang-son",
+    "name": "Lạng Sơn",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Lạng Sơn",
+    "area": 8310.1,
+    "population": 782811,
+    "description": "Cửa khẩu Đồng Đăng sầm uất, núi Mẫu Sơn mờ sương mùa đông và ẩm thực đặc sắc với vịt quay, khau nhục.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/M%E1%BA%ABu_S%C6%A1n.jpg/1280px-M%E1%BA%ABu_S%C6%A1n.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Núi Mẫu Sơn",
+      "Hang Gió",
+      "Cửa khẩu Đồng Đăng"
+    ]
+  },
+  {
+    "id": "quang-ninh",
+    "slug": "quang-ninh",
+    "name": "Quảng Ninh",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hạ Long",
+    "area": 6207.9,
+    "population": 1330955,
+    "description": "Vịnh Hạ Long – Di sản Thiên nhiên Thế giới UNESCO với hơn 1969 hòn đảo đá vôi sừng sững, hang động huyền bí và biển trời bao la.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/A_view_of_Ha_Long_Bay_from_the_high_point_of_Sun_Sot_cave_%2831520203451%29.jpg/1280px-A_view_of_Ha_Long_Bay_from_the_high_point_of_Sun_Sot_cave_%2831520203451%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 6,
+    "highlights": [
+      "Vịnh Hạ Long",
+      "Đảo Cát Bà",
+      "Đảo Cô Tô"
+    ]
+  },
+  {
+    "id": "bac-giang",
+    "slug": "bac-giang",
+    "name": "Bắc Giang",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Bắc Giang",
+    "area": 3848.9,
+    "population": 1803950,
+    "description": "Vùng đất quan họ với chùa Vĩnh Nghiêm cổ kính, núi Nham Biền và vải thiều Lục Ngạn nức tiếng cả nước.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Ch%C3%B9a_V%C4%A9nh_Nghi%C3%AAm_-_B%E1%BA%AFc_Giang.jpg/1280px-Ch%C3%B9a_V%C4%A9nh_Nghi%C3%AAm_-_B%E1%BA%AFc_Giang.jpg",
+    "locationCount": 2,
+    "highlights": [
+      "Chùa Vĩnh Nghiêm",
+      "Suối Mỡ",
+      "Tây Yên Tử"
+    ]
+  },
+  {
+    "id": "phu-tho",
+    "slug": "phu-tho",
+    "name": "Phú Thọ",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Việt Trì",
+    "area": 3533,
+    "population": 1462500,
+    "description": "Đất tổ Hùng Vương linh thiêng với đền Hùng trên núi Nghĩa Lĩnh, lễ hội Đền Hùng được UNESCO vinh danh.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/2/21/%C4%90%C6%B0%E1%BB%9Dng_l%C3%AAn_%C4%90%E1%BB%81n_H%C3%B9ng_-_panoramio.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 3,
+    "highlights": [
+      "Đền Hùng",
+      "Vườn QG Xuân Sơn",
+      "Ao Giời - Suối Tiên"
+    ]
+  },
+  {
+    "id": "vinh-phuc",
+    "slug": "vinh-phuc",
+    "name": "Vĩnh Phúc",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Vĩnh Yên",
+    "area": 1235.9,
+    "population": 1152700,
+    "description": "Tỉnh công nghiệp với Tam Đảo mây trắng bao phủ quanh năm, Đại Lải mặt hồ bình yên và đầm Vạc thơ mộng.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 3,
+    "highlights": [
+      "Tam Đảo",
+      "Hồ Đại Lải",
+      "Đầm Vạc"
+    ]
+  },
+  {
+    "id": "bac-ninh",
+    "slug": "bac-ninh",
+    "name": "Bắc Ninh",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Bắc Ninh",
+    "area": 822.7,
+    "population": 1368840,
+    "description": "Cái nôi của dân ca quan họ Bắc Ninh – di sản văn hóa phi vật thể UNESCO, với chùa Dâu cổ nhất Việt Nam và làng tranh Đông Hồ.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Trung_t%C3%A2m_v%C4%83n_h%C3%B3a_Kinh_B%E1%BA%AFc.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 3,
+    "highlights": [
+      "Chùa Dâu",
+      "Làng tranh Đông Hồ",
+      "Đền Đô"
+    ]
+  },
+  {
+    "id": "hai-duong",
+    "slug": "hai-duong",
+    "name": "Hải Dương",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hải Dương",
+    "area": 1668,
+    "population": 1891500,
+    "description": "Vùng đất cổ với Côn Sơn – Kiếp Bạc di tích quốc gia đặc biệt, bánh đậu xanh và vải thiều nổi tiếng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/%C4%90%E1%BB%81n_Ki%E1%BA%BFp_B%E1%BA%A1c.jpg/1280px-%C4%90%E1%BB%81n_Ki%E1%BA%BFp_B%E1%BA%A1c.jpg",
+    "locationCount": 2,
+    "highlights": [
+      "Côn Sơn - Kiếp Bạc",
+      "Đảo Cò Chi Lăng"
+    ]
+  },
+  {
+    "id": "hung-yen",
+    "slug": "hung-yen",
+    "name": "Hưng Yên",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hưng Yên",
+    "area": 923,
+    "population": 1252000,
+    "description": "Phố Hiến xưa – \"thứ nhất Kinh kỳ, thứ nhì Phố Hiến\" với Văn Miếu Xích Đằng và nhãn lồng ngọt ngào.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/V%C4%83n_mi%E1%BA%BFu_X%C3%ADch_%C4%90%E1%BA%B1ng_02.JPG/1280px-V%C4%83n_mi%E1%BA%BFu_X%C3%ADch_%C4%90%E1%BA%B1ng_02.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Phố Hiến",
+      "Văn Miếu Xích Đằng"
+    ]
+  },
+  {
+    "id": "thai-binh",
+    "slug": "thai-binh",
+    "name": "Thái Bình",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Thái Bình",
+    "area": 1570.5,
+    "population": 1786300,
+    "description": "Đồng bằng châu thổ sông Hồng với làng nghề truyền thống, chùa Keo cổ kính và bãi biển Đồng Châu.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Chùa Keo",
+      "Bãi Biển Đồng Châu"
+    ]
+  },
+  {
+    "id": "ha-nam",
+    "slug": "ha-nam",
+    "name": "Hà Nam",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Phủ Lý",
+    "area": 861.9,
+    "population": 863900,
+    "description": "Tỉnh nhỏ xinh với Tam Chúc – ngôi chùa lớn nhất thế giới bên hồ Tam Chúc thơ mộng và núi Non Nước huyền bí.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Henan_floods_July_26%2C_2020.jpg/1280px-Henan_floods_July_26%2C_2020.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Chùa Tam Chúc",
+      "Kẽm Trống"
+    ]
+  },
+  {
+    "id": "nam-dinh",
+    "slug": "nam-dinh",
+    "name": "Nam Định",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Nam Định",
+    "area": 1668.5,
+    "population": 1853000,
+    "description": "Đất phát tích của vương triều Trần với Phủ Giầy, đền Trần và bãi biển Quất Lâm trong lành.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Đền Trần",
+      "Phủ Giầy",
+      "Biển Quất Lâm"
+    ]
+  },
+  {
+    "id": "ninh-binh",
+    "slug": "ninh-binh",
+    "name": "Ninh Bình",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Ninh Bình",
+    "area": 1377.8,
+    "population": 983700,
+    "description": "\"Hạ Long cạn\" với quần thể Tràng An – Di sản Thế giới UNESCO, Tam Cốc – Bích Động thơ mộng và cố đô Hoa Lư.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Temple_comm%C3%A9moratif_au_roi_Dinh_Tien_Hoang_%28Hoa_Lu%29.jpg/1280px-Temple_comm%C3%A9moratif_au_roi_Dinh_Tien_Hoang_%28Hoa_Lu%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 5,
+    "highlights": [
+      "Tràng An",
+      "Tam Cốc - Bích Động",
+      "Hang Múa"
+    ]
+  },
+  {
+    "id": "thanh-hoa",
+    "slug": "thanh-hoa",
+    "name": "Thanh Hóa",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Thanh Hóa",
+    "area": 11131,
+    "population": 3640128,
+    "description": "Tỉnh lớn nhất Bắc Trung Bộ với Thành Nhà Hồ – Di sản Thế giới UNESCO, biển Sầm Sơn nhộn nhịp và suối cá thần Cẩm Lương huyền bí.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Le_Loi_statue.JPG/1280px-Le_Loi_statue.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Thành Nhà Hồ",
+      "Biển Sầm Sơn",
+      "Suối Cá Thần"
+    ]
+  },
+  {
+    "id": "nghe-an",
+    "slug": "nghe-an",
+    "name": "Nghệ An",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Vinh",
+    "area": 16490.9,
+    "population": 3327791,
+    "description": "Vùng đất địa linh nhân kiệt, quê hương Bác Hồ với Khu di tích Kim Liên, biển Cửa Lò sôi động và thiên nhiên Pù Mát.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Quangtruonghochiminh.jpg/1280px-Quangtruonghochiminh.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Quê Bác Kim Liên",
+      "Biển Cửa Lò",
+      "Vườn QG Pù Mát"
+    ]
+  },
+  {
+    "id": "ha-tinh",
+    "slug": "ha-tinh",
+    "name": "Hà Tĩnh",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Hà Tĩnh",
+    "area": 5997.8,
+    "population": 1264000,
+    "description": "Đất học, đất thơ với Ngã ba Đồng Lộc anh hùng, biển Thiên Cầm thơ mộng và núi Hồng – sông La hữu tình.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Toancanhthixa.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 2,
+    "highlights": [
+      "Ngã Ba Đồng Lộc",
+      "Biển Thiên Cầm"
+    ]
+  },
+  {
+    "id": "quang-binh",
+    "slug": "quang-binh",
+    "name": "Quảng Bình",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Đồng Hới",
+    "area": 8065.3,
+    "population": 912600,
+    "description": "Thiên đường hang động với Sơn Đoòng – hang động lớn nhất thế giới, Phong Nha – Kẻ Bàng và bãi biển Nhật Lệ cát trắng.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 4,
+    "highlights": [
+      "Hang Sơn Đoòng",
+      "Phong Nha",
+      "Biển Nhật Lệ"
+    ]
+  },
+  {
+    "id": "quang-tri",
+    "slug": "quang-tri",
+    "name": "Quảng Trị",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Đông Hà",
+    "area": 4746,
+    "population": 630024,
+    "description": "Miền đất khói lửa chiến tranh với Thành Cổ Quảng Trị, Cầu Hiền Lương – địa danh lịch sử và Cồn Cỏ đảo xanh.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Th%C3%A0nh_c%E1%BB%95_Qu%E1%BA%A3ng_Tr%E1%BB%8B_Foto.jpg/1280px-Th%C3%A0nh_c%E1%BB%95_Qu%E1%BA%A3ng_Tr%E1%BB%8B_Foto.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Thành Cổ Quảng Trị",
+      "Cầu Hiền Lương",
+      "Nghĩa trang Trường Sơn"
+    ]
+  },
+  {
+    "id": "thua-thien-hue",
+    "slug": "thua-thien-hue",
+    "name": "Thừa Thiên Huế",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Huế",
+    "area": 5033.2,
+    "population": 1128620,
+    "description": "Cố đô thơ mộng bên dòng sông Hương, nơi lưu giữ di sản vương triều Nguyễn với Đại Nội, lăng tẩm và cung điện nguy nga.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Hu%E1%BA%BF_%282024%29_-_Mausoleum_of_Emperor_Kh%E1%BA%A3i_%C4%90%E1%BB%8Bnh_-_exterior_-_img_09.jpg/1280px-Hu%E1%BA%BF_%282024%29_-_Mausoleum_of_Emperor_Kh%E1%BA%A3i_%C4%90%E1%BB%8Bnh_-_exterior_-_img_09.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 6,
+    "highlights": [
+      "Đại Nội Huế",
+      "Chùa Thiên Mụ",
+      "Lăng Tự Đức"
+    ]
+  },
+  {
+    "id": "da-nang",
+    "slug": "da-nang",
+    "name": "Đà Nẵng",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Đà Nẵng",
+    "area": 1284.9,
+    "population": 1134310,
+    "description": "Thành phố đáng sống nhất Việt Nam với Bà Nà Hills kỳ ảo, Ngũ Hành Sơn linh thiêng và bãi biển Mỹ Khê xanh biếc.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Han_River_Bridge_in_Vietnam_Night_View.jpg/1280px-Han_River_Bridge_in_Vietnam_Night_View.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 6,
+    "highlights": [
+      "Bà Nà Hills",
+      "Ngũ Hành Sơn",
+      "Bãi Mỹ Khê"
+    ]
+  },
+  {
+    "id": "quang-nam",
+    "slug": "quang-nam",
+    "name": "Quảng Nam",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Tam Kỳ",
+    "area": 10438.4,
+    "population": 1493900,
+    "description": "Đất di sản với Phố cổ Hội An và Thánh địa Mỹ Sơn – hai Di sản Thế giới UNESCO, cùng thiên nhiên hoang sơ Cù Lao Chàm.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Hoi_An_%2842681823051%29.jpg/1280px-Hoi_An_%2842681823051%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 5,
+    "highlights": [
+      "Phố cổ Hội An",
+      "Thánh địa Mỹ Sơn",
+      "Cù Lao Chàm"
+    ]
+  },
+  {
+    "id": "quang-ngai",
+    "slug": "quang-ngai",
+    "name": "Quảng Ngãi",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Quảng Ngãi",
+    "area": 5153,
+    "population": 1257100,
+    "description": "Vùng đất hào khí với đảo Lý Sơn – vương quốc tỏi giữa biển khơi và Sa Huỳnh di sản văn hóa nghìn năm.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/DUNG_QUAT_REFINERY_-_panoramio.jpg/1280px-DUNG_QUAT_REFINERY_-_panoramio.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Đảo Lý Sơn",
+      "Sa Huỳnh",
+      "Đảo Bé"
+    ]
+  },
+  {
+    "id": "binh-dinh",
+    "slug": "binh-dinh",
+    "name": "Bình Định",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Quy Nhơn",
+    "area": 6066.2,
+    "population": 1493600,
+    "description": "Đất võ Tây Sơn với thành phố biển Quy Nhơn mơ mộng, Eo Gió hùng tráng và tháp Chăm cổ kính.",
+    "image": "https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=800&q=80",
+    "locationCount": 3,
+    "highlights": [
+      "Biển Quy Nhơn",
+      "Eo Gió",
+      "Tháp Đôi"
+    ]
+  },
+  {
+    "id": "phu-yen",
+    "slug": "phu-yen",
+    "name": "Phú Yên",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Tuy Hòa",
+    "area": 5060.6,
+    "population": 901474,
+    "description": "Xứ hoa vàng cỏ xanh với Gành Đá Đĩa kỳ bí, Mũi Điện đón ánh bình minh đầu tiên và đầm Ô Loan huyền thoại.",
+    "image": "https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=800&q=80",
+    "locationCount": 3,
+    "highlights": [
+      "Gành Đá Đĩa",
+      "Mũi Điện",
+      "Đầm Ô Loan"
+    ]
+  },
+  {
+    "id": "khanh-hoa",
+    "slug": "khanh-hoa",
+    "name": "Khánh Hòa",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Nha Trang",
+    "area": 5197.8,
+    "population": 1228152,
+    "description": "Thành phố biển Nha Trang với vịnh nước xanh ngọc bích, tháp Bà Ponagar linh thiêng và hải sản tươi ngon.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Nha_Trang_%2C_Vietnam_-_panoramio_%2835%29.jpg/1280px-Nha_Trang_%2C_Vietnam_-_panoramio_%2835%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 4,
+    "highlights": [
+      "Vịnh Nha Trang",
+      "Tháp Bà Ponagar",
+      "Đảo Hòn Tre"
+    ]
+  },
+  {
+    "id": "ninh-thuan",
+    "slug": "ninh-thuan",
+    "name": "Ninh Thuận",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Phan Rang-Tháp Chàm",
+    "area": 3355.2,
+    "population": 592715,
+    "description": "Vùng đất khô hạn nhất Việt Nam nhưng đẹp đến mê hồn với đồi cát hồng, vườn nho bạt ngàn và Tháp Chàm Poklong Garai.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Po_Klong_Garai.jpg/1280px-Po_Klong_Garai.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Đồi Cát Hồng",
+      "Tháp Chàm Po Klong Garai",
+      "Vịnh Vĩnh Hy"
+    ]
+  },
+  {
+    "id": "binh-thuan",
+    "slug": "binh-thuan",
+    "name": "Bình Thuận",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Phan Thiết",
+    "area": 7992.8,
+    "population": 1219792,
+    "description": "Thiên đường resort với Mũi Né – đồi cát vàng, bàu nước ngọt và làng chài yên bình, Phan Thiết nắng gió.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 3,
+    "highlights": [
+      "Đồi cát Mũi Né",
+      "Bàu Trắng",
+      "Hòn Rơm"
+    ]
+  },
+  {
+    "id": "kon-tum",
+    "slug": "kon-tum",
+    "name": "Kon Tum",
+    "region": "Tây Nguyên",
+    "regionCode": "highland",
+    "capital": "Kon Tum",
+    "area": 9690.5,
+    "population": 540438,
+    "description": "Thành phố cao nguyên bình yên với Nhà thờ Gỗ cổ kính, vườn quốc gia Chư Mom Ray và văn hóa Tây Nguyên phong phú.",
+    "image": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Nhà Thờ Gỗ",
+      "Vườn QG Chư Mom Ray"
+    ]
+  },
+  {
+    "id": "gia-lai",
+    "slug": "gia-lai",
+    "name": "Gia Lai",
+    "region": "Tây Nguyên",
+    "regionCode": "highland",
+    "capital": "Pleiku",
+    "area": 15536.9,
+    "population": 1513847,
+    "description": "Cao nguyên hùng vĩ với biển Hồ – con mắt Pleiku thơ mộng, thác Phú Cường và rừng thông bạt ngàn.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Chi%E1%BB%81u_cao_nguy%C3%AAn_-_Late_afternoon_in_the_Central_High_Plateaux_-_panoramio.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 3,
+    "highlights": [
+      "Biển Hồ",
+      "Thác Phú Cường",
+      "Làng rượu cần"
+    ]
+  },
+  {
+    "id": "dak-lak",
+    "slug": "dak-lak",
+    "name": "Đắk Lắk",
+    "region": "Tây Nguyên",
+    "regionCode": "highland",
+    "capital": "Buôn Ma Thuột",
+    "area": 13125.4,
+    "population": 1869322,
+    "description": "Thủ phủ cà phê Tây Nguyên với Hồ Lắk tuyệt đẹp, Vườn Quốc gia Yok Đôn – thiên đường voi rừng và văn hóa cồng chiêng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Lak_Lake.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 3,
+    "highlights": [
+      "Hồ Lắk",
+      "Vườn QG Yok Đôn",
+      "Buôn Đôn"
+    ]
+  },
+  {
+    "id": "dak-nong",
+    "slug": "dak-nong",
+    "name": "Đắk Nông",
+    "region": "Tây Nguyên",
+    "regionCode": "highland",
+    "capital": "Gia Nghĩa",
+    "area": 6514.4,
+    "population": 622168,
+    "description": "Tỉnh trẻ nhất Tây Nguyên với Công Viên Địa Chất Toàn Cầu Đắk Nông, thác Dray Nur kỳ vĩ và rừng quốc gia Tà Đùng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e4/DraySap400.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 2,
+    "highlights": [
+      "Thác Dray Nur",
+      "Hồ Tà Đùng"
+    ]
+  },
+  {
+    "id": "lam-dong",
+    "slug": "lam-dong",
+    "name": "Lâm Đồng",
+    "region": "Tây Nguyên",
+    "regionCode": "highland",
+    "capital": "Đà Lạt",
+    "area": 9783.3,
+    "population": 1296078,
+    "description": "Thành phố ngàn hoa Đà Lạt với khí hậu mát mẻ quanh năm, Hồ Xuân Hương lãng mạn và thung lũng Tình Yêu thơ mộng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Da_Lat%2C_view_to_Xuan_Huong_lake_2.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 6,
+    "highlights": [
+      "Đà Lạt",
+      "Hồ Xuân Hương",
+      "Thung Lũng Tình Yêu"
+    ]
+  },
+  {
+    "id": "binh-phuoc",
+    "slug": "binh-phuoc",
+    "name": "Bình Phước",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Đồng Xoài",
+    "area": 6873.5,
+    "population": 1004245,
+    "description": "Vùng đất đỏ bazan với vườn quốc gia Bù Gia Mập, thác Mơ hùng vĩ và văn hóa độc đáo của người S'tiêng.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Vườn QG Bù Gia Mập",
+      "Thác Mơ"
+    ]
+  },
+  {
+    "id": "tay-ninh",
+    "slug": "tay-ninh",
+    "name": "Tây Ninh",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Tây Ninh",
+    "area": 4041,
+    "population": 1169165,
+    "description": "Núi Bà Đen – Nóc nhà Nam Bộ huyền linh, Tòa Thánh Cao Đài uy nghi và rừng nguyên sinh Lò Gò – Xa Mát.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Ho_dau_tieng.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 2,
+    "highlights": [
+      "Núi Bà Đen",
+      "Tòa Thánh Tây Ninh"
+    ]
+  },
+  {
+    "id": "binh-duong",
+    "slug": "binh-duong",
+    "name": "Bình Dương",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Thủ Dầu Một",
+    "area": 2694.4,
+    "population": 2639700,
+    "description": "Thành phố công nghiệp năng động với Đại Nam Văn Hiến Quốc Gia hoành tráng, làng nghề sơn mài truyền thống.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Ch%C3%B9a_B%C3%A0_Thi%C3%AAn_H%E1%BA%ADu_B%C3%ACnh_D%C6%B0%C6%A1ng.jpg/1280px-Ch%C3%B9a_B%C3%A0_Thi%C3%AAn_H%E1%BA%ADu_B%C3%ACnh_D%C6%B0%C6%A1ng.jpg",
+    "locationCount": 2,
+    "highlights": [
+      "Đại Nam",
+      "Làng sơn mài Tương Bình Hiệp"
+    ]
+  },
+  {
+    "id": "dong-nai",
+    "slug": "dong-nai",
+    "name": "Đồng Nai",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Biên Hòa",
+    "area": 5907.2,
+    "population": 3093600,
+    "description": "Miền đất xanh với Vườn Quốc gia Cát Tiên – thiên đường động vật hoang dã, hồ Trị An và đền thờ Nguyễn Hữu Cảnh.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Nh%C3%A0_th%E1%BB%9D_ch%C3%ADnh_V%C4%83n_mi%E1%BA%BFu_Tr%E1%BA%A5n_Bi%C3%AAn.jpg/1280px-Nh%C3%A0_th%E1%BB%9D_ch%C3%ADnh_V%C4%83n_mi%E1%BA%BFu_Tr%E1%BA%A5n_Bi%C3%AAn.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Vườn QG Cát Tiên",
+      "Hồ Trị An"
+    ]
+  },
+  {
+    "id": "ba-ria-vung-tau",
+    "slug": "ba-ria-vung-tau",
+    "name": "Bà Rịa-Vũng Tàu",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Vũng Tàu",
+    "area": 1982.2,
+    "population": 1148300,
+    "description": "Thành phố biển Vũng Tàu thư thái với Tượng Chúa Kitô Vua, Bạch Dinh cổ kính và Côn Đảo lịch sử.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/M%E1%BB%99t_ph%E1%BA%A7n_V%C5%A9ng_T%C3%A0u_2.JPG/1280px-M%E1%BB%99t_ph%E1%BA%A7n_V%C5%A9ng_T%C3%A0u_2.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Tượng Chúa Kitô",
+      "Côn Đảo",
+      "Bãi Sau"
+    ]
+  },
+  {
+    "id": "tp-hcm",
+    "slug": "tp-hcm",
+    "name": "TP. Hồ Chí Minh",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "TP. Hồ Chí Minh",
+    "area": 2095.6,
+    "population": 9321400,
+    "description": "Thành phố năng động nhất Việt Nam – Hòn ngọc Viễn Đông với Bến Thành sầm uất, Dinh Thống Nhất lịch sử và phố đi bộ Nguyễn Huệ lung linh.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg/1280px-Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 8,
+    "highlights": [
+      "Bến Thành",
+      "Dinh Thống Nhất",
+      "Nhà thờ Đức Bà"
+    ]
+  },
+  {
+    "id": "long-an",
+    "slug": "long-an",
+    "name": "Long An",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Tân An",
+    "area": 4492,
+    "population": 1705300,
+    "description": "Cửa ngõ miền Tây với Tháp Mười bát ngát, Vườn Quốc gia Tràm Chim và làng nghề truyền thống sản xuất chiếu.",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Vườn QG Tràm Chim",
+      "Làng Chiếu Định Yên"
+    ]
+  },
+  {
+    "id": "tien-giang",
+    "slug": "tien-giang",
+    "name": "Tiền Giang",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Mỹ Tho",
+    "area": 2508.7,
+    "population": 1756100,
+    "description": "Vương quốc trái cây với cồn Phụng, cồn Lân trên sông Tiền và Mỹ Tho – điểm du lịch miệt vườn nổi tiếng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Cangmytho.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 2,
+    "highlights": [
+      "Cồn Phụng",
+      "Cù Lao Thới Sơn"
+    ]
+  },
+  {
+    "id": "ben-tre",
+    "slug": "ben-tre",
+    "name": "Bến Tre",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Bến Tre",
+    "area": 2357.7,
+    "population": 1285900,
+    "description": "Xứ dừa xanh ngát với cù lao Minh, vườn trái cây bát ngát và nghề thủ công làm kẹo dừa truyền thống.",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Cù Lao Minh",
+      "Vườn Trái Cây"
+    ]
+  },
+  {
+    "id": "tra-vinh",
+    "slug": "tra-vinh",
+    "name": "Trà Vinh",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Trà Vinh",
+    "area": 2341.2,
+    "population": 1033800,
+    "description": "Đất của người Khmer Nam Bộ với hàng trăm ngôi chùa Khmer tuyệt đẹp, hồ Sen và bãi biển Ba Động.",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Chùa Khmer",
+      "Hồ Sen",
+      "Biển Ba Động"
+    ]
+  },
+  {
+    "id": "vinh-long",
+    "slug": "vinh-long",
+    "name": "Vĩnh Long",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Vĩnh Long",
+    "area": 1479.1,
+    "population": 1040700,
+    "description": "Miệt vườn sông nước với Chợ Nổi Trà Ôn, cù lao Mây rợp bóng cây và những nhịp sống bình yên trên sông.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Trung_t%C3%A2m_H%C3%A0nh_ch%C3%ADnh_t%E1%BB%89nh_V%C4%A9nh_Long.jpg/1280px-Trung_t%C3%A2m_H%C3%A0nh_ch%C3%ADnh_t%E1%BB%89nh_V%C4%A9nh_Long.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Chợ Nổi Trà Ôn",
+      "Cù lao An Bình"
+    ]
+  },
+  {
+    "id": "dong-thap",
+    "slug": "dong-thap",
+    "name": "Đồng Tháp",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Cao Lãnh",
+    "area": 3374.1,
+    "population": 1595600,
+    "description": "Sen hồng Đồng Tháp với Tràm Chim – Khu Ramsar thế giới, Gáo Giồng xanh mát và di tích Đốc binh Kiều.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/C%E1%BA%A7u_Cao_L%C3%A3nh.jpg/1280px-C%E1%BA%A7u_Cao_L%C3%A3nh.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Vườn QG Tràm Chim",
+      "Làng Hoa Sa Đéc"
+    ]
+  },
+  {
+    "id": "an-giang",
+    "slug": "an-giang",
+    "name": "An Giang",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Long Xuyên",
+    "area": 3536.7,
+    "population": 1896400,
+    "description": "Vùng đất Phật giáo Hòa Hảo với Núi Sam linh thiêng, Châu Đốc sầm uất và cánh đồng lúa bạt ngàn.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Mi%E1%BA%BFu_B%C3%A0_Ch%C3%BAa_X%E1%BB%A9_N%C3%BAi_Sam.jpg/1280px-Mi%E1%BA%BFu_B%C3%A0_Ch%C3%BAa_X%E1%BB%A9_N%C3%BAi_Sam.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Núi Sam",
+      "Chùa Bà Chúa Xứ",
+      "Châu Đốc"
+    ]
+  },
+  {
+    "id": "kien-giang",
+    "slug": "kien-giang",
+    "name": "Kiên Giang",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Rạch Giá",
+    "area": 6348.5,
+    "population": 1723300,
+    "description": "Hòn ngọc nhiệt đới Phú Quốc với bãi biển cát trắng dài nhất Đông Nam Á và hệ sinh thái biển đảo phong phú.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Bai-sao-phu-quoc-tuonglamphotos.jpg/1280px-Bai-sao-phu-quoc-tuonglamphotos.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 4,
+    "highlights": [
+      "Đảo Phú Quốc",
+      "Bãi Sao",
+      "Quần đảo Nam Du"
+    ]
+  },
+  {
+    "id": "can-tho",
+    "slug": "can-tho",
+    "name": "Cần Thơ",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Cần Thơ",
+    "area": 1408.9,
+    "population": 1236300,
+    "description": "Thủ phủ miền Tây sông nước với Chợ Nổi Cái Răng nhộn nhịp và làng du lịch sinh thái Mỹ Khánh.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Can_Tho_Bridge.jpg/1280px-Can_Tho_Bridge.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Chợ Nổi Cái Răng",
+      "Làng Mỹ Khánh",
+      "Cồn Sơn"
+    ]
+  },
+  {
+    "id": "hau-giang",
+    "slug": "hau-giang",
+    "name": "Hậu Giang",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Vị Thanh",
+    "area": 1602,
+    "population": 747500,
+    "description": "Miền sông nước với Khu Di tích Lịch sử Quốc gia Tầm Vu, vườn cây ăn trái Vị Thủy và chợ phiên miền Tây.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Th%C3%A1p_%C4%90%E1%BB%93ng_H%E1%BB%93_%E1%BB%9F_V%E1%BB%8B_Thanh.jpg/1280px-Th%C3%A1p_%C4%90%E1%BB%93ng_H%E1%BB%93_%E1%BB%9F_V%E1%BB%8B_Thanh.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 1,
+    "highlights": [
+      "Vườn Cây Ăn Trái"
+    ]
+  },
+  {
+    "id": "soc-trang",
+    "slug": "soc-trang",
+    "name": "Sóc Trăng",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Sóc Trăng",
+    "area": 3311.6,
+    "population": 1198500,
+    "description": "Vùng đất Khmer – Kinh – Hoa với chùa Dơi kỳ bí, chùa Đất Sét độc đáo và lễ hội Oóc Om Bóc – đua ghe Ngo.",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Chùa Dơi",
+      "Chùa Đất Sét"
+    ]
+  },
+  {
+    "id": "bac-lieu",
+    "slug": "bac-lieu",
+    "name": "Bạc Liêu",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Bạc Liêu",
+    "area": 2669,
+    "population": 893900,
+    "description": "Quê hương Công tử Bạc Liêu hào phóng, vườn chim Bạc Liêu rộng lớn và cánh đồng điện gió ven biển.",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    "locationCount": 2,
+    "highlights": [
+      "Vườn Chim Bạc Liêu",
+      "Nhà Công Tử Bạc Liêu"
+    ]
+  },
+  {
+    "id": "ca-mau",
+    "slug": "ca-mau",
+    "name": "Cà Mau",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Cà Mau",
+    "area": 5331.7,
+    "population": 1194300,
+    "description": "Cực Nam Tổ quốc với Mũi Cà Mau huyền thoại, rừng đước ngập mặn bao la và Đất Mũi – điểm cuối của đất nước.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Muicamau.jpg/1280px-Muicamau.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Mũi Cà Mau",
+      "Rừng Ngập Mặn",
+      "Đất Mũi"
+    ]
+  }
+]

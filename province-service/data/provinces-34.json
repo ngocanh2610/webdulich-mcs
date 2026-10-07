@@ -1,0 +1,715 @@
+[
+  {
+    "id": "ha-noi",
+    "slug": "ha-noi",
+    "name": "Hà Nội",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hà Nội",
+    "area": 13853.1,
+    "population": 10237275,
+    "description": "Thủ đô mở rộng sau sáp nhập Hòa Bình và Vĩnh Phúc, giữ nguyên vị thế trung tâm chính trị – văn hóa – kinh tế của cả nước.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Hanoi_Skyline_-_NKS.jpg/1280px-Hanoi_Skyline_-_NKS.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 15,
+    "highlights": [
+      "Hồ Hoàn Kiếm",
+      "Văn Miếu",
+      "Tam Đảo",
+      "Hồ Hòa Bình"
+    ],
+    "mergedFrom": [
+      "Hà Nội",
+      "Hòa Bình",
+      "Vĩnh Phúc"
+    ],
+    "note": "Sáp nhập từ 3 đơn vị hành chính"
+  },
+  {
+    "id": "hai-phong",
+    "slug": "hai-phong",
+    "name": "Hải Phòng",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hải Phòng",
+    "area": 4718.4,
+    "population": 4912014,
+    "description": "Thành phố cảng mở rộng sau sáp nhập Hải Dương và Hưng Yên, trở thành trung tâm kinh tế – cảng biển lớn nhất miền Bắc.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Haiphong2020.jpg/1280px-Haiphong2020.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 7,
+    "highlights": [
+      "Đảo Cát Bà",
+      "Côn Sơn – Kiếp Bạc",
+      "Phố Hiến"
+    ],
+    "mergedFrom": [
+      "Hải Phòng",
+      "Hải Dương",
+      "Hưng Yên"
+    ],
+    "note": "Sáp nhập từ 3 đơn vị hành chính"
+  },
+  {
+    "id": "quang-ninh",
+    "slug": "quang-ninh",
+    "name": "Quảng Ninh",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Hạ Long",
+    "area": 6207.9,
+    "population": 1330955,
+    "description": "Vịnh Hạ Long – Di sản Thiên nhiên Thế giới UNESCO giữ nguyên danh giới tỉnh sau sáp nhập.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/A_view_of_Ha_Long_Bay_from_the_high_point_of_Sun_Sot_cave_%2831520203451%29.jpg/1280px-A_view_of_Ha_Long_Bay_from_the_high_point_of_Sun_Sot_cave_%2831520203451%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 6,
+    "highlights": [
+      "Vịnh Hạ Long",
+      "Đảo Cát Bà",
+      "Cô Tô"
+    ],
+    "mergedFrom": [
+      "Quảng Ninh"
+    ],
+    "note": "Giữ nguyên"
+  },
+  {
+    "id": "bac-ninh",
+    "slug": "bac-ninh",
+    "name": "Bắc Ninh",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Bắc Ninh",
+    "area": 4671.6,
+    "population": 3172790,
+    "description": "Vùng đất quan họ mở rộng sau sáp nhập Bắc Giang, trở thành trung tâm kinh tế và văn hóa lớn nhất vùng Đông Bắc.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/87/Trung_t%C3%A2m_v%C4%83n_h%C3%B3a_Kinh_B%E1%BA%AFc.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 5,
+    "highlights": [
+      "Chùa Dâu",
+      "Chùa Vĩnh Nghiêm",
+      "Làng tranh Đông Hồ"
+    ],
+    "mergedFrom": [
+      "Bắc Ninh",
+      "Bắc Giang"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "thai-nguyen",
+    "slug": "thai-nguyen",
+    "name": "Thái Nguyên",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Thái Nguyên",
+    "area": 8390.4,
+    "population": 1600805,
+    "description": "Thủ phủ chè xanh mở rộng sau sáp nhập Bắc Kạn, giữ nguyên danh tiếng với đồi chè Tân Cương và hồ Ba Bể.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/1/19/TN_VNG_QT.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 4,
+    "highlights": [
+      "Hồ Núi Cốc",
+      "Hồ Ba Bể",
+      "Chè Tân Cương"
+    ],
+    "mergedFrom": [
+      "Thái Nguyên",
+      "Bắc Kạn"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "lang-son",
+    "slug": "lang-son",
+    "name": "Lạng Sơn",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Lạng Sơn",
+    "area": 15010.4,
+    "population": 1318469,
+    "description": "Cửa ngõ phía Bắc mở rộng sau sáp nhập Cao Bằng, bao gồm Thác Bản Giốc hùng vĩ và Hang Pác Bó lịch sử.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/M%E1%BA%ABu_S%C6%A1n.jpg/1280px-M%E1%BA%ABu_S%C6%A1n.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 4,
+    "highlights": [
+      "Thác Bản Giốc",
+      "Núi Mẫu Sơn",
+      "Hang Pác Bó"
+    ],
+    "mergedFrom": [
+      "Lạng Sơn",
+      "Cao Bằng"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "phu-tho",
+    "slug": "phu-tho",
+    "name": "Phú Thọ",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Việt Trì",
+    "area": 20247.2,
+    "population": 3086300,
+    "description": "Đất Tổ Hùng Vương mở rộng sau sáp nhập Tuyên Quang và Hà Giang, bao quát cả vùng Đông Bắc hùng vĩ.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/2/21/%C4%90%C6%B0%E1%BB%9Dng_l%C3%AAn_%C4%90%E1%BB%81n_H%C3%B9ng_-_panoramio.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 5,
+    "highlights": [
+      "Đền Hùng",
+      "Cao nguyên đá Đồng Văn",
+      "Đèo Mã Pí Lèng"
+    ],
+    "mergedFrom": [
+      "Phú Thọ",
+      "Tuyên Quang",
+      "Hà Giang"
+    ],
+    "note": "Sáp nhập từ 3 đơn vị hành chính"
+  },
+  {
+    "id": "lao-cai",
+    "slug": "lao-cai",
+    "name": "Lào Cai",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Lào Cai",
+    "area": 13263.5,
+    "population": 1568607,
+    "description": "Nóc nhà Đông Dương mở rộng sau sáp nhập Yên Bái, bao gồm Fansipan, Sa Pa và ruộng bậc thang Mù Cang Chải.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Fansipan_summit_2_in_sunrise.jpg/1280px-Fansipan_summit_2_in_sunrise.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 7,
+    "highlights": [
+      "Sa Pa",
+      "Đỉnh Fansipan",
+      "Mù Cang Chải"
+    ],
+    "mergedFrom": [
+      "Lào Cai",
+      "Yên Bái"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "son-la",
+    "slug": "son-la",
+    "name": "Sơn La",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Sơn La",
+    "area": 32805.7,
+    "population": 2420179,
+    "description": "Tây Bắc mở rộng sau sáp nhập Điện Biên và Lai Châu, bao gồm Điện Biên Phủ lịch sử và Mộc Châu mộng mơ.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/S%E1%BB%91ng_l%C6%B0ng_kh%E1%BB%A7ng_long_T%C3%A0_X%C3%B9a.jpg/1280px-S%E1%BB%91ng_l%C6%B0ng_kh%E1%BB%A7ng_long_T%C3%A0_X%C3%B9a.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 6,
+    "highlights": [
+      "Mộc Châu",
+      "Điện Biên Phủ",
+      "Đèo Pha Đin"
+    ],
+    "mergedFrom": [
+      "Sơn La",
+      "Điện Biên",
+      "Lai Châu"
+    ],
+    "note": "Sáp nhập từ 3 đơn vị hành chính"
+  },
+  {
+    "id": "thai-binh",
+    "slug": "thai-binh",
+    "name": "Thái Bình",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Thái Bình",
+    "area": 4100.9,
+    "population": 4503200,
+    "description": "Đồng bằng sông Hồng mở rộng sau sáp nhập Nam Định và Hà Nam, bao gồm Đền Trần, Phủ Giầy và chùa Tam Chúc.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 5,
+    "highlights": [
+      "Đền Trần",
+      "Chùa Tam Chúc",
+      "Chùa Keo"
+    ],
+    "mergedFrom": [
+      "Thái Bình",
+      "Nam Định",
+      "Hà Nam"
+    ],
+    "note": "Sáp nhập từ 3 đơn vị hành chính"
+  },
+  {
+    "id": "ninh-binh",
+    "slug": "ninh-binh",
+    "name": "Ninh Bình",
+    "region": "Miền Bắc",
+    "regionCode": "north",
+    "capital": "Ninh Bình",
+    "area": 1377.8,
+    "population": 983700,
+    "description": "Hạ Long cạn giữ nguyên danh giới, tiếp tục là điểm đến UNESCO hàng đầu với Tràng An và Tam Cốc.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Temple_comm%C3%A9moratif_au_roi_Dinh_Tien_Hoang_%28Hoa_Lu%29.jpg/1280px-Temple_comm%C3%A9moratif_au_roi_Dinh_Tien_Hoang_%28Hoa_Lu%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 5,
+    "highlights": [
+      "Tràng An",
+      "Tam Cốc",
+      "Hang Múa"
+    ],
+    "mergedFrom": [
+      "Ninh Bình"
+    ],
+    "note": "Giữ nguyên"
+  },
+  {
+    "id": "thanh-hoa",
+    "slug": "thanh-hoa",
+    "name": "Thanh Hóa",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Thanh Hóa",
+    "area": 11131,
+    "population": 3640128,
+    "description": "Tỉnh lớn Bắc Trung Bộ giữ nguyên danh giới với Thành Nhà Hồ và biển Sầm Sơn nổi tiếng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Le_Loi_statue.JPG/1280px-Le_Loi_statue.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Thành Nhà Hồ",
+      "Biển Sầm Sơn",
+      "Suối Cá Thần"
+    ],
+    "mergedFrom": [
+      "Thanh Hóa"
+    ],
+    "note": "Giữ nguyên"
+  },
+  {
+    "id": "nghe-an",
+    "slug": "nghe-an",
+    "name": "Nghệ An",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Vinh",
+    "area": 22488.7,
+    "population": 4591791,
+    "description": "Vùng đất địa linh nhân kiệt mở rộng sau sáp nhập Hà Tĩnh, bao gồm quê Bác, Cửa Lò và biển Thiên Cầm.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Quangtruonghochiminh.jpg/1280px-Quangtruonghochiminh.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 5,
+    "highlights": [
+      "Quê Bác Kim Liên",
+      "Biển Cửa Lò",
+      "Vườn QG Pù Mát"
+    ],
+    "mergedFrom": [
+      "Nghệ An",
+      "Hà Tĩnh"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "hue",
+    "slug": "hue",
+    "name": "Huế",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Huế",
+    "area": 17844.5,
+    "population": 2670644,
+    "description": "Cố đô văn hóa mở rộng sau sáp nhập Quảng Bình và Quảng Trị, bao gồm hang Sơn Đoòng kỳ vĩ và Đại Nội Huế.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Th%C3%A0nh_ph%E1%BB%91_Hu%E1%BA%BF_nh%C3%ACn_t%E1%BB%AB_tr%C3%AAn_cao_%282%29.jpg/1280px-Th%C3%A0nh_ph%E1%BB%91_Hu%E1%BA%BF_nh%C3%ACn_t%E1%BB%AB_tr%C3%AAn_cao_%282%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 9,
+    "highlights": [
+      "Đại Nội Huế",
+      "Hang Sơn Đoòng",
+      "Chùa Thiên Mụ"
+    ],
+    "mergedFrom": [
+      "Thừa Thiên Huế",
+      "Quảng Bình",
+      "Quảng Trị"
+    ],
+    "note": "Sáp nhập từ 3 đơn vị hành chính"
+  },
+  {
+    "id": "da-nang",
+    "slug": "da-nang",
+    "name": "Đà Nẵng",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Đà Nẵng",
+    "area": 11723.3,
+    "population": 2628210,
+    "description": "Thành phố đáng sống mở rộng sau sáp nhập Quảng Nam, bao gồm Phố cổ Hội An và Thánh địa Mỹ Sơn UNESCO.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Han_River_Bridge_in_Vietnam_Night_View.jpg/1280px-Han_River_Bridge_in_Vietnam_Night_View.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 9,
+    "highlights": [
+      "Bà Nà Hills",
+      "Hội An",
+      "Mỹ Sơn"
+    ],
+    "mergedFrom": [
+      "Đà Nẵng",
+      "Quảng Nam"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "quang-ngai",
+    "slug": "quang-ngai",
+    "name": "Quảng Ngãi",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Quảng Ngãi",
+    "area": 11219.2,
+    "population": 2750700,
+    "description": "Vùng đất duyên hải mở rộng sau sáp nhập Bình Định, bao gồm đảo Lý Sơn và biển Quy Nhơn mộng mơ.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/DUNG_QUAT_REFINERY_-_panoramio.jpg/1280px-DUNG_QUAT_REFINERY_-_panoramio.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 5,
+    "highlights": [
+      "Đảo Lý Sơn",
+      "Biển Quy Nhơn",
+      "Eo Gió"
+    ],
+    "mergedFrom": [
+      "Quảng Ngãi",
+      "Bình Định"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "khanh-hoa",
+    "slug": "khanh-hoa",
+    "name": "Khánh Hòa",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Nha Trang",
+    "area": 8553,
+    "population": 1820867,
+    "description": "Vịnh biển đẹp nhất Việt Nam mở rộng sau sáp nhập Phú Yên, bao gồm Nha Trang xanh ngọc và Gành Đá Đĩa kỳ bí.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Nha_Trang_%2C_Vietnam_-_panoramio_%2835%29.jpg/1280px-Nha_Trang_%2C_Vietnam_-_panoramio_%2835%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 6,
+    "highlights": [
+      "Vịnh Nha Trang",
+      "Gành Đá Đĩa",
+      "Đầm Ô Loan"
+    ],
+    "mergedFrom": [
+      "Khánh Hòa",
+      "Phú Yên"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "binh-thuan",
+    "slug": "binh-thuan",
+    "name": "Bình Thuận",
+    "region": "Miền Trung",
+    "regionCode": "central",
+    "capital": "Phan Thiết",
+    "area": 11348,
+    "population": 1812507,
+    "description": "Vùng biển resort mở rộng sau sáp nhập Ninh Thuận, bao gồm Mũi Né và Đồi Cát Hồng Ninh Thuận.",
+    "image": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",
+    "locationCount": 5,
+    "highlights": [
+      "Mũi Né",
+      "Đồi Cát Hồng",
+      "Vịnh Vĩnh Hy"
+    ],
+    "mergedFrom": [
+      "Bình Thuận",
+      "Ninh Thuận"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "gia-lai",
+    "slug": "gia-lai",
+    "name": "Gia Lai",
+    "region": "Tây Nguyên",
+    "regionCode": "highland",
+    "capital": "Pleiku",
+    "area": 25227.4,
+    "population": 2054285,
+    "description": "Cao nguyên Pleiku mở rộng sau sáp nhập Kon Tum, bao gồm Biển Hồ thơ mộng và Nhà thờ Gỗ cổ kính.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Chi%E1%BB%81u_cao_nguy%C3%AAn_-_Late_afternoon_in_the_Central_High_Plateaux_-_panoramio.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 4,
+    "highlights": [
+      "Biển Hồ",
+      "Nhà Thờ Gỗ Kon Tum",
+      "Thác Phú Cường"
+    ],
+    "mergedFrom": [
+      "Gia Lai",
+      "Kon Tum"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "dak-lak",
+    "slug": "dak-lak",
+    "name": "Đắk Lắk",
+    "region": "Tây Nguyên",
+    "regionCode": "highland",
+    "capital": "Buôn Ma Thuột",
+    "area": 19639.8,
+    "population": 2491490,
+    "description": "Thủ phủ cà phê và voi rừng mở rộng sau sáp nhập Đắk Nông, bao gồm Hồ Lắk và Thác Dray Nur hùng vĩ.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Lak_Lake.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 4,
+    "highlights": [
+      "Hồ Lắk",
+      "Vườn QG Yok Đôn",
+      "Thác Dray Nur"
+    ],
+    "mergedFrom": [
+      "Đắk Lắk",
+      "Đắk Nông"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "lam-dong",
+    "slug": "lam-dong",
+    "name": "Lâm Đồng",
+    "region": "Tây Nguyên",
+    "regionCode": "highland",
+    "capital": "Đà Lạt",
+    "area": 9783.3,
+    "population": 1296078,
+    "description": "Thành phố ngàn hoa Đà Lạt giữ nguyên danh giới với khí hậu mát mẻ và vẻ đẹp thơ mộng quanh năm.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Da_Lat%2C_view_to_Xuan_Huong_lake_2.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "locationCount": 6,
+    "highlights": [
+      "Đà Lạt",
+      "Hồ Xuân Hương",
+      "Thung Lũng Tình Yêu"
+    ],
+    "mergedFrom": [
+      "Lâm Đồng"
+    ],
+    "note": "Giữ nguyên"
+  },
+  {
+    "id": "tp-hcm",
+    "slug": "tp-hcm",
+    "name": "TP. Hồ Chí Minh",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "TP. Hồ Chí Minh",
+    "area": 6772.2,
+    "population": 13109400,
+    "description": "Siêu đô thị lớn nhất Việt Nam mở rộng sau sáp nhập Bình Dương và Bà Rịa-Vũng Tàu, bao gồm cả Côn Đảo.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg/1280px-Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 10,
+    "highlights": [
+      "Bến Thành",
+      "Dinh Thống Nhất",
+      "Côn Đảo"
+    ],
+    "mergedFrom": [
+      "TP. Hồ Chí Minh",
+      "Bình Dương",
+      "Bà Rịa-Vũng Tàu"
+    ],
+    "note": "Sáp nhập từ 3 đơn vị hành chính"
+  },
+  {
+    "id": "dong-nai",
+    "slug": "dong-nai",
+    "name": "Đồng Nai",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Biên Hòa",
+    "area": 10914.7,
+    "population": 2262765,
+    "description": "Vùng miền Đông mở rộng sau sáp nhập Tây Ninh, bao gồm Vườn QG Cát Tiên và Núi Bà Đen linh thiêng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Nh%C3%A0_th%E1%BB%9D_ch%C3%ADnh_V%C4%83n_mi%E1%BA%BFu_Tr%E1%BA%A5n_Bi%C3%AAn.jpg/1280px-Nh%C3%A0_th%E1%BB%9D_ch%C3%ADnh_V%C4%83n_mi%E1%BA%BFu_Tr%E1%BA%A5n_Bi%C3%AAn.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 4,
+    "highlights": [
+      "Vườn QG Cát Tiên",
+      "Núi Bà Đen",
+      "Tòa Thánh Cao Đài"
+    ],
+    "mergedFrom": [
+      "Đồng Nai",
+      "Tây Ninh"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "long-an",
+    "slug": "long-an",
+    "name": "Long An",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Tân An",
+    "area": 7000.7,
+    "population": 3461400,
+    "description": "Cửa ngõ miền Tây mở rộng sau sáp nhập Tiền Giang, bao gồm vương quốc trái cây Cồn Phụng và Tràm Chim.",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    "locationCount": 3,
+    "highlights": [
+      "Vườn QG Tràm Chim",
+      "Cồn Phụng",
+      "Làng Chiếu"
+    ],
+    "mergedFrom": [
+      "Long An",
+      "Tiền Giang"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "dong-thap",
+    "slug": "dong-thap",
+    "name": "Đồng Tháp",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Cao Lãnh",
+    "area": 3374.1,
+    "population": 1595600,
+    "description": "Vùng đất sen hồng với Tràm Chim – Khu Ramsar và làng hoa Sa Đéc tươi sắc.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/C%E1%BA%A7u_Cao_L%C3%A3nh.jpg/1280px-C%E1%BA%A7u_Cao_L%C3%A3nh.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 2,
+    "highlights": [
+      "Làng Hoa Sa Đéc",
+      "Vườn QG Tràm Chim"
+    ],
+    "mergedFrom": [
+      "Đồng Tháp"
+    ],
+    "note": "Giữ nguyên"
+  },
+  {
+    "id": "an-giang",
+    "slug": "an-giang",
+    "name": "An Giang",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Long Xuyên",
+    "area": 3536.7,
+    "population": 1896400,
+    "description": "Vùng đất Phật linh thiêng với Núi Sam và Chùa Bà Chúa Xứ thu hút hàng triệu lượt khách hành hương.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Mi%E1%BA%BFu_B%C3%A0_Ch%C3%BAa_X%E1%BB%A9_N%C3%BAi_Sam.jpg/1280px-Mi%E1%BA%BFu_B%C3%A0_Ch%C3%BAa_X%E1%BB%A9_N%C3%BAi_Sam.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Núi Sam",
+      "Chùa Bà Chúa Xứ",
+      "Châu Đốc"
+    ],
+    "mergedFrom": [
+      "An Giang"
+    ],
+    "note": "Giữ nguyên"
+  },
+  {
+    "id": "vinh-long",
+    "slug": "vinh-long",
+    "name": "Vĩnh Long",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Vĩnh Long",
+    "area": 4178,
+    "population": 2074500,
+    "description": "Miệt vườn sông nước mở rộng sau sáp nhập Bến Tre và Trà Vinh, bao gồm cù lao xanh mát và chùa Khmer.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Trung_t%C3%A2m_H%C3%A0nh_ch%C3%ADnh_t%E1%BB%89nh_V%C4%A9nh_Long.jpg/1280px-Trung_t%C3%A2m_H%C3%A0nh_ch%C3%ADnh_t%E1%BB%89nh_V%C4%A9nh_Long.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 4,
+    "highlights": [
+      "Cù Lao An Bình",
+      "Chùa Khmer",
+      "Cù Lao Minh"
+    ],
+    "mergedFrom": [
+      "Vĩnh Long",
+      "Bến Tre",
+      "Trà Vinh"
+    ],
+    "note": "Sáp nhập từ 3 đơn vị hành chính"
+  },
+  {
+    "id": "can-tho",
+    "slug": "can-tho",
+    "name": "Cần Thơ",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Cần Thơ",
+    "area": 3010.9,
+    "population": 1983800,
+    "description": "Thủ phủ miền Tây mở rộng sau sáp nhập Hậu Giang, giữ vị thế trung tâm với Chợ Nổi Cái Răng nổi tiếng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Can_Tho_Bridge.jpg/1280px-Can_Tho_Bridge.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Chợ Nổi Cái Răng",
+      "Cồn Sơn",
+      "Làng Mỹ Khánh"
+    ],
+    "mergedFrom": [
+      "Cần Thơ",
+      "Hậu Giang"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "soc-trang",
+    "slug": "soc-trang",
+    "name": "Sóc Trăng",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Sóc Trăng",
+    "area": 5980.6,
+    "population": 2091000,
+    "description": "Đất Khmer – Kinh – Hoa mở rộng sau sáp nhập Bạc Liêu, bao gồm chùa Dơi và Nhà Công Tử Bạc Liêu.",
+    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    "locationCount": 3,
+    "highlights": [
+      "Chùa Dơi",
+      "Nhà Công Tử Bạc Liêu",
+      "Lễ Hội Oóc Om Bóc"
+    ],
+    "mergedFrom": [
+      "Sóc Trăng",
+      "Bạc Liêu"
+    ],
+    "note": "Sáp nhập từ 2 đơn vị hành chính"
+  },
+  {
+    "id": "kien-giang",
+    "slug": "kien-giang",
+    "name": "Kiên Giang",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Rạch Giá",
+    "area": 6348.5,
+    "population": 1723300,
+    "description": "Thiên đường đảo ngọc Phú Quốc giữ nguyên danh giới với hệ sinh thái biển đảo phong phú.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Bai-sao-phu-quoc-tuonglamphotos.jpg/1280px-Bai-sao-phu-quoc-tuonglamphotos.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 4,
+    "highlights": [
+      "Phú Quốc",
+      "Bãi Sao",
+      "Nam Du"
+    ],
+    "mergedFrom": [
+      "Kiên Giang"
+    ],
+    "note": "Giữ nguyên"
+  },
+  {
+    "id": "ca-mau",
+    "slug": "ca-mau",
+    "name": "Cà Mau",
+    "region": "Miền Nam",
+    "regionCode": "south",
+    "capital": "Cà Mau",
+    "area": 5331.7,
+    "population": 1194300,
+    "description": "Cực Nam Tổ quốc với Mũi Cà Mau huyền thoại và rừng đước ngập mặn bao la tuyệt đẹp.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Muicamau.jpg/1280px-Muicamau.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "locationCount": 3,
+    "highlights": [
+      "Mũi Cà Mau",
+      "Đất Mũi",
+      "Rừng Ngập Mặn"
+    ],
+    "mergedFrom": [
+      "Cà Mau"
+    ],
+    "note": "Giữ nguyên"
+  }
+]

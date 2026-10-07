@@ -1,0 +1,155 @@
+[
+  {
+    "id": "notif-1786197052727",
+    "type": "comment",
+    "message": "viet đã bình luận về địa điểm \"d\" của bạn",
+    "locationId": "hai-phong-1786183735201",
+    "target": "ngocanh",
+    "read": true,
+    "createdAt": "2026-08-08T13:50:52.727Z"
+  },
+  {
+    "id": "notif-1786196864805",
+    "type": "reaction",
+    "message": "admin đã thả cảm xúc vào địa điểm \"văn miếu\" của bạn",
+    "locationId": "ha-noi-1786196847600",
+    "target": "ngocanh",
+    "read": true,
+    "createdAt": "2026-08-08T13:47:44.805Z"
+  },
+  {
+    "id": "notif-1786196856251",
+    "type": "reaction",
+    "message": "viet đã thả cảm xúc vào địa điểm \"văn miếu\" của bạn",
+    "locationId": "ha-noi-1786196847600",
+    "target": "ngocanh",
+    "read": true,
+    "createdAt": "2026-08-08T13:47:36.251Z"
+  },
+  {
+    "id": "notif-1786196847600",
+    "type": "new_location",
+    "message": "Người dùng ngocanh vừa đăng một địa điểm mới: văn miếu",
+    "locationId": "ha-noi-1786196847600",
+    "target": "admin",
+    "read": false,
+    "createdAt": "2026-08-08T13:47:27.600Z"
+  },
+  {
+    "id": "notif-1786192670077",
+    "type": "reaction",
+    "message": "viet đã thả cảm xúc vào địa điểm \"d\" của bạn",
+    "locationId": "hai-phong-1786183735201",
+    "target": "ngocanh",
+    "read": true,
+    "createdAt": "2026-08-08T12:37:50.077Z"
+  },
+  {
+    "id": "notif-1786192652266",
+    "type": "reaction",
+    "message": "ngocanh đã thả cảm xúc vào địa điểm \"aaas\" của bạn",
+    "locationId": "cao-bang-1786189823673",
+    "target": "viet",
+    "read": true,
+    "createdAt": "2026-08-08T12:37:32.266Z"
+  },
+  {
+    "id": "notif-1786192651394",
+    "type": "comment",
+    "message": "ngocanh đã bình luận về địa điểm \"aaas\" của bạn",
+    "locationId": "cao-bang-1786189823673",
+    "target": "viet",
+    "read": true,
+    "createdAt": "2026-08-08T12:37:31.395Z"
+  },
+  {
+    "id": "notif-1786192625120",
+    "type": "comment",
+    "message": "viet đã trả lời bình luận của bạn tại \"d\"",
+    "locationId": "ha-giang-1786187463212",
+    "target": "ngocanh",
+    "read": true,
+    "createdAt": "2026-08-08T12:37:05.120Z"
+  },
+  {
+    "id": "notif-1786192615291",
+    "type": "comment",
+    "message": "ngocanh đã trả lời bình luận của bạn tại \"d\"",
+    "locationId": "ha-giang-1786187463212",
+    "target": "viet",
+    "read": true,
+    "createdAt": "2026-08-08T12:36:55.291Z"
+  },
+  {
+    "id": "notif-1786192298057",
+    "type": "comment",
+    "message": "viet đã trả lời bình luận của bạn tại \"d\"",
+    "locationId": "ha-giang-1786187463212",
+    "target": "ngocanh",
+    "read": true,
+    "createdAt": "2026-08-08T12:31:38.057Z"
+  },
+  {
+    "id": "notif-1786192278645",
+    "type": "comment",
+    "message": "ngocanh đã trả lời bình luận của bạn tại \"d\"",
+    "locationId": "ha-giang-1786187463212",
+    "target": "viet",
+    "read": true,
+    "createdAt": "2026-08-08T12:31:18.645Z"
+  },
+  {
+    "id": "notif-1786192216231",
+    "type": "reaction",
+    "message": "anhđoàn801 đã thả cảm xúc vào địa điểm \"d\" của bạn",
+    "locationId": "ha-giang-1786187463212",
+    "target": "viet",
+    "read": true,
+    "createdAt": "2026-08-08T12:30:16.231Z"
+  },
+  {
+    "id": "notif-1786191982017",
+    "type": "comment",
+    "message": "viet đã trả lời bình luận của bạn tại \"d\"",
+    "locationId": "ha-giang-1786187463212",
+    "target": "ngocanh",
+    "read": true,
+    "createdAt": "2026-08-08T12:26:22.017Z"
+  },
+  {
+    "id": "notif-1786191956902",
+    "type": "comment",
+    "message": "ngocanh đã bình luận về địa điểm \"d\" của bạn",
+    "locationId": "ha-giang-1786187463212",
+    "target": "viet",
+    "read": true,
+    "createdAt": "2026-08-08T12:25:56.902Z"
+  },
+  {
+    "id": "notif-1786191951690",
+    "type": "reaction",
+    "message": "ngocanh đã thả cảm xúc vào địa điểm \"d\" của bạn",
+    "locationId": "ha-giang-1786187463212",
+    "target": "viet",
+    "read": true,
+    "createdAt": "2026-08-08T12:25:51.690Z"
+  },
+  {
+    "id": "notif-1786190148083",
+    "type": "new_location",
+    "message": "Người dùng anhđoàn801 vừa đăng một địa điểm mới: lỗ hổng",
+    "locationId": "bac-kan-1786190148083",
+    "target": "admin",
+    "read": true,
+    "createdAt": "2026-08-08T11:55:48.083Z"
+  },
+  {
+    "id": "notif-1786189823673",
+    "type": "new_location",
+    "message": "Người dùng viet vừa đăng một địa điểm mới: aaas",
+    "locationId": "cao-bang-1786189823673",
+    "target": "admin",
+    "read": true,
+    "createdAt": "2026-08-08T11:50:23.673Z"
+  }
+]

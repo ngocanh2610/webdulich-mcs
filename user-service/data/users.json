@@ -1,0 +1,31 @@
+[
+  {
+    "id": "admin",
+    "username": "admin",
+    "password": "$2a$10$j3mJZaqoSg5uGnATJwD2Re770kIcz/rW7.rUfjbJX3KvwBY82i5ES",
+    "role": "admin",
+    "createdAt": "2026-08-08T07:12:21.703Z"
+  },
+  {
+    "id": "user-1786173220922",
+    "username": "viet",
+    "password": "$2a$10$TqbA.8qxUHSkvBfn5PPzvOhw3AqsVUupbtSOTK0mJefR.JhzD/N3a",
+    "role": "user",
+    "createdAt": "2026-08-08T07:13:40.999Z"
+  },
+  {
+    "id": "user-115285715601732356729",
+    "username": "anhđoàn801",
+    "email": "ngoccanhh26100@gmail.com",
+    "role": "user",
+    "createdAt": "2026-08-08T08:05:16.145Z"
+  },
+  {
+    "id": "user-1786177252877",
+    "username": "ngocanh",
+    "email": "doannanhh26100@gmail.com",
+    "password": "$2a$10$TLA4ijTqpHWz5CxId7kr2OrJoAdjqzsX1JL.3WOuiBZpoBDSv9ulG",
+    "role": "user",
+    "createdAt": "2026-08-08T08:20:52.950Z"
+  }
+]

@@ -1,0 +1,286 @@
+[
+  {
+    "id": "halong-1",
+    "provinceId": "quang-ninh",
+    "name": "Vịnh Hạ Long",
+    "type": "nature",
+    "rating": 5,
+    "description": "Di sản thiên nhiên thế giới với hàng ngàn hòn đảo đá vôi kỳ vĩ.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/V%E1%BB%8Bnh_H%E1%BA%A1_Long_-_NKS.jpg/1280px-V%E1%BB%8Bnh_H%E1%BA%A1_Long_-_NKS.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "tags": [
+      "Di sản UNESCO",
+      "Thiên nhiên",
+      "Biển đảo"
+    ],
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/V%E1%BB%8Bnh_H%E1%BA%A1_Long_-_NKS.jpg/1280px-V%E1%BB%8Bnh_H%E1%BA%A1_Long_-_NKS.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    ]
+  },
+  {
+    "id": "halong-2",
+    "provinceId": "quang-ninh",
+    "name": "Đảo Cát Bà",
+    "type": "nature",
+    "rating": 4.5,
+    "description": "Hòn đảo xinh đẹp với vườn quốc gia và những bãi tắm hoang sơ.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Catba.jpg/1280px-Catba.jpg",
+    "tags": [
+      "Biển đảo",
+      "Vườn quốc gia",
+      "Khám phá"
+    ]
+  },
+  {
+    "id": "hanoi-1",
+    "provinceId": "ha-noi",
+    "name": "Hồ Hoàn Kiếm",
+    "type": "culture",
+    "rating": 4.8,
+    "description": "Trái tim của thủ đô, nơi lưu giữ truyền thuyết gươm thần và rùa vàng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Hoan_Kiem.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "tags": [
+      "Văn hóa",
+      "Lịch sử",
+      "Biểu tượng"
+    ],
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/1/1c/Hoan_Kiem.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    ]
+  },
+  {
+    "id": "hcm-1",
+    "provinceId": "tp-hcm",
+    "name": "Chợ Bến Thành",
+    "type": "culture",
+    "rating": 4.5,
+    "description": "Biểu tượng giao thương lâu đời và sầm uất của Sài Gòn.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/91/Ben_Thanh_market_2.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "tags": [
+      "Mua sắm",
+      "Lịch sử",
+      "Ẩm thực"
+    ],
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/9/91/Ben_Thanh_market_2.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    ]
+  },
+  {
+    "id": "hcm-2",
+    "provinceId": "tp-hcm",
+    "name": "Dinh Độc Lập",
+    "type": "history",
+    "rating": 4.9,
+    "description": "Di tích lịch sử quan trọng, nơi đánh dấu sự thống nhất đất nước.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Dinh_%C4%90%E1%BB%99c_L%E1%BA%ADp_v%C3%A0o_n%C3%A0m_2024.jpg/1280px-Dinh_%C4%90%E1%BB%99c_L%E1%BA%ADp_v%C3%A0o_n%C3%A0m_2024.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "tags": [
+      "Lịch sử",
+      "Kiến trúc",
+      "Tham quan"
+    ],
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Dinh_%C4%90%E1%BB%99c_L%E1%BA%ADp_v%C3%A0o_n%C3%A0m_2024.jpg/1280px-Dinh_%C4%90%E1%BB%99c_L%E1%BA%ADp_v%C3%A0o_n%C3%A0m_2024.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+    ]
+  },
+  {
+    "id": "danang-1",
+    "provinceId": "da-nang",
+    "name": "Bà Nà Hills",
+    "type": "entertainment",
+    "rating": 4.8,
+    "description": "Khu du lịch trên mây với Cầu Vàng nổi tiếng thế giới.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Ba_Na_Hills_French_Village.jpg/1280px-Ba_Na_Hills_French_Village.jpg",
+    "tags": [
+      "Giải trí",
+      "Kiến trúc",
+      "Núi"
+    ]
+  },
+  {
+    "id": "quangnam-1",
+    "provinceId": "quang-nam",
+    "name": "Phố cổ Hội An",
+    "type": "culture",
+    "rating": 5,
+    "description": "Thương cảng sầm uất xưa, nay là đô thị cổ lung linh dưới ánh đèn lồng.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/f/f3/PhoCoHoiAn.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "tags": [
+      "Di sản UNESCO",
+      "Văn hóa",
+      "Kiến trúc cổ"
+    ],
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/f/f3/PhoCoHoiAn.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    ]
+  },
+  {
+    "id": "lamdong-1",
+    "provinceId": "lam-dong",
+    "name": "Hồ Xuân Hương",
+    "type": "nature",
+    "rating": 4.6,
+    "description": "Trái tim lãng mạn của thành phố ngàn hoa Đà Lạt.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/05/Ho_Xuan_Huong.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "tags": [
+      "Thiên nhiên",
+      "Lãng mạn",
+      "Thư giãn"
+    ],
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/0/05/Ho_Xuan_Huong.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+    ]
+  },
+  {
+    "id": "laocai-1",
+    "provinceId": "lao-cai",
+    "name": "Đỉnh Fansipan",
+    "type": "nature",
+    "rating": 4.9,
+    "description": "Nóc nhà Đông Dương, nơi chinh phục những đám mây.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Fansipan_summit.jpg/1280px-Fansipan_summit.jpg",
+    "tags": [
+      "Núi",
+      "Khám phá",
+      "Cáp treo"
+    ]
+  },
+  {
+    "id": "hai-phong-1786183735201",
+    "provinceId": "hai-phong",
+    "name": "d",
+    "type": "discovery",
+    "rating": 5,
+    "description": "d",
+    "image": "/api/media/uploads/1786183735108-114118906.jpg",
+    "images": [
+      "/api/media/uploads/1786183735108-114118906.jpg"
+    ],
+    "tags": [
+      "Khám phá mới"
+    ],
+    "author": "ngocanh",
+    "status": "pending",
+    "reactions": [
+      {
+        "username": "viet",
+        "type": "like"
+      }
+    ]
+  },
+  {
+    "id": "ha-giang-1786187463212",
+    "provinceId": "ha-giang",
+    "name": "d",
+    "type": "discovery",
+    "rating": 5,
+    "description": "d",
+    "image": "/api/media/uploads/1786187463183-940900214.jpg",
+    "images": [
+      "/api/media/uploads/1786187463183-940900214.jpg",
+      "/api/media/uploads/1786187463183-948683917.jpg",
+      "/api/media/uploads/1786187463184-974820731.jpg",
+      "/api/media/uploads/1786187463188-678817469.jpg",
+      "/api/media/uploads/1786187463188-755448530.jpg"
+    ],
+    "tags": [
+      "Khám phá mới"
+    ],
+    "author": "viet",
+    "reactions": [
+      {
+        "username": "ngocanh",
+        "type": "like"
+      },
+      {
+        "username": "viet",
+        "type": "like"
+      },
+      {
+        "username": "anhđoàn801",
+        "type": "like"
+      }
+    ]
+  },
+  {
+    "id": "cao-bang-1786189823673",
+    "provinceId": "cao-bang",
+    "name": "aaas",
+    "type": "discovery",
+    "rating": 5,
+    "description": "đẹp",
+    "image": "/api/media/uploads/1786189823591-117222233.png",
+    "images": [
+      "/api/media/uploads/1786189823591-117222233.png",
+      "/api/media/uploads/1786189823592-946019585.png",
+      "/api/media/uploads/1786189823592-149973606.jfif",
+      "/api/media/uploads/1786189823592-975828192.jfif",
+      "/api/media/uploads/1786189823592-196127645.jfif",
+      "/api/media/uploads/1786189823592-58687659.jpg",
+      "/api/media/uploads/1786189823594-218748217.jpg"
+    ],
+    "tags": [
+      "Khám phá mới"
+    ],
+    "author": "viet",
+    "reactions": [
+      {
+        "username": "ngocanh",
+        "type": "like"
+      }
+    ]
+  },
+  {
+    "id": "bac-kan-1786190148083",
+    "provinceId": "bac-kan",
+    "name": "lỗ hổng",
+    "type": "discovery",
+    "rating": 5,
+    "description": "ổn",
+    "image": "/api/media/uploads/1786190147987-827738275.jpg",
+    "images": [
+      "/api/media/uploads/1786190147987-827738275.jpg",
+      "/api/media/uploads/1786190147988-434048837.jpg",
+      "/api/media/uploads/1786190147989-473814222.jpg",
+      "/api/media/uploads/1786190147995-119033817.jpg",
+      "/api/media/uploads/1786190147996-591213457.jpg",
+      "/api/media/uploads/1786190148000-596191772.jpg",
+      "/api/media/uploads/1786190148000-11754400.jpg",
+      "/api/media/uploads/1786190148004-858687908.png",
+      "/api/media/uploads/1786190148010-464368663.png",
+      "/api/media/uploads/1786190148020-675365687.jpg"
+    ],
+    "tags": [
+      "Khám phá mới"
+    ],
+    "author": "anhđoàn801"
+  },
+  {
+    "id": "ha-noi-1786196847600",
+    "provinceId": "ha-noi",
+    "name": "văn miếu",
+    "type": "discovery",
+    "rating": 5,
+    "description": "cổ kính",
+    "image": "/api/media/uploads/1786196847569-166908498.jpg",
+    "images": [
+      "/api/media/uploads/1786196847569-166908498.jpg"
+    ],
+    "tags": [
+      "Khám phá mới"
+    ],
+    "author": "ngocanh",
+    "reactions": [
+      {
+        "username": "ngocanh",
+        "type": "like"
+      },
+      {
+        "username": "viet",
+        "type": "like"
+      },
+      {
+        "username": "admin",
+        "type": "like"
+      }
+    ]
+  }
+]

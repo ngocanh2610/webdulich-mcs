@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cmt-1786191956898",
+    "locationId": "ha-giang-1786187463212",
+    "username": "ngocanh",
+    "content": "a\n",
+    "parentId": null,
+    "createdAt": "2026-08-08T12:25:56.898Z"
+  },
+  {
+    "id": "cmt-1786191982014",
+    "locationId": "ha-giang-1786187463212",
+    "username": "viet",
+    "content": "b\n",
+    "parentId": "cmt-1786191956898",
+    "createdAt": "2026-08-08T12:26:22.014Z"
+  },
+  {
+    "id": "cmt-1786191990415",
+    "locationId": "ha-giang-1786187463212",
+    "username": "viet",
+    "content": "c\n",
+    "parentId": null,
+    "createdAt": "2026-08-08T12:26:30.415Z"
+  },
+  {
+    "id": "cmt-1786192278641",
+    "locationId": "ha-giang-1786187463212",
+    "username": "ngocanh",
+    "content": "c\n",
+    "parentId": "cmt-1786191982014",
+    "createdAt": "2026-08-08T12:31:18.641Z"
+  },
+  {
+    "id": "cmt-1786192298054",
+    "locationId": "ha-giang-1786187463212",
+    "username": "viet",
+    "content": "d",
+    "parentId": "cmt-1786192278641",
+    "createdAt": "2026-08-08T12:31:38.054Z"
+  },
+  {
+    "id": "cmt-1786192615287",
+    "locationId": "ha-giang-1786187463212",
+    "username": "ngocanh",
+    "content": "e",
+    "parentId": "cmt-1786192298054",
+    "createdAt": "2026-08-08T12:36:55.287Z"
+  },
+  {
+    "id": "cmt-1786192625116",
+    "locationId": "ha-giang-1786187463212",
+    "username": "viet",
+    "content": "f",
+    "parentId": "cmt-1786192615287",
+    "createdAt": "2026-08-08T12:37:05.116Z"
+  },
+  {
+    "id": "cmt-1786192651392",
+    "locationId": "cao-bang-1786189823673",
+    "username": "ngocanh",
+    "content": "q",
+    "parentId": null,
+    "createdAt": "2026-08-08T12:37:31.392Z"
+  },
+  {
+    "id": "cmt-1786197052722",
+    "locationId": "hai-phong-1786183735201",
+    "username": "viet",
+    "content": "a",
+    "parentId": null,
+    "createdAt": "2026-08-08T13:50:52.722Z"
+  }
+]
