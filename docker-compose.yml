@@ -129,6 +129,9 @@ services:
       - "3004"
     networks:
       - vietnam-tourism-net
+    volumes:
+      - ./ai-service:/app
+      - /app/node_modules
     restart: unless-stopped
     env_file:
       - .env

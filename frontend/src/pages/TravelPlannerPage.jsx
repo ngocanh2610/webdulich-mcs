@@ -3,31 +3,6 @@ import {
   Printer, Copy, RotateCcw, AlertCircle, Check, Navigation, Search, ExternalLink
 } from 'lucide-react';
 
-const POPULAR_DESTINATIONS = [
-  'Đà Nẵng', 'Đà Lạt', 'Sa Pa', 'Phú Quốc', 
-  'Hà Nội', 'Hội An', 'Nha Trang', 'Ninh Bình', 
-  'Huế', 'Hạ Long', 'Hà Giang', 'Quy Nhơn'
-];
-
-const DURATION_PRESETS = [
-  { days: 2, label: '2N1Đ' },
-  { days: 3, label: '3N2Đ' },
-  { days: 5, label: '5N4Đ' },
-  { days: 7, label: '1 Tuần (7N)' },
-  { days: 14, label: '2 Tuần (14N)' },
-  { days: 21, label: '3 Tuần (21N)' },
-  { days: 30, label: '1 Tháng (30N)' },
-];
-
-const BUDGET_PRESETS = [
-  { amount: 3000000, label: '3 Triệu' },
-  { amount: 5000000, label: '5 Triệu' },
-  { amount: 10000000, label: '10 Triệu' },
-  { amount: 15000000, label: '15 Triệu' },
-  { amount: 25000000, label: '25 Triệu' },
-  { amount: 50000000, label: '50 Triệu' },
-];
-
 const TRAVEL_STYLES = [
   { id: 'beach', label: 'Biển đảo & Bơi lội' },
   { id: 'photo', label: 'Check-in & Sống ảo' },
@@ -39,19 +14,20 @@ const TRAVEL_STYLES = [
 ];
 
 const GROUP_TYPES = [
-  { id: 'solo', label: 'Đi 1 mình (Solo)', desc: 'Tự do trải nghiệm theo cách riêng' },
-  { id: 'couple', label: 'Cặp đôi (Couples)', desc: 'Lãng mạn, riêng tư và nhẹ nhàng' },
-  { id: 'friends', label: 'Nhóm bạn (Friends)', desc: 'Sôi động, nhiều hoạt động vui nhộn' },
-  { id: 'family', label: 'Gia đình (Family)', desc: 'Tiện nghi, an toàn cho người già & trẻ nhỏ' },
+  { id: 'solo', label: 'Đi 1 mình', desc: 'Tự do trải nghiệm theo cách riêng' },
+  { id: 'couple', label: 'Cặp đôi', desc: 'Lãng mạn, riêng tư và nhẹ nhàng' },
+  { id: 'friends', label: 'Nhóm bạn', desc: 'Sôi động, nhiều hoạt động vui nhộn' },
+  { id: 'family', label: 'Gia đình', desc: 'Tiện nghi, an toàn cho người già & trẻ nhỏ' },
 ];
 
 const TravelPlannerPage = () => {
   // Input Form States
+  const [startLocation, setStartLocation] = useState('');
   const [destination, setDestination] = useState('Đà Nẵng');
   const [days, setDays] = useState(3);
   const [budget, setBudget] = useState(6000000);
   const [selectedStyles, setSelectedStyles] = useState(['Biển đảo & Bơi lội', 'Ẩm thực & Food tour']);
-  const [groupType, setGroupType] = useState('Cặp đôi (Couples)');
+  const [groupType, setGroupType] = useState('Cặp đôi');
   const [specialRequests, setSpecialRequests] = useState('Thích ăn hải sản tươi sống gần biển, ngắm hoàng hôn, ưu tiên di chuyển xe máy linh hoạt.');
 
   // App Execution States
@@ -99,6 +75,7 @@ const TravelPlannerPage = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          startLocation: startLocation.trim(),
           destination: destination.trim(),
           days: parseInt(days, 10),
           budget: parseInt(budget, 10),
@@ -110,6 +87,11 @@ const TravelPlannerPage = () => {
 
       const data = await response.json();
       if (data.success && data.plan) {
+        if (!startLocation.trim()) {
+          data.plan.startLocation = '';
+        } else if (!data.plan.startLocation && startLocation.trim()) {
+          data.plan.startLocation = startLocation.trim();
+        }
         setPlanResult(data.plan);
         setActiveDay(1);
         setActiveTab('timeline');
@@ -133,7 +115,15 @@ const TravelPlannerPage = () => {
   const handleCopyItinerary = () => {
     if (!planResult) return;
     let text = `KẾ HOẠCH DU LỊCH: ${planResult.title}\n`;
-    text += `Điểm đến: ${planResult.destination} | Thời gian: ${planResult.days} ngày | Ngân sách: ${planResult.budget?.toLocaleString('vi-VN')} VNĐ\n`;
+    if (planResult.startLocation) {
+      text += `Lộ trình: ${planResult.startLocation} ➔ ${planResult.destination} | `;
+    } else {
+      text += `Điểm đến: ${planResult.destination} | `;
+    }
+    text += `Thời gian: ${planResult.days} ngày | Ngân sách: ${planResult.budget?.toLocaleString('vi-VN')} VNĐ\n`;
+    if (planResult.nlpAnalysis?.extractedEntities?.length > 0) {
+      text += `Phân tích NLP: ${planResult.nlpAnalysis.extractedEntities.join(', ')}\n`;
+    }
     text += `Giới thiệu: ${planResult.summary}\n\n`;
     
     planResult.dailyItinerary?.forEach(day => {
@@ -216,18 +206,43 @@ const TravelPlannerPage = () => {
           marginBottom: '2.5rem'
         }}>
           <form onSubmit={handleGeneratePlan}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.75rem', marginBottom: '1.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '1.5rem', marginBottom: '1.75rem' }}>
               
-              {/* 1. Điểm đến */}
+              {/* 1. Điểm xuất phát (tùy chọn) */}
               <div>
                 <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  1. Điểm đến mong muốn:
+                  1. Điểm xuất phát (tùy chọn):
+                </label>
+                <input 
+                  type="text"
+                  value={startLocation}
+                  onChange={(e) => setStartLocation(e.target.value)}
+                  placeholder="Ví dụ: Hà Nội, TP.HCM... (không bắt buộc)"
+                  style={{
+                    width: '100%',
+                    padding: '0.85rem 1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #D1D5DB',
+                    fontSize: '1rem',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    color: '#111827',
+                    background: '#FFFFFF',
+                    transition: 'border 0.2s'
+                  }}
+                />
+              </div>
+
+              {/* 2. Điểm đến */}
+              <div>
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
+                  2. Điểm đến mong muốn:
                 </label>
                 <input 
                   type="text"
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
-                  placeholder="Ví dụ: Đà Nẵng, Sa Pa, Đà Lạt, Phú Quốc..."
+                  placeholder="Ví dụ: Đà Nẵng, Hạ Long, Xuyên Việt..."
                   style={{
                     width: '100%',
                     padding: '0.85rem 1rem',
@@ -242,41 +257,14 @@ const TravelPlannerPage = () => {
                   }}
                   required
                 />
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.6rem' }}>
-                  {POPULAR_DESTINATIONS.slice(0, 6).map(dest => (
-                    <button
-                      key={dest}
-                      type="button"
-                      onClick={() => setDestination(dest)}
-                      style={{
-                        background: destination === dest ? '#00A699' : '#F3F4F6',
-                        color: destination === dest ? '#FFFFFF' : '#374151',
-                        border: destination === dest ? '1px solid #00A699' : '1px solid #E5E7EB',
-                        padding: '0.3rem 0.75rem',
-                        borderRadius: '20px',
-                        fontSize: '0.8rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        transition: 'all 0.15s'
-                      }}
-                    >
-                      {dest}
-                    </button>
-                  ))}
-                </div>
               </div>
 
-              {/* 2. Số ngày chuyến đi */}
+              {/* 3. Số ngày chuyến đi */}
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-                  <label style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111827' }}>
-                    2. Thời gian chuyến đi:
-                  </label>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#00A699', background: '#F0FDFA', border: '1px solid #99F6E4', padding: '0.15rem 0.55rem', borderRadius: '12px' }}>
-                    {days ? `${days} ngày` : 'Tùy chọn'} {days > 1 ? `(${days - 1} đêm)` : ''}
-                  </span>
-                </div>
-                <div style={{ position: 'relative', marginBottom: '0.6rem' }}>
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
+                  3. Thời gian chuyến đi:
+                </label>
+                <div style={{ position: 'relative' }}>
                   <input 
                     type="number"
                     min="1"
@@ -293,59 +281,33 @@ const TravelPlannerPage = () => {
                     onBlur={() => {
                       if (!days || days < 1) setDays(3);
                     }}
-                    placeholder="Nhập số ngày (VD: 7, 14, 21, 30...)"
+                    placeholder="Nhập số ngày (Ví dụ: 3, 7, 14, 30...)"
                     style={{
                       width: '100%',
-                      padding: '0.75rem 3.5rem 0.75rem 1rem',
+                      padding: '0.85rem 3.5rem 0.85rem 1rem',
                       borderRadius: '12px',
                       border: '1px solid #D1D5DB',
-                      fontSize: '0.95rem',
-                      fontWeight: 700,
+                      fontSize: '1rem',
+                      fontFamily: 'inherit',
+                      outline: 'none',
                       color: '#111827',
                       background: '#FFFFFF',
-                      outline: 'none',
                       transition: 'border 0.2s'
                     }}
+                    required
                   />
-                  <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#00A699', fontSize: '0.85rem' }}>
+                  <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#00A699', fontSize: '0.9rem' }}>
                     Ngày
                   </span>
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                  {DURATION_PRESETS.map(preset => (
-                    <button
-                      key={preset.days}
-                      type="button"
-                      onClick={() => setDays(preset.days)}
-                      style={{
-                        padding: '0.35rem 0.7rem',
-                        borderRadius: '20px',
-                        border: `1.5px solid ${Number(days) === preset.days ? '#00A699' : '#E5E7EB'}`,
-                        background: Number(days) === preset.days ? '#F0FDFA' : '#F9FAFB',
-                        color: Number(days) === preset.days ? '#00A699' : '#374151',
-                        fontWeight: Number(days) === preset.days ? 700 : 500,
-                        cursor: 'pointer',
-                        fontSize: '0.8rem',
-                        transition: 'all 0.15s'
-                      }}
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
               </div>
 
-              {/* 3. Ngân sách dự kiến */}
+              {/* 4. Ngân sách dự kiến */}
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-                  <label style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111827' }}>
-                    3. Tổng ngân sách dự kiến:
-                  </label>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#00A699', background: '#F0FDFA', border: '1px solid #99F6E4', padding: '0.15rem 0.55rem', borderRadius: '12px' }}>
-                    {parseInt(budget || 0, 10).toLocaleString('vi-VN')} VNĐ
-                  </span>
-                </div>
-                <div style={{ position: 'relative', marginBottom: '0.6rem' }}>
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
+                  4. Tổng ngân sách dự kiến:
+                </label>
+                <div style={{ position: 'relative' }}>
                   <input 
                     type="text"
                     value={budget ? Number(budget).toLocaleString('vi-VN') : ''}
@@ -354,68 +316,38 @@ const TravelPlannerPage = () => {
                       setBudget(raw ? parseInt(raw, 10) : '');
                     }}
                     onBlur={() => {
-                      if (!budget || budget < 500000) setBudget(1000000);
+                      if (!budget || budget < 500000) setBudget(5000000);
                     }}
-                    placeholder="Nhập số tiền ngân sách..."
+                    placeholder="Nhập số tiền ngân sách (Ví dụ: 5.000.000...)"
                     style={{
                       width: '100%',
-                      padding: '0.75rem 3.5rem 0.75rem 1rem',
+                      padding: '0.85rem 3.5rem 0.85rem 1rem',
                       borderRadius: '12px',
                       border: '1px solid #D1D5DB',
-                      fontSize: '0.95rem',
-                      fontWeight: 700,
+                      fontSize: '1rem',
+                      fontFamily: 'inherit',
+                      outline: 'none',
                       color: '#111827',
                       background: '#FFFFFF',
-                      outline: 'none',
                       transition: 'border 0.2s'
                     }}
+                    required
                   />
-                  <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#00A699', fontSize: '0.85rem' }}>
+                  <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#00A699', fontSize: '0.9rem' }}>
                     VNĐ
                   </span>
-                </div>
-                <input 
-                  type="range"
-                  min="1000000"
-                  max={Math.max(50000000, Number(budget) || 30000000)}
-                  step="500000"
-                  value={budget || 0}
-                  onChange={(e) => setBudget(parseInt(e.target.value, 10))}
-                  style={{ width: '100%', accentColor: '#00A699', marginBottom: '0.6rem' }}
-                />
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                  {BUDGET_PRESETS.map(b => (
-                    <button
-                      key={b.amount}
-                      type="button"
-                      onClick={() => setBudget(b.amount)}
-                      style={{
-                        background: Number(budget) === b.amount ? '#00A699' : '#F3F4F6',
-                        color: Number(budget) === b.amount ? '#FFFFFF' : '#374151',
-                        border: Number(budget) === b.amount ? '1px solid #00A699' : '1px solid #E5E7EB',
-                        padding: '0.3rem 0.7rem',
-                        borderRadius: '20px',
-                        fontSize: '0.8rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        transition: 'all 0.15s'
-                      }}
-                    >
-                      {b.label}
-                    </button>
-                  ))}
                 </div>
               </div>
 
             </div>
 
-            {/* 4. Đối tượng & Phong cách du lịch */}
+            {/* 5. Đối tượng & 6. Phong cách du lịch */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.75rem', marginBottom: '1.75rem' }}>
               
               {/* Đối tượng */}
               <div>
                 <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  4. Bạn đi cùng ai?
+                  5. Bạn đi cùng ai?
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
                   {GROUP_TYPES.map(g => (
@@ -445,7 +377,7 @@ const TravelPlannerPage = () => {
               {/* Phong cách */}
               <div>
                 <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  5. Phong cách du lịch ưu thích:
+                  6. Phong cách du lịch ưu thích:
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {TRAVEL_STYLES.map(style => {
@@ -480,10 +412,10 @@ const TravelPlannerPage = () => {
 
             </div>
 
-            {/* 6. Yêu cầu chi tiết dạng văn bản */}
+            {/* 7. Yêu cầu chi tiết dạng văn bản */}
             <div style={{ marginBottom: '2rem' }}>
               <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                6. Yêu cầu đặc biệt bổ sung (Ghi chú tự do):
+                7. Yêu cầu đặc biệt bổ sung:
               </label>
               <textarea
                 rows={2}
@@ -717,6 +649,8 @@ const TravelPlannerPage = () => {
               </div>
             </div>
 
+
+
             {/* QUICK STATS CARDS - Bỏ 2 ô "Gợi ý nơi ở" và "Ẩm thực đặc sản", chữ màu đen */}
             <div style={{
               display: 'grid',
@@ -725,9 +659,11 @@ const TravelPlannerPage = () => {
               marginBottom: '2rem'
             }}>
               <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>Điểm đến</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
-                  {planResult.destination}
+                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>
+                  {planResult.startLocation ? 'Lộ trình di chuyển' : 'Điểm đến'}
+                </div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem', wordBreak: 'break-word' }}>
+                  {planResult.startLocation ? `${planResult.startLocation} ➔ ${planResult.destination}` : planResult.destination}
                 </div>
               </div>
 
