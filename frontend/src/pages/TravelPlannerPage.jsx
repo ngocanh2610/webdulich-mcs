@@ -10,20 +10,22 @@ const POPULAR_DESTINATIONS = [
 ];
 
 const DURATION_PRESETS = [
-  { days: 1, label: '1 Ngày' },
   { days: 2, label: '2N1Đ' },
   { days: 3, label: '3N2Đ' },
-  { days: 4, label: '4N3Đ' },
   { days: 5, label: '5N4Đ' },
-  { days: 7, label: '1 Tuần' },
+  { days: 7, label: '1 Tuần (7N)' },
+  { days: 14, label: '2 Tuần (14N)' },
+  { days: 21, label: '3 Tuần (21N)' },
+  { days: 30, label: '1 Tháng (30N)' },
 ];
 
 const BUDGET_PRESETS = [
-  { amount: 2000000, label: '2 Triệu (Tiết kiệm)' },
-  { amount: 5000000, label: '5 Triệu (Phổ thông)' },
-  { amount: 8000000, label: '8 Triệu (Thoải mái)' },
-  { amount: 15000000, label: '15 Triệu (Cao cấp)' },
-  { amount: 25000000, label: '25 Triệu (Nghỉ dưỡng sang trọng)' },
+  { amount: 3000000, label: '3 Triệu' },
+  { amount: 5000000, label: '5 Triệu' },
+  { amount: 10000000, label: '10 Triệu' },
+  { amount: 15000000, label: '15 Triệu' },
+  { amount: 25000000, label: '25 Triệu' },
+  { amount: 50000000, label: '50 Triệu' },
 ];
 
 const TRAVEL_STYLES = [
@@ -266,25 +268,64 @@ const TravelPlannerPage = () => {
 
               {/* 2. Số ngày chuyến đi */}
               <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  2. Thời gian chuyến đi ({days} ngày):
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                  <label style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111827' }}>
+                    2. Thời gian chuyến đi:
+                  </label>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#00A699', background: '#F0FDFA', border: '1px solid #99F6E4', padding: '0.15rem 0.55rem', borderRadius: '12px' }}>
+                    {days ? `${days} ngày` : 'Tùy chọn'} {days > 1 ? `(${days - 1} đêm)` : ''}
+                  </span>
+                </div>
+                <div style={{ position: 'relative', marginBottom: '0.6rem' }}>
+                  <input 
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={days}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === '') {
+                        setDays('');
+                      } else {
+                        setDays(Math.max(1, Math.min(60, parseInt(val, 10))));
+                      }
+                    }}
+                    onBlur={() => {
+                      if (!days || days < 1) setDays(3);
+                    }}
+                    placeholder="Nhập số ngày (VD: 7, 14, 21, 30...)"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 3.5rem 0.75rem 1rem',
+                      borderRadius: '12px',
+                      border: '1px solid #D1D5DB',
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      color: '#111827',
+                      background: '#FFFFFF',
+                      outline: 'none',
+                      transition: 'border 0.2s'
+                    }}
+                  />
+                  <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#00A699', fontSize: '0.85rem' }}>
+                    Ngày
+                  </span>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                   {DURATION_PRESETS.map(preset => (
                     <button
                       key={preset.days}
                       type="button"
                       onClick={() => setDays(preset.days)}
                       style={{
-                        padding: '0.75rem 0.5rem',
-                        borderRadius: '12px',
-                        border: `2px solid ${days === preset.days ? '#00A699' : '#E5E7EB'}`,
-                        background: days === preset.days ? '#F0FDFA' : '#FFFFFF',
-                        color: days === preset.days ? '#00A699' : '#111827',
-                        fontWeight: days === preset.days ? 700 : 500,
+                        padding: '0.35rem 0.7rem',
+                        borderRadius: '20px',
+                        border: `1.5px solid ${Number(days) === preset.days ? '#00A699' : '#E5E7EB'}`,
+                        background: Number(days) === preset.days ? '#F0FDFA' : '#F9FAFB',
+                        color: Number(days) === preset.days ? '#00A699' : '#374151',
+                        fontWeight: Number(days) === preset.days ? 700 : 500,
                         cursor: 'pointer',
-                        textAlign: 'center',
-                        fontSize: '0.9rem',
+                        fontSize: '0.8rem',
                         transition: 'all 0.15s'
                       }}
                     >
@@ -296,17 +337,51 @@ const TravelPlannerPage = () => {
 
               {/* 3. Ngân sách dự kiến */}
               <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  3. Tổng ngân sách dự kiến ({parseInt(budget, 10).toLocaleString('vi-VN')} VNĐ):
-                </label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                  <label style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111827' }}>
+                    3. Tổng ngân sách dự kiến:
+                  </label>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#00A699', background: '#F0FDFA', border: '1px solid #99F6E4', padding: '0.15rem 0.55rem', borderRadius: '12px' }}>
+                    {parseInt(budget || 0, 10).toLocaleString('vi-VN')} VNĐ
+                  </span>
+                </div>
+                <div style={{ position: 'relative', marginBottom: '0.6rem' }}>
+                  <input 
+                    type="text"
+                    value={budget ? Number(budget).toLocaleString('vi-VN') : ''}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/\D/g, '');
+                      setBudget(raw ? parseInt(raw, 10) : '');
+                    }}
+                    onBlur={() => {
+                      if (!budget || budget < 500000) setBudget(1000000);
+                    }}
+                    placeholder="Nhập số tiền ngân sách..."
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 3.5rem 0.75rem 1rem',
+                      borderRadius: '12px',
+                      border: '1px solid #D1D5DB',
+                      fontSize: '0.95rem',
+                      fontWeight: 700,
+                      color: '#111827',
+                      background: '#FFFFFF',
+                      outline: 'none',
+                      transition: 'border 0.2s'
+                    }}
+                  />
+                  <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#00A699', fontSize: '0.85rem' }}>
+                    VNĐ
+                  </span>
+                </div>
                 <input 
                   type="range"
                   min="1000000"
-                  max="30000000"
+                  max={Math.max(50000000, Number(budget) || 30000000)}
                   step="500000"
-                  value={budget}
+                  value={budget || 0}
                   onChange={(e) => setBudget(parseInt(e.target.value, 10))}
-                  style={{ width: '100%', accentColor: '#00A699', marginBottom: '0.5rem' }}
+                  style={{ width: '100%', accentColor: '#00A699', marginBottom: '0.6rem' }}
                 />
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                   {BUDGET_PRESETS.map(b => (
@@ -315,10 +390,10 @@ const TravelPlannerPage = () => {
                       type="button"
                       onClick={() => setBudget(b.amount)}
                       style={{
-                        background: budget === b.amount ? '#00A699' : '#F3F4F6',
-                        color: budget === b.amount ? '#FFFFFF' : '#374151',
-                        border: budget === b.amount ? '1px solid #00A699' : '1px solid #E5E7EB',
-                        padding: '0.3rem 0.75rem',
+                        background: Number(budget) === b.amount ? '#00A699' : '#F3F4F6',
+                        color: Number(budget) === b.amount ? '#FFFFFF' : '#374151',
+                        border: Number(budget) === b.amount ? '1px solid #00A699' : '1px solid #E5E7EB',
+                        padding: '0.3rem 0.7rem',
                         borderRadius: '20px',
                         fontSize: '0.8rem',
                         fontWeight: 600,
