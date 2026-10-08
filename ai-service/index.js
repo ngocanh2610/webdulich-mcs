@@ -515,7 +515,7 @@ function stripVietnamese(str) {
 function generateLocalItinerary(destination, days, budget, travelStyle, groupType, specialRequests) {
   const cleanDest = (destination || 'Đà Nẵng').trim();
   const searchDest = stripVietnamese(cleanDest);
-  const numDays = Math.max(1, Math.min(parseInt(days, 10) || 3, 7));
+  const numDays = Math.max(1, Math.min(parseInt(days, 10) || 3, 30));
   const rawBudget = parseInt((budget || '5000000').toString().replace(/\D/g, ''), 10) || 5000000;
   
   // Tìm dữ liệu điểm đến khớp không phân biệt dấu
