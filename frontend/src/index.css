@@ -85,9 +85,111 @@ a:hover {
 }
 
 .glass-nav {
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-light);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
+}
+
+/* Navbar Layout & Utilities */
+.nav-inner-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  gap: 1rem;
+}
+
+.nav-link-item {
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.925rem;
+  text-decoration: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-link-item:hover {
+  color: var(--accent-primary);
+  background: rgba(255, 56, 92, 0.06);
+}
+
+.nav-link-item.active {
+  color: var(--accent-primary);
+  background: rgba(255, 56, 92, 0.1);
+  font-weight: 700;
+}
+
+.nav-desktop-center {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.nav-desktop-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.nav-mobile-toggle-btn {
+  display: none;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  color: #374151;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.nav-mobile-toggle-btn:hover {
+  background: #E5E7EB;
+}
+
+@media (max-width: 1080px) {
+  .nav-desktop-center {
+    display: none !important;
+  }
+  .nav-mobile-toggle-btn {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-inner-container {
+    padding: 0 1rem;
+  }
+  .nav-mode-badge-full {
+    display: none !important;
+  }
+  .nav-mode-badge-compact {
+    display: inline-flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .nav-mode-badge-compact {
+    display: none !important;
+  }
 }
 
 /* Custom Scrollbar */

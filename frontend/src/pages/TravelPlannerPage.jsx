@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Sparkles, Calendar, DollarSign, MapPin, Users, Compass, 
-  Utensils, Hotel, CheckCircle2, ArrowRight, Printer, Copy, 
-  RotateCcw, Info, Sun, Moon, Sunrise, AlertCircle, Share2,
-  Check, Heart, Luggage, Navigation, Search, ExternalLink, 
-  Star, Tag, Filter
+  Printer, Copy, RotateCcw, AlertCircle, Check, Navigation, Search, ExternalLink
 } from 'lucide-react';
 
 const POPULAR_DESTINATIONS = [
@@ -31,20 +27,20 @@ const BUDGET_PRESETS = [
 ];
 
 const TRAVEL_STYLES = [
-  { id: 'beach', label: '🏖️ Biển đảo & Bơi lội' },
-  { id: 'photo', label: '📸 Check-in & Sống ảo' },
-  { id: 'food', label: '🍜 Ẩm thực & Food tour' },
-  { id: 'nature', label: '🏔️ Khám phá thiên nhiên' },
-  { id: 'culture', label: '🏛️ Văn hóa & Lịch sử' },
-  { id: 'resort', label: '💆 Nghỉ dưỡng thư thái' },
-  { id: 'adventure', label: '🎒 Phượt mạo hiểm' },
+  { id: 'beach', label: 'Biển đảo & Bơi lội' },
+  { id: 'photo', label: 'Check-in & Sống ảo' },
+  { id: 'food', label: 'Ẩm thực & Food tour' },
+  { id: 'nature', label: 'Khám phá thiên nhiên' },
+  { id: 'culture', label: 'Văn hóa & Lịch sử' },
+  { id: 'resort', label: 'Nghỉ dưỡng thư thái' },
+  { id: 'adventure', label: 'Phượt mạo hiểm' },
 ];
 
 const GROUP_TYPES = [
-  { id: 'solo', label: '👤 Đi 1 mình (Solo)', desc: 'Tự do trải nghiệm theo cách riêng' },
-  { id: 'couple', label: '💑 Cặp đôi (Couples)', desc: 'Lãng mạn, riêng tư và nhẹ nhàng' },
-  { id: 'friends', label: '👥 Nhóm bạn (Friends)', desc: 'Sôi động, nhiều hoạt động vui nhộn' },
-  { id: 'family', label: '👨‍👩‍👧‍👦 Gia đình (Family)', desc: 'Tiện nghi, an toàn cho người già & trẻ nhỏ' },
+  { id: 'solo', label: 'Đi 1 mình (Solo)', desc: 'Tự do trải nghiệm theo cách riêng' },
+  { id: 'couple', label: 'Cặp đôi (Couples)', desc: 'Lãng mạn, riêng tư và nhẹ nhàng' },
+  { id: 'friends', label: 'Nhóm bạn (Friends)', desc: 'Sôi động, nhiều hoạt động vui nhộn' },
+  { id: 'family', label: 'Gia đình (Family)', desc: 'Tiện nghi, an toàn cho người già & trẻ nhỏ' },
 ];
 
 const TravelPlannerPage = () => {
@@ -52,8 +48,8 @@ const TravelPlannerPage = () => {
   const [destination, setDestination] = useState('Đà Nẵng');
   const [days, setDays] = useState(3);
   const [budget, setBudget] = useState(6000000);
-  const [selectedStyles, setSelectedStyles] = useState(['🏖️ Biển đảo & Bơi lội', '🍜 Ẩm thực & Food tour']);
-  const [groupType, setGroupType] = useState('💑 Cặp đôi (Couples)');
+  const [selectedStyles, setSelectedStyles] = useState(['Biển đảo & Bơi lội', 'Ẩm thực & Food tour']);
+  const [groupType, setGroupType] = useState('Cặp đôi (Couples)');
   const [specialRequests, setSpecialRequests] = useState('Thích ăn hải sản tươi sống gần biển, ngắm hoàng hôn, ưu tiên di chuyển xe máy linh hoạt.');
 
   // App Execution States
@@ -134,15 +130,15 @@ const TravelPlannerPage = () => {
 
   const handleCopyItinerary = () => {
     if (!planResult) return;
-    let text = `🌟 KẾ HOẠCH DU LỊCH: ${planResult.title}\n`;
-    text += `📍 Điểm đến: ${planResult.destination} | ⏱️ Thời gian: ${planResult.days} ngày | 💰 Ngân sách: ${planResult.budget?.toLocaleString('vi-VN')} VNĐ\n`;
-    text += `📝 Giới thiệu: ${planResult.summary}\n\n`;
+    let text = `KẾ HOẠCH DU LỊCH: ${planResult.title}\n`;
+    text += `Điểm đến: ${planResult.destination} | Thời gian: ${planResult.days} ngày | Ngân sách: ${planResult.budget?.toLocaleString('vi-VN')} VNĐ\n`;
+    text += `Giới thiệu: ${planResult.summary}\n\n`;
     
     planResult.dailyItinerary?.forEach(day => {
-      text += `📅 ${day.title}\n`;
-      text += `  🌅 Sáng: ${day.morning?.activity} (Ăn: ${day.morning?.food})\n`;
-      text += `  ☀️ Chiều: ${day.afternoon?.activity} (Ăn: ${day.afternoon?.food})\n`;
-      text += `  🌙 Tối: ${day.evening?.activity} (Ăn: ${day.evening?.food})\n\n`;
+      text += `${day.title}\n`;
+      text += `  Sáng: ${day.morning?.activity} (Ăn: ${day.morning?.food})\n`;
+      text += `  Chiều: ${day.afternoon?.activity} (Ăn: ${day.afternoon?.food})\n`;
+      text += `  Tối: ${day.evening?.activity} (Ăn: ${day.evening?.food})\n\n`;
     });
 
     navigator.clipboard.writeText(text);
@@ -162,10 +158,10 @@ const TravelPlannerPage = () => {
         <div style={{
           textAlign: 'center',
           padding: '2.5rem 1.5rem',
-          background: 'linear-gradient(135deg, #FFF1F2 0%, #FFFFFF 50%, #F0FDF4 100%)',
+          background: '#F9FAFB',
           borderRadius: '24px',
-          border: '1px solid var(--border-light)',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.04)',
+          border: '1px solid #E5E7EB',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
           marginBottom: '2rem',
           position: 'relative',
           overflow: 'hidden'
@@ -173,49 +169,48 @@ const TravelPlannerPage = () => {
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '0.5rem',
-            background: 'rgba(255, 56, 92, 0.1)',
-            color: 'var(--accent-primary)',
+            background: '#F0FDFA',
+            color: '#00A699',
             padding: '0.4rem 1rem',
-            borderRadius: '30px',
+            borderRadius: '20px',
             fontSize: '0.85rem',
             fontWeight: 700,
             marginBottom: '1rem',
+            border: '1px solid #99F6E4',
             letterSpacing: '0.5px'
           }}>
-            <Sparkles size={16} />
-            HỆ THỐNG GỢI Ý DU LỊCH AI • NLP & RECOMMENDATION ENGINE
+            GỢI Ý LỊCH TRÌNH DU LỊCH THÔNG MINH
           </div>
 
           <h1 style={{
             fontSize: '2.4rem',
             fontWeight: 800,
             fontFamily: 'var(--font-heading)',
-            color: 'var(--text-primary)',
+            color: '#111827',
             lineHeight: 1.25,
             marginBottom: '0.75rem'
           }}>
-            Lập Kế Hoạch Du Lịch Thông Minh <span style={{ color: 'var(--accent-primary)' }}>Theo Nhu Cầu</span>
+            Lập Kế Hoạch Du Lịch Thông Minh Theo Nhu Cầu
           </h1>
 
           <p style={{
-            color: 'var(--text-secondary)',
+            color: '#4B5563',
             fontSize: '1.05rem',
             maxWidth: '780px',
             margin: '0 auto',
             lineHeight: 1.6
           }}>
-            Nhập số ngày đi, ngân sách dự tính và sở thích của bạn — Trợ lý AI sẽ tính toán, tối ưu cung đường và sinh ra lịch trình hoàn chỉnh: <strong>chơi gì, ở đâu, ăn gì</strong> với bảng dự toán chi phí chi tiết nhất.
+            Nhập số ngày đi, ngân sách dự tính và sở thích của bạn — Trợ lý sẽ tính toán, tối ưu cung đường và sinh ra lịch trình hoàn chỉnh: <strong>chơi gì, ở đâu, ăn gì</strong> với bảng dự toán chi phí chi tiết.
           </p>
         </div>
 
         {/* INPUT PLANNING FORM */}
         <div style={{
-          background: 'var(--bg-card)',
+          background: '#FFFFFF',
           borderRadius: '20px',
           padding: '2rem',
-          border: '1px solid var(--border-light)',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.04)',
+          border: '1px solid #E5E7EB',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
           marginBottom: '2.5rem'
         }}>
           <form onSubmit={handleGeneratePlan}>
@@ -223,8 +218,7 @@ const TravelPlannerPage = () => {
               
               {/* 1. Điểm đến */}
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: 'var(--text-primary)' }}>
-                  <MapPin size={18} color="var(--accent-primary)" />
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
                   1. Điểm đến mong muốn:
                 </label>
                 <input 
@@ -236,10 +230,12 @@ const TravelPlannerPage = () => {
                     width: '100%',
                     padding: '0.85rem 1rem',
                     borderRadius: '12px',
-                    border: '1px solid var(--border-strong)',
+                    border: '1px solid #D1D5DB',
                     fontSize: '1rem',
                     fontFamily: 'inherit',
                     outline: 'none',
+                    color: '#111827',
+                    background: '#FFFFFF',
                     transition: 'border 0.2s'
                   }}
                   required
@@ -251,12 +247,13 @@ const TravelPlannerPage = () => {
                       type="button"
                       onClick={() => setDestination(dest)}
                       style={{
-                        background: destination === dest ? 'var(--accent-primary)' : 'var(--bg-secondary)',
-                        color: destination === dest ? '#fff' : 'var(--text-secondary)',
-                        border: 'none',
-                        padding: '0.25rem 0.65rem',
+                        background: destination === dest ? '#00A699' : '#F3F4F6',
+                        color: destination === dest ? '#FFFFFF' : '#374151',
+                        border: destination === dest ? '1px solid #00A699' : '1px solid #E5E7EB',
+                        padding: '0.3rem 0.75rem',
                         borderRadius: '20px',
                         fontSize: '0.8rem',
+                        fontWeight: 600,
                         cursor: 'pointer',
                         transition: 'all 0.15s'
                       }}
@@ -269,8 +266,7 @@ const TravelPlannerPage = () => {
 
               {/* 2. Số ngày chuyến đi */}
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: 'var(--text-primary)' }}>
-                  <Calendar size={18} color="var(--accent-primary)" />
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
                   2. Thời gian chuyến đi ({days} ngày):
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
@@ -282,9 +278,9 @@ const TravelPlannerPage = () => {
                       style={{
                         padding: '0.75rem 0.5rem',
                         borderRadius: '12px',
-                        border: `2px solid ${days === preset.days ? 'var(--accent-primary)' : 'var(--border-light)'}`,
-                        background: days === preset.days ? 'rgba(255, 56, 92, 0.06)' : 'var(--bg-card)',
-                        color: days === preset.days ? 'var(--accent-primary)' : 'var(--text-primary)',
+                        border: `2px solid ${days === preset.days ? '#00A699' : '#E5E7EB'}`,
+                        background: days === preset.days ? '#F0FDFA' : '#FFFFFF',
+                        color: days === preset.days ? '#00A699' : '#111827',
                         fontWeight: days === preset.days ? 700 : 500,
                         cursor: 'pointer',
                         textAlign: 'center',
@@ -300,8 +296,7 @@ const TravelPlannerPage = () => {
 
               {/* 3. Ngân sách dự kiến */}
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: 'var(--text-primary)' }}>
-                  <DollarSign size={18} color="var(--accent-primary)" />
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
                   3. Tổng ngân sách dự kiến ({parseInt(budget, 10).toLocaleString('vi-VN')} VNĐ):
                 </label>
                 <input 
@@ -311,7 +306,7 @@ const TravelPlannerPage = () => {
                   step="500000"
                   value={budget}
                   onChange={(e) => setBudget(parseInt(e.target.value, 10))}
-                  style={{ width: '100%', accentColor: 'var(--accent-primary)', marginBottom: '0.5rem' }}
+                  style={{ width: '100%', accentColor: '#00A699', marginBottom: '0.5rem' }}
                 />
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                   {BUDGET_PRESETS.map(b => (
@@ -320,12 +315,13 @@ const TravelPlannerPage = () => {
                       type="button"
                       onClick={() => setBudget(b.amount)}
                       style={{
-                        background: budget === b.amount ? 'var(--accent-primary)' : 'var(--bg-secondary)',
-                        color: budget === b.amount ? '#fff' : 'var(--text-secondary)',
-                        border: 'none',
-                        padding: '0.25rem 0.65rem',
+                        background: budget === b.amount ? '#00A699' : '#F3F4F6',
+                        color: budget === b.amount ? '#FFFFFF' : '#374151',
+                        border: budget === b.amount ? '1px solid #00A699' : '1px solid #E5E7EB',
+                        padding: '0.3rem 0.75rem',
                         borderRadius: '20px',
                         fontSize: '0.8rem',
+                        fontWeight: 600,
                         cursor: 'pointer',
                         transition: 'all 0.15s'
                       }}
@@ -343,8 +339,7 @@ const TravelPlannerPage = () => {
               
               {/* Đối tượng */}
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: 'var(--text-primary)' }}>
-                  <Users size={18} color="var(--accent-primary)" />
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
                   4. Bạn đi cùng ai?
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
@@ -355,16 +350,16 @@ const TravelPlannerPage = () => {
                       style={{
                         padding: '0.85rem',
                         borderRadius: '12px',
-                        border: `2px solid ${groupType === g.label ? 'var(--accent-primary)' : 'var(--border-light)'}`,
-                        background: groupType === g.label ? 'rgba(255, 56, 92, 0.05)' : 'var(--bg-secondary)',
+                        border: `2px solid ${groupType === g.label ? '#00A699' : '#E5E7EB'}`,
+                        background: groupType === g.label ? '#F0FDFA' : '#FFFFFF',
                         cursor: 'pointer',
                         transition: 'all 0.15s'
                       }}
                     >
-                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: groupType === g.label ? 'var(--accent-primary)' : 'var(--text-primary)' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: groupType === g.label ? '#00A699' : '#111827' }}>
                         {g.label}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#4B5563', marginTop: '2px' }}>
                         {g.desc}
                       </div>
                     </div>
@@ -374,8 +369,7 @@ const TravelPlannerPage = () => {
 
               {/* Phong cách */}
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: 'var(--text-primary)' }}>
-                  <Compass size={18} color="var(--accent-primary)" />
+                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
                   5. Phong cách du lịch ưu thích:
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -387,15 +381,15 @@ const TravelPlannerPage = () => {
                         type="button"
                         onClick={() => toggleStyle(style.label)}
                         style={{
-                          padding: '0.55rem 0.9rem',
+                          padding: '0.55rem 0.95rem',
                           borderRadius: '25px',
-                          border: `1px solid ${isSelected ? 'var(--accent-primary)' : 'var(--border-strong)'}`,
-                          background: isSelected ? 'var(--accent-primary)' : 'var(--bg-card)',
-                          color: isSelected ? '#fff' : 'var(--text-primary)',
+                          border: `1px solid ${isSelected ? '#00A699' : '#E5E7EB'}`,
+                          background: isSelected ? '#00A699' : '#F9FAFB',
+                          color: isSelected ? '#FFFFFF' : '#374151',
                           fontWeight: isSelected ? 600 : 500,
                           fontSize: '0.85rem',
                           cursor: 'pointer',
-                          display: 'flex',
+                          display: 'inline-flex',
                           alignItems: 'center',
                           gap: '0.35rem',
                           transition: 'all 0.15s'
@@ -411,11 +405,10 @@ const TravelPlannerPage = () => {
 
             </div>
 
-            {/* 6. Yêu cầu chi tiết dạng văn bản (NLP Prompt) */}
+            {/* 6. Yêu cầu chi tiết dạng văn bản */}
             <div style={{ marginBottom: '2rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: 'var(--text-primary)' }}>
-                <Info size={18} color="var(--accent-primary)" />
-                6. Yêu cầu đặc biệt bổ sung (Ngôn ngữ tự nhiên NLP):
+              <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
+                6. Yêu cầu đặc biệt bổ sung (Ghi chú tự do):
               </label>
               <textarea
                 rows={2}
@@ -426,10 +419,12 @@ const TravelPlannerPage = () => {
                   width: '100%',
                   padding: '0.85rem 1rem',
                   borderRadius: '12px',
-                  border: '1px solid var(--border-strong)',
+                  border: '1px solid #D1D5DB',
                   fontSize: '0.95rem',
                   fontFamily: 'inherit',
                   outline: 'none',
+                  color: '#111827',
+                  background: '#FFFFFF',
                   resize: 'vertical'
                 }}
               />
@@ -459,25 +454,35 @@ const TravelPlannerPage = () => {
                 type="submit"
                 disabled={loading}
                 style={{
-                  background: 'var(--accent-gradient)',
-                  color: 'white',
+                  background: 'linear-gradient(135deg, #00A699 0%, #008489 100%)',
+                  color: '#FFFFFF',
                   border: 'none',
                   padding: '1rem 3rem',
                   borderRadius: '35px',
-                  fontSize: '1.15rem',
+                  fontSize: '1.1rem',
                   fontWeight: 700,
                   cursor: loading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 8px 24px rgba(255, 56, 92, 0.35)',
+                  boxShadow: '0 6px 20px rgba(0, 166, 153, 0.35)',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.75rem',
                   transition: 'all 0.2s',
                   transform: loading ? 'scale(0.98)' : 'scale(1)'
                 }}
+                onMouseEnter={e => { 
+                  if (!loading) {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 166, 153, 0.45)';
+                  }
+                }}
+                onMouseLeave={e => { 
+                  if (!loading) {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 166, 153, 0.35)';
+                  }
+                }}
               >
-                <Sparkles size={22} />
-                <span>{loading ? 'AI Đang Lập Kế Hoạch...' : 'Khởi Tạo Kế Hoạch Du Lịch Bằng AI'}</span>
-                {!loading && <ArrowRight size={20} />}
+                <span>{loading ? 'Hệ Thống Đang Lập Kế Hoạch...' : 'Khởi Tạo Kế Hoạch Du Lịch'}</span>
               </button>
             </div>
           </form>
@@ -488,15 +493,15 @@ const TravelPlannerPage = () => {
               marginTop: '2.5rem',
               padding: '2rem',
               borderRadius: '16px',
-              background: 'linear-gradient(135deg, #F9FAFB, #F3F4F6)',
-              border: '1px dashed var(--accent-primary)',
+              background: '#F0FDFA',
+              border: '1px dashed #5EEAD4',
               textAlign: 'center'
             }}>
               <div style={{
-                width: '50px',
-                height: '50px',
-                border: '4px solid rgba(255, 56, 92, 0.2)',
-                borderTopColor: 'var(--accent-primary)',
+                width: '45px',
+                height: '45px',
+                border: '3px solid #CCFBF1',
+                borderTopColor: '#00A699',
                 borderRadius: '50%',
                 margin: '0 auto 1.25rem',
                 animation: 'spin 0.8s linear infinite'
@@ -504,13 +509,13 @@ const TravelPlannerPage = () => {
               <style>{`
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
               `}</style>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
-                {loadingStep === 1 && '🔍 Đang phân tích yêu cầu NLP & đặc điểm điểm đến...'}
-                {loadingStep === 2 && '🧭 Đang tính toán ma trận chi phí & tối ưu khoảng cách...'}
-                {loadingStep === 3 && '🏨 Đang chọn lọc gợi ý lưu trú & món ăn đặc sản...'}
-                {loadingStep >= 4 && '✨ Đang hoàn thiện lịch trình du lịch chi tiết cho bạn...'}
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0F766E' }}>
+                {loadingStep === 1 && 'Đang phân tích yêu cầu & đặc điểm điểm đến...'}
+                {loadingStep === 2 && 'Đang tính toán ngân sách & tối ưu khoảng cách...'}
+                {loadingStep === 3 && 'Đang chọn lọc nơi lưu trú & món ăn đặc sản...'}
+                {loadingStep >= 4 && 'Đang hoàn thiện lịch trình du lịch chi tiết cho bạn...'}
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+              <p style={{ color: '#0D9488', fontSize: '0.9rem' }}>
                 Hệ thống đang đối sánh sở thích với hàng trăm địa điểm du lịch thực tế tại {destination}...
               </p>
             </div>
@@ -520,10 +525,10 @@ const TravelPlannerPage = () => {
         {/* RESULTS SECTION */}
         {planResult && (
           <div id="itinerary-results" style={{
-            background: 'var(--bg-card)',
+            background: '#FFFFFF',
             borderRadius: '24px',
-            border: '1px solid var(--border-light)',
-            boxShadow: '0 12px 36px rgba(0,0,0,0.06)',
+            border: '1px solid #E5E7EB',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
             padding: '2.5rem',
             marginBottom: '3rem'
           }}>
@@ -536,29 +541,28 @@ const TravelPlannerPage = () => {
               alignItems: 'flex-start',
               gap: '1.5rem',
               paddingBottom: '2rem',
-              borderBottom: '1px solid var(--border-light)',
+              borderBottom: '1px solid #E5E7EB',
               marginBottom: '2rem'
             }}>
               <div>
                 <div style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.4rem',
-                  background: 'rgba(16, 185, 129, 0.1)',
-                  color: '#059669',
+                  background: '#F0FDFA',
+                  color: '#00A699',
+                  border: '1px solid #99F6E4',
                   padding: '0.35rem 0.85rem',
                   borderRadius: '20px',
                   fontSize: '0.85rem',
                   fontWeight: 700,
                   marginBottom: '0.75rem'
                 }}>
-                  <CheckCircle2 size={16} />
                   KẾ HOẠCH ĐÃ HOÀN TẤT VÀ TỐI ƯU HOÁ
                 </div>
-                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.5rem', fontFamily: 'var(--font-heading)' }}>
+                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem', fontFamily: 'var(--font-heading)' }}>
                   {planResult.title}
                 </h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: '780px', lineHeight: 1.6 }}>
+                <p style={{ color: '#4B5563', fontSize: '1.05rem', maxWidth: '780px', lineHeight: 1.6 }}>
                   {planResult.summary}
                 </p>
               </div>
@@ -572,9 +576,9 @@ const TravelPlannerPage = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.4rem',
-                    background: 'var(--bg-secondary)',
-                    color: 'var(--text-primary)',
-                    border: '1px solid var(--border-strong)',
+                    background: '#FFFFFF',
+                    color: '#111827',
+                    border: '1px solid #D1D5DB',
                     padding: '0.65rem 1.1rem',
                     borderRadius: '12px',
                     fontWeight: 600,
@@ -583,7 +587,7 @@ const TravelPlannerPage = () => {
                     transition: 'all 0.15s'
                   }}
                 >
-                  {copied ? <Check size={16} color="#059669" /> : <Copy size={16} />}
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
                   <span>{copied ? 'Đã sao chép!' : 'Sao chép'}</span>
                 </button>
 
@@ -594,9 +598,9 @@ const TravelPlannerPage = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.4rem',
-                    background: 'var(--bg-secondary)',
-                    color: 'var(--text-primary)',
-                    border: '1px solid var(--border-strong)',
+                    background: '#FFFFFF',
+                    color: '#111827',
+                    border: '1px solid #D1D5DB',
                     padding: '0.65rem 1.1rem',
                     borderRadius: '12px',
                     fontWeight: 600,
@@ -619,9 +623,9 @@ const TravelPlannerPage = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.4rem',
-                    background: 'rgba(255, 56, 92, 0.1)',
-                    color: 'var(--accent-primary)',
-                    border: '1px solid rgba(255, 56, 92, 0.2)',
+                    background: '#F0FDFA',
+                    color: '#00A699',
+                    border: '1px solid #99F6E4',
                     padding: '0.65rem 1.1rem',
                     borderRadius: '12px',
                     fontWeight: 600,
@@ -629,6 +633,8 @@ const TravelPlannerPage = () => {
                     cursor: 'pointer',
                     transition: 'all 0.15s'
                   }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#CCFBF1'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#F0FDFA'}
                 >
                   <RotateCcw size={16} />
                   <span>Đổi tiêu chí</span>
@@ -636,63 +642,37 @@ const TravelPlannerPage = () => {
               </div>
             </div>
 
-            {/* QUICK STATS CARDS */}
+            {/* QUICK STATS CARDS - Bỏ 2 ô "Gợi ý nơi ở" và "Ẩm thực đặc sản", chữ màu đen */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
               gap: '1rem',
               marginBottom: '2rem'
             }}>
-              <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <MapPin size={16} color="var(--accent-primary)" /> Điểm đến
-                </div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.4rem' }}>
+              <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>Điểm đến</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
                   {planResult.destination}
                 </div>
               </div>
 
-              <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Calendar size={16} color="#3B82F6" /> Thời lượng
-                </div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.4rem' }}>
+              <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>Thời lượng</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
                   {planResult.days} Ngày ({planResult.days > 1 ? `${planResult.days - 1} Đêm` : 'Trong ngày'})
                 </div>
               </div>
 
-              <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <DollarSign size={16} color="#10B981" /> Tổng ngân sách
-                </div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#059669', marginTop: '0.4rem' }}>
+              <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>Tổng ngân sách</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
                   {planResult.budget?.toLocaleString('vi-VN')} đ
                 </div>
               </div>
 
-              <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Hotel size={16} color="#8B5CF6" /> Gợi ý nơi ở
-                </div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#7C3AED', marginTop: '0.4rem' }}>
-                  {planResult.accommodations?.length || 0} địa điểm
-                </div>
-              </div>
-
-              <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Utensils size={16} color="#EA580C" /> Ẩm thực đặc sản
-                </div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#EA580C', marginTop: '0.4rem' }}>
-                  {planResult.culinary?.length || 0} món nổi tiếng
-                </div>
-              </div>
-
-              <div style={{ background: 'var(--bg-secondary)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Users size={16} color="#3B82F6" /> Đối tượng
-                </div>
-                <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.4rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>Đối tượng</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#111827', marginTop: '0.4rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {planResult.groupType || groupType}
                 </div>
               </div>
@@ -702,125 +682,38 @@ const TravelPlannerPage = () => {
             <div style={{
               display: 'flex',
               gap: '0.5rem',
-              borderBottom: '2px solid var(--border-light)',
+              borderBottom: '2px solid #E5E7EB',
               marginBottom: '2rem',
               overflowX: 'auto',
               paddingBottom: '2px'
             }}>
-              <button
-                type="button"
-                onClick={() => setActiveTab('timeline')}
-                style={{
-                  padding: '0.85rem 1.5rem',
-                  border: 'none',
-                  borderBottom: activeTab === 'timeline' ? '3px solid var(--accent-primary)' : '3px solid transparent',
-                  background: 'none',
-                  color: activeTab === 'timeline' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                  fontWeight: activeTab === 'timeline' ? 700 : 500,
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s'
-                }}
-              >
-                <Calendar size={18} />
-                Lịch Trình Từng Ngày ({planResult.dailyItinerary?.length || 0})
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('stay')}
-                style={{
-                  padding: '0.85rem 1.5rem',
-                  border: 'none',
-                  borderBottom: activeTab === 'stay' ? '3px solid var(--accent-primary)' : '3px solid transparent',
-                  background: 'none',
-                  color: activeTab === 'stay' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                  fontWeight: activeTab === 'stay' ? 700 : 500,
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s'
-                }}
-              >
-                <Hotel size={18} />
-                Ở Đâu ({planResult.accommodations?.length || 0} nơi lưu trú)
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('food')}
-                style={{
-                  padding: '0.85rem 1.5rem',
-                  border: 'none',
-                  borderBottom: activeTab === 'food' ? '3px solid var(--accent-primary)' : '3px solid transparent',
-                  background: 'none',
-                  color: activeTab === 'food' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                  fontWeight: activeTab === 'food' ? 700 : 500,
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s'
-                }}
-              >
-                <Utensils size={18} />
-                Ăn Gì ({planResult.culinary?.length || 0} món đặc sản)
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('budget')}
-                style={{
-                  padding: '0.85rem 1.5rem',
-                  border: 'none',
-                  borderBottom: activeTab === 'budget' ? '3px solid var(--accent-primary)' : '3px solid transparent',
-                  background: 'none',
-                  color: activeTab === 'budget' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                  fontWeight: activeTab === 'budget' ? 700 : 500,
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s'
-                }}
-              >
-                <DollarSign size={18} />
-                Dự Toán Chi Phí Chi Tiết
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('tips')}
-                style={{
-                  padding: '0.85rem 1.5rem',
-                  border: 'none',
-                  borderBottom: activeTab === 'tips' ? '3px solid var(--accent-primary)' : '3px solid transparent',
-                  background: 'none',
-                  color: activeTab === 'tips' ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                  fontWeight: activeTab === 'tips' ? 700 : 500,
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s'
-                }}
-              >
-                <Luggage size={18} />
-                Mẹo & Cẩm Nang
-              </button>
+              {[
+                { id: 'timeline', label: `Lịch Trình Từng Ngày (${planResult.dailyItinerary?.length || 0})` },
+                { id: 'stay', label: `Ở Đâu (${planResult.accommodations?.length || 0})` },
+                { id: 'food', label: `Ăn Gì (${planResult.culinary?.length || 0})` },
+                { id: 'budget', label: 'Dự Toán Chi Phí' },
+                { id: 'tips', label: 'Mẹo & Cẩm Nang' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  style={{
+                    padding: '0.85rem 1.5rem',
+                    border: 'none',
+                    borderBottom: activeTab === tab.id ? '3px solid #00A699' : '3px solid transparent',
+                    background: 'none',
+                    color: activeTab === tab.id ? '#00A699' : '#6B7280',
+                    fontWeight: activeTab === tab.id ? 700 : 500,
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.15s'
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
             {/* TAB CONTENT 1: TIMELINE LỊCH TRÌNH */}
@@ -836,12 +729,13 @@ const TravelPlannerPage = () => {
                       style={{
                         padding: '0.65rem 1.25rem',
                         borderRadius: '12px',
-                        border: 'none',
-                        background: activeDay === d.day ? 'var(--accent-primary)' : 'var(--bg-secondary)',
-                        color: activeDay === d.day ? '#fff' : 'var(--text-primary)',
+                        border: activeDay === d.day ? '1px solid #00A699' : '1px solid #E5E7EB',
+                        background: activeDay === d.day ? '#00A699' : '#FFFFFF',
+                        color: activeDay === d.day ? '#FFFFFF' : '#111827',
                         fontWeight: activeDay === d.day ? 700 : 600,
                         fontSize: '0.95rem',
                         cursor: 'pointer',
+                        boxShadow: activeDay === d.day ? '0 4px 12px rgba(0, 166, 153, 0.25)' : 'none',
                         transition: 'all 0.15s'
                       }}
                     >
@@ -854,12 +748,13 @@ const TravelPlannerPage = () => {
                     style={{
                       padding: '0.65rem 1.25rem',
                       borderRadius: '12px',
-                      border: 'none',
-                      background: activeDay === 'all' ? '#1F2937' : 'var(--bg-secondary)',
-                      color: activeDay === 'all' ? '#fff' : 'var(--text-primary)',
+                      border: activeDay === 'all' ? '1px solid #00A699' : '1px solid #E5E7EB',
+                      background: activeDay === 'all' ? '#00A699' : '#FFFFFF',
+                      color: activeDay === 'all' ? '#FFFFFF' : '#111827',
                       fontWeight: 700,
                       fontSize: '0.95rem',
                       cursor: 'pointer',
+                      boxShadow: activeDay === 'all' ? '0 4px 12px rgba(0, 166, 153, 0.25)' : 'none',
                       transition: 'all 0.15s'
                     }}
                   >
@@ -874,11 +769,11 @@ const TravelPlannerPage = () => {
                     <div 
                       key={dayItem.day}
                       style={{
-                        background: 'var(--bg-secondary)',
+                        background: '#F9FAFB',
                         borderRadius: '20px',
                         padding: '1.75rem',
                         marginBottom: '2rem',
-                        border: '1px solid var(--border-light)'
+                        border: '1px solid #E5E7EB'
                       }}
                     >
                       <div style={{
@@ -887,23 +782,23 @@ const TravelPlannerPage = () => {
                         gap: '0.75rem',
                         marginBottom: '1.5rem',
                         paddingBottom: '1rem',
-                        borderBottom: '1px solid var(--border-light)'
+                        borderBottom: '1px solid #E5E7EB'
                       }}>
                         <div style={{
-                          background: 'var(--accent-primary)',
-                          color: '#fff',
-                          width: '40px',
-                          height: '40px',
-                          borderRadius: '12px',
+                          background: '#00A699',
+                          color: '#FFFFFF',
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '10px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontWeight: 800,
-                          fontSize: '1.1rem'
+                          fontSize: '1rem'
                         }}>
                           {dayItem.day}
                         </div>
-                        <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                        <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827' }}>
                           {dayItem.title}
                         </h3>
                       </div>
@@ -913,81 +808,78 @@ const TravelPlannerPage = () => {
                         
                         {/* Morning */}
                         <div style={{
-                          background: 'var(--bg-card)',
+                          background: '#FFFFFF',
                           borderRadius: '16px',
                           padding: '1.4rem',
-                          border: '1px solid #FEF3C7',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                          border: '1px solid #E5E7EB',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
                         }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#D97706', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
-                            <Sunrise size={20} />
+                          <div style={{ color: '#111827', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
                             Buổi Sáng
                           </div>
                           <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>🎯 Hoạt động chính:</strong>
-                            <p style={{ color: 'var(--text-primary)', marginTop: '3px', fontWeight: 600 }}>{dayItem.morning?.activity}</p>
+                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Hoạt động chính:</strong>
+                            <p style={{ color: '#111827', marginTop: '3px', fontWeight: 600 }}>{dayItem.morning?.activity}</p>
                           </div>
                           <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>🥣 Ăn sáng gợi ý:</strong>
-                            <p style={{ color: 'var(--text-primary)', marginTop: '3px' }}>{dayItem.morning?.food}</p>
+                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Ăn sáng gợi ý:</strong>
+                            <p style={{ color: '#111827', marginTop: '3px' }}>{dayItem.morning?.food}</p>
                           </div>
                           {dayItem.morning?.tips && (
-                            <div style={{ background: '#FFFBEB', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#92400E', marginTop: '0.5rem' }}>
-                              💡 <strong>Mẹo:</strong> {dayItem.morning.tips}
+                            <div style={{ background: '#F0FDFA', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#0F766E', marginTop: '0.5rem', border: '1px solid #CCFBF1' }}>
+                              <strong>Mẹo:</strong> {dayItem.morning.tips}
                             </div>
                           )}
                         </div>
 
                         {/* Afternoon */}
                         <div style={{
-                          background: 'var(--bg-card)',
+                          background: '#FFFFFF',
                           borderRadius: '16px',
                           padding: '1.4rem',
-                          border: '1px solid #BAE6FD',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                          border: '1px solid #E5E7EB',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
                         }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#0284C7', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
-                            <Sun size={20} />
+                          <div style={{ color: '#111827', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
                             Buổi Chiều
                           </div>
                           <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>🎯 Hoạt động chính:</strong>
-                            <p style={{ color: 'var(--text-primary)', marginTop: '3px', fontWeight: 600 }}>{dayItem.afternoon?.activity}</p>
+                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Hoạt động chính:</strong>
+                            <p style={{ color: '#111827', marginTop: '3px', fontWeight: 600 }}>{dayItem.afternoon?.activity}</p>
                           </div>
                           <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>🍲 Bữa trưa & xế:</strong>
-                            <p style={{ color: 'var(--text-primary)', marginTop: '3px' }}>{dayItem.afternoon?.food}</p>
+                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Bữa trưa & xế:</strong>
+                            <p style={{ color: '#111827', marginTop: '3px' }}>{dayItem.afternoon?.food}</p>
                           </div>
                           {dayItem.afternoon?.tips && (
-                            <div style={{ background: '#F0F9FF', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#0369A1', marginTop: '0.5rem' }}>
-                              💡 <strong>Mẹo:</strong> {dayItem.afternoon.tips}
+                            <div style={{ background: '#F0FDFA', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#0F766E', marginTop: '0.5rem', border: '1px solid #CCFBF1' }}>
+                              <strong>Mẹo:</strong> {dayItem.afternoon.tips}
                             </div>
                           )}
                         </div>
 
                         {/* Evening */}
                         <div style={{
-                          background: 'var(--bg-card)',
+                          background: '#FFFFFF',
                           borderRadius: '16px',
                           padding: '1.4rem',
-                          border: '1px solid #E9D5FF',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                          border: '1px solid #E5E7EB',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
                         }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#7E22CE', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
-                            <Moon size={20} />
+                          <div style={{ color: '#111827', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
                             Buổi Tối
                           </div>
                           <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>🎯 Hoạt động đêm:</strong>
-                            <p style={{ color: 'var(--text-primary)', marginTop: '3px', fontWeight: 600 }}>{dayItem.evening?.activity}</p>
+                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Hoạt động đêm:</strong>
+                            <p style={{ color: '#111827', marginTop: '3px', fontWeight: 600 }}>{dayItem.evening?.activity}</p>
                           </div>
                           <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>🍜 Bữa tối đặc sản:</strong>
-                            <p style={{ color: 'var(--text-primary)', marginTop: '3px' }}>{dayItem.evening?.food}</p>
+                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Bữa tối đặc sản:</strong>
+                            <p style={{ color: '#111827', marginTop: '3px' }}>{dayItem.evening?.food}</p>
                           </div>
                           {dayItem.evening?.tips && (
-                            <div style={{ background: '#FAF5FF', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#6B21A8', marginTop: '0.5rem' }}>
-                              💡 <strong>Mẹo:</strong> {dayItem.evening.tips}
+                            <div style={{ background: '#F0FDFA', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#0F766E', marginTop: '0.5rem', border: '1px solid #CCFBF1' }}>
+                              <strong>Mẹo:</strong> {dayItem.evening.tips}
                             </div>
                           )}
                         </div>
@@ -1018,32 +910,21 @@ const TravelPlannerPage = () => {
                 return matchesCat && matchesSearch;
               });
 
-              const getBadgeColor = (type) => {
-                const t = (type || '').toLowerCase();
-                if (t.includes('resort')) return { bg: 'linear-gradient(135deg, #7C3AED, #9333EA)', color: '#fff' };
-                if (t.includes('cao cấp') || t.includes('5 sao')) return { bg: 'linear-gradient(135deg, #D97706, #F59E0B)', color: '#fff' };
-                if (t.includes('homestay')) return { bg: 'linear-gradient(135deg, #059669, #10B981)', color: '#fff' };
-                if (t.includes('căn hộ') || t.includes('villa')) return { bg: 'linear-gradient(135deg, #0284C7, #38BDF8)', color: '#fff' };
-                if (t.includes('hostel')) return { bg: '#4B5563', color: '#fff' };
-                return { bg: 'var(--accent-primary)', color: '#fff' };
-              };
-
               return (
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
                     <div>
-                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Hotel size={24} color="#7C3AED" />
-                        Gợi ý Địa Điểm Lưu Trú ({allStays.length} lựa chọn phong phú)
+                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827' }}>
+                        Gợi ý Địa Điểm Lưu Trú ({allStays.length} lựa chọn)
                       </h3>
-                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.2rem' }}>
+                      <p style={{ color: '#4B5563', fontSize: '0.9rem', marginTop: '0.2rem' }}>
                         Đầy đủ phân khúc từ Resort nghỉ dưỡng, Khách sạn trung tâm, Căn hộ đến Homestay bản địa
                       </p>
                     </div>
 
                     {/* Search box for stay */}
                     <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-                      <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                      <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }} />
                       <input 
                         type="text"
                         value={staySearch}
@@ -1053,17 +934,17 @@ const TravelPlannerPage = () => {
                           width: '100%',
                           padding: '0.65rem 1rem 0.65rem 2.4rem',
                           borderRadius: '12px',
-                          border: '1px solid var(--border-light)',
-                          background: 'var(--bg-secondary)',
+                          border: '1px solid #D1D5DB',
+                          background: '#FFFFFF',
                           fontSize: '0.9rem',
                           outline: 'none',
-                          color: 'var(--text-primary)'
+                          color: '#111827'
                         }}
                       />
                       {staySearch && (
                         <button 
                           onClick={() => setStaySearch('')} 
-                          style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
+                          style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'none', cursor: 'pointer', color: '#6B7280' }}
                         >
                           ✕
                         </button>
@@ -1075,11 +956,11 @@ const TravelPlannerPage = () => {
                   <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '4px' }}>
                     {[
                       { id: 'ALL', label: `Tất cả (${allStays.length})` },
-                      { id: 'resort', label: '🏖️ Resort nghỉ dưỡng' },
-                      { id: 'hotel', label: '🏨 Khách sạn' },
-                      { id: 'homestay', label: '🏡 Homestay bản địa' },
-                      { id: 'apartment', label: '🏢 Căn hộ / Villa' },
-                      { id: 'hostel', label: '🎒 Hostel tiết kiệm' }
+                      { id: 'resort', label: 'Resort nghỉ dưỡng' },
+                      { id: 'hotel', label: 'Khách sạn' },
+                      { id: 'homestay', label: 'Homestay bản địa' },
+                      { id: 'apartment', label: 'Căn hộ / Villa' },
+                      { id: 'hostel', label: 'Hostel tiết kiệm' }
                     ].map(f => (
                       <button
                         key={f.id}
@@ -1088,9 +969,9 @@ const TravelPlannerPage = () => {
                         style={{
                           padding: '0.5rem 1rem',
                           borderRadius: '20px',
-                          border: stayCategory === f.id ? '2px solid #7C3AED' : '1px solid var(--border-light)',
-                          background: stayCategory === f.id ? '#F5F3FF' : 'var(--bg-card)',
-                          color: stayCategory === f.id ? '#6D28D9' : 'var(--text-primary)',
+                          border: stayCategory === f.id ? '2px solid #00A699' : '1px solid #E5E7EB',
+                          background: stayCategory === f.id ? '#F0FDFA' : '#FFFFFF',
+                          color: stayCategory === f.id ? '#00A699' : '#111827',
                           fontWeight: stayCategory === f.id ? 700 : 500,
                           fontSize: '0.85rem',
                           cursor: 'pointer',
@@ -1105,12 +986,12 @@ const TravelPlannerPage = () => {
 
                   {/* Cards display */}
                   {filteredStays.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '3rem 1rem', background: 'var(--bg-secondary)', borderRadius: '16px' }}>
-                      <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>Không tìm thấy nơi lưu trú nào phù hợp với bộ lọc hiện tại.</p>
+                    <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#F9FAFB', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                      <p style={{ color: '#4B5563', marginBottom: '1rem' }}>Không tìm thấy nơi lưu trú nào phù hợp với bộ lọc hiện tại.</p>
                       <button 
                         type="button" 
                         onClick={() => { setStayCategory('ALL'); setStaySearch(''); }}
-                        style={{ padding: '0.5rem 1.2rem', borderRadius: '10px', border: 'none', background: 'var(--accent-primary)', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
+                        style={{ padding: '0.5rem 1.2rem', borderRadius: '10px', border: 'none', background: '#00A699', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
                       >
                         Xóa bộ lọc
                       </button>
@@ -1118,7 +999,6 @@ const TravelPlannerPage = () => {
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
                       {filteredStays.map((hotel, idx) => {
-                        const badgeStyle = getBadgeColor(hotel.type);
                         const mapsQuery = encodeURIComponent(`${hotel.name} ${hotel.area || ''} ${planResult.destination}`);
                         const bookingQuery = encodeURIComponent(`đặt phòng ${hotel.name} ${planResult.destination}`);
 
@@ -1126,37 +1006,34 @@ const TravelPlannerPage = () => {
                           <div 
                             key={idx}
                             style={{
-                              background: 'var(--bg-secondary)',
+                              background: '#F9FAFB',
                               padding: '1.6rem',
                               borderRadius: '20px',
-                              border: '1px solid var(--border-light)',
+                              border: '1px solid #E5E7EB',
                               display: 'flex',
                               flexDirection: 'column',
                               justifyContent: 'space-between',
-                              boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                               transition: 'transform 0.2s, box-shadow 0.2s'
                             }}
                           >
                             <div>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem' }}>
                                 <div style={{
-                                  background: badgeStyle.bg,
-                                  color: badgeStyle.color,
+                                  background: '#F0FDFA',
+                                  color: '#00A699',
                                   padding: '0.25rem 0.8rem',
                                   borderRadius: '20px',
                                   fontSize: '0.75rem',
                                   fontWeight: 700,
                                   letterSpacing: '0.3px',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '0.3rem'
+                                  border: '1px solid #99F6E4'
                                 }}>
-                                  <Hotel size={13} />
                                   {hotel.type || 'Lưu trú'}
                                 </div>
                                 <span style={{
-                                  background: 'rgba(5, 150, 105, 0.1)',
-                                  color: '#059669',
+                                  background: '#F3F4F6',
+                                  color: '#374151',
                                   fontSize: '0.85rem',
                                   fontWeight: 700,
                                   padding: '0.2rem 0.6rem',
@@ -1166,39 +1043,38 @@ const TravelPlannerPage = () => {
                                 </span>
                               </div>
 
-                              <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.5rem', lineHeight: 1.3 }}>
+                              <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem', lineHeight: 1.3 }}>
                                 {hotel.name}
                               </h4>
 
                               <div style={{
                                 display: 'inline-block',
-                                background: '#ECFDF5',
-                                border: '1px solid #A7F3D0',
-                                color: '#065F46',
+                                background: '#F0FDFA',
+                                border: '1px solid #99F6E4',
+                                color: '#00A699',
                                 fontWeight: 800,
                                 fontSize: '1.05rem',
                                 padding: '0.35rem 0.8rem',
                                 borderRadius: '10px',
                                 marginBottom: '0.85rem'
                               }}>
-                                💰 {hotel.priceRange}
+                                {hotel.priceRange}
                               </div>
 
-                              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'flex-start', gap: '0.4rem' }}>
-                                <MapPin size={18} color="var(--accent-primary)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                                <span><strong>Khu vực:</strong> {hotel.area}</span>
+                              <p style={{ color: '#374151', fontSize: '0.95rem', marginBottom: '0.75rem' }}>
+                                <strong>Khu vực:</strong> {hotel.area}
                               </p>
 
-                              <div style={{ color: 'var(--text-primary)', fontSize: '0.92rem', background: 'var(--bg-card)', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-light)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700, color: '#D97706', marginBottom: '0.25rem', fontSize: '0.85rem' }}>
-                                  <Sparkles size={15} /> Điểm nổi bật & Tiện ích:
+                              <div style={{ color: '#111827', fontSize: '0.92rem', background: '#FFFFFF', padding: '0.85rem', borderRadius: '12px', border: '1px solid #E5E7EB', marginBottom: '1.25rem', lineHeight: 1.5 }}>
+                                <div style={{ fontWeight: 700, color: '#111827', marginBottom: '0.25rem', fontSize: '0.85rem' }}>
+                                  Điểm nổi bật & Tiện ích:
                                 </div>
                                 {hotel.highlights}
                               </div>
                             </div>
 
                             {/* Action links */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-light)' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem', paddingTop: '0.75rem', borderTop: '1px solid #E5E7EB' }}>
                               <a
                                 href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
                                 target="_blank"
@@ -1210,15 +1086,14 @@ const TravelPlannerPage = () => {
                                   gap: '0.4rem',
                                   padding: '0.6rem 0.5rem',
                                   borderRadius: '10px',
-                                  background: 'var(--bg-card)',
-                                  border: '1px solid var(--border-light)',
-                                  color: 'var(--text-primary)',
+                                  background: '#FFFFFF',
+                                  border: '1px solid #D1D5DB',
+                                  color: '#111827',
                                   fontSize: '0.85rem',
                                   fontWeight: 600,
                                   textDecoration: 'none'
                                 }}
                               >
-                                <MapPin size={14} color="var(--accent-primary)" />
                                 Bản đồ
                               </a>
 
@@ -1233,12 +1108,13 @@ const TravelPlannerPage = () => {
                                   gap: '0.4rem',
                                   padding: '0.6rem 0.5rem',
                                   borderRadius: '10px',
-                                  background: 'rgba(255, 56, 92, 0.08)',
-                                  border: '1px solid rgba(255, 56, 92, 0.2)',
-                                  color: 'var(--accent-primary)',
+                                  background: '#00A699',
+                                  border: '1px solid #00A699',
+                                  color: '#FFFFFF',
                                   fontSize: '0.85rem',
                                   fontWeight: 600,
-                                  textDecoration: 'none'
+                                  textDecoration: 'none',
+                                  boxShadow: '0 2px 8px rgba(0, 166, 153, 0.25)'
                                 }}
                               >
                                 <ExternalLink size={14} />
@@ -1277,32 +1153,21 @@ const TravelPlannerPage = () => {
                 return matchesCat && matchesSearch;
               });
 
-              const getCategoryBadge = (category, dish) => {
-                const c = (category || '').toLowerCase();
-                const d = (dish || '').toLowerCase();
-                if (c.includes('nước') || d.includes('bún') || d.includes('phở') || d.includes('mì')) return { label: '🍜 Món nước', bg: '#EFF6FF', color: '#1E40AF', border: '#BFDBFE' };
-                if (c.includes('hải sản') || c.includes('nướng') || d.includes('hải sản') || d.includes('nướng')) return { label: '🦐 Hải sản & Nướng', bg: '#FEF2F2', color: '#991B1B', border: '#FECACA' };
-                if (c.includes('ăn vặt') || c.includes('tráng miệng') || d.includes('chè') || d.includes('bánh')) return { label: '🍧 Ăn vặt / Tráng miệng', bg: '#FDF2F8', color: '#9D174D', border: '#FBCFE8' };
-                if (c.includes('cà phê') || c.includes('đồ uống') || d.includes('cà phê')) return { label: '☕ Cà phê & Chill', bg: '#FAF5FF', color: '#6B21A8', border: '#E9D5FF' };
-                return { label: '🍲 Đặc sản chính', bg: '#FFF7ED', color: '#9A3412', border: '#FED7AA' };
-              };
-
               return (
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
                     <div>
-                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Utensils size={24} color="#EA580C" />
-                        Danh sách Món ngon & Quán ăn đặc sản ({allFoods.length} món nổi tiếng)
+                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827' }}>
+                        Danh sách Món ngon & Quán ăn đặc sản ({allFoods.length} món)
                       </h3>
-                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.2rem' }}>
+                      <p style={{ color: '#4B5563', fontSize: '0.9rem', marginTop: '0.2rem' }}>
                         Các món ăn trứ danh địa phương kèm địa chỉ quán chuẩn vị lâu đời nhất
                       </p>
                     </div>
 
                     {/* Search box for food */}
                     <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-                      <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                      <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }} />
                       <input 
                         type="text"
                         value={foodSearch}
@@ -1312,17 +1177,17 @@ const TravelPlannerPage = () => {
                           width: '100%',
                           padding: '0.65rem 1rem 0.65rem 2.4rem',
                           borderRadius: '12px',
-                          border: '1px solid var(--border-light)',
-                          background: 'var(--bg-secondary)',
+                          border: '1px solid #D1D5DB',
+                          background: '#FFFFFF',
                           fontSize: '0.9rem',
                           outline: 'none',
-                          color: 'var(--text-primary)'
+                          color: '#111827'
                         }}
                       />
                       {foodSearch && (
                         <button 
                           onClick={() => setFoodSearch('')} 
-                          style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}
+                          style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'none', cursor: 'pointer', color: '#6B7280' }}
                         >
                           ✕
                         </button>
@@ -1334,11 +1199,11 @@ const TravelPlannerPage = () => {
                   <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '4px' }}>
                     {[
                       { id: 'ALL', label: `Tất cả (${allFoods.length})` },
-                      { id: 'main', label: '🍲 Món chính truyền thống' },
-                      { id: 'noodle', label: '🍜 Món nước & Phở / Bún' },
-                      { id: 'seafood', label: '🦐 Hải sản & Đồ nướng' },
-                      { id: 'snack', label: '🍧 Ăn vặt & Tráng miệng' },
-                      { id: 'drink', label: '☕ Cà phê & Thức uống' }
+                      { id: 'main', label: 'Món chính truyền thống' },
+                      { id: 'noodle', label: 'Món nước & Phở / Bún' },
+                      { id: 'seafood', label: 'Hải sản & Đồ nướng' },
+                      { id: 'snack', label: 'Ăn vặt & Tráng miệng' },
+                      { id: 'drink', label: 'Cà phê & Thức uống' }
                     ].map(f => (
                       <button
                         key={f.id}
@@ -1347,9 +1212,9 @@ const TravelPlannerPage = () => {
                         style={{
                           padding: '0.5rem 1rem',
                           borderRadius: '20px',
-                          border: foodCategory === f.id ? '2px solid #EA580C' : '1px solid var(--border-light)',
-                          background: foodCategory === f.id ? '#FFF7ED' : 'var(--bg-card)',
-                          color: foodCategory === f.id ? '#C2410C' : 'var(--text-primary)',
+                          border: foodCategory === f.id ? '2px solid #00A699' : '1px solid #E5E7EB',
+                          background: foodCategory === f.id ? '#F0FDFA' : '#FFFFFF',
+                          color: foodCategory === f.id ? '#00A699' : '#111827',
                           fontWeight: foodCategory === f.id ? 700 : 500,
                           fontSize: '0.85rem',
                           cursor: 'pointer',
@@ -1364,12 +1229,12 @@ const TravelPlannerPage = () => {
 
                   {/* Foods Grid */}
                   {filteredFoods.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '3rem 1rem', background: 'var(--bg-secondary)', borderRadius: '16px' }}>
-                      <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>Không tìm thấy món ăn nào phù hợp với từ khóa.</p>
+                    <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#F9FAFB', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                      <p style={{ color: '#4B5563', marginBottom: '1rem' }}>Không tìm thấy món ăn nào phù hợp với từ khóa.</p>
                       <button 
                         type="button" 
                         onClick={() => { setFoodCategory('ALL'); setFoodSearch(''); }}
-                        style={{ padding: '0.5rem 1.2rem', borderRadius: '10px', border: 'none', background: 'var(--accent-primary)', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
+                        style={{ padding: '0.5rem 1.2rem', borderRadius: '10px', border: 'none', background: '#00A699', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
                       >
                         Xóa bộ lọc
                       </button>
@@ -1377,7 +1242,6 @@ const TravelPlannerPage = () => {
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
                       {filteredFoods.map((food, idx) => {
-                        const catBadge = getCategoryBadge(food.category, food.dish);
                         const firstPlace = (food.places || food.recommendedPlaces || '').split(',')[0];
                         const mapQuery = encodeURIComponent(`${food.dish} ${firstPlace} ${planResult.destination}`);
 
@@ -1385,50 +1249,50 @@ const TravelPlannerPage = () => {
                           <div 
                             key={idx}
                             style={{
-                              background: 'var(--bg-secondary)',
+                              background: '#F9FAFB',
                               padding: '1.5rem',
                               borderRadius: '18px',
-                              border: '1px solid var(--border-light)',
+                              border: '1px solid #E5E7EB',
                               display: 'flex',
                               flexDirection: 'column',
                               justifyContent: 'space-between',
-                              boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                               transition: 'transform 0.2s, box-shadow 0.2s'
                             }}
                           >
                             <div>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.65rem' }}>
                                 <span style={{
-                                  background: catBadge.bg,
-                                  color: catBadge.color,
-                                  border: `1px solid ${catBadge.border}`,
+                                  background: '#F0FDFA',
+                                  color: '#00A699',
+                                  border: '1px solid #99F6E4',
                                   padding: '0.2rem 0.65rem',
                                   borderRadius: '12px',
                                   fontSize: '0.75rem',
                                   fontWeight: 700
                                 }}>
-                                  {catBadge.label}
+                                  {food.category || 'Ẩm thực'}
                                 </span>
 
                                 <span style={{
-                                  background: 'rgba(239, 68, 68, 0.08)',
-                                  color: 'var(--accent-primary)',
+                                  background: '#FFFFFF',
+                                  color: '#111827',
+                                  border: '1px solid #D1D5DB',
                                   padding: '0.25rem 0.7rem',
                                   borderRadius: '20px',
                                   fontSize: '0.8rem',
                                   fontWeight: 700
                                 }}>
-                                  💰 {food.cost || food.estimatedCost}
+                                  {food.cost || food.estimatedCost}
                                 </span>
                               </div>
 
-                              <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.5rem', lineHeight: 1.3 }}>
-                                🥘 {food.dish}
+                              <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem', lineHeight: 1.3 }}>
+                                {food.dish}
                               </h4>
 
-                              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1rem', lineHeight: 1.5, background: 'var(--bg-card)', padding: '0.75rem', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
-                                <strong style={{ color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.2rem' }}>
-                                  <MapPin size={15} color="var(--accent-primary)" />
+                              <p style={{ color: '#4B5563', fontSize: '0.92rem', marginBottom: '1rem', lineHeight: 1.5, background: '#FFFFFF', padding: '0.75rem', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+                                <strong style={{ color: '#111827', display: 'block', marginBottom: '0.2rem' }}>
                                   Quán & Địa chỉ nổi tiếng:
                                 </strong>
                                 <span>{food.places || food.recommendedPlaces}</span>
@@ -1446,9 +1310,9 @@ const TravelPlannerPage = () => {
                                 gap: '0.4rem',
                                 padding: '0.6rem 0.75rem',
                                 borderRadius: '10px',
-                                background: 'var(--bg-card)',
-                                border: '1px solid var(--border-light)',
-                                color: 'var(--accent-primary)',
+                                background: '#F0FDFA',
+                                border: '1px solid #99F6E4',
+                                color: '#00A699',
                                 fontSize: '0.85rem',
                                 fontWeight: 700,
                                 textDecoration: 'none',
@@ -1467,13 +1331,13 @@ const TravelPlannerPage = () => {
               );
             })()}
 
-            {/* TAB CONTENT 4: DỰ TOÁN CHI PHÍ (BUDGET BREAKDOWN) */}
+            {/* TAB CONTENT 4: DỰ TOÁN CHI PHÍ */}
             {activeTab === 'budget' && (
               <div>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '0.75rem', color: 'var(--text-primary)' }}>
-                  💰 Bảng Phân Bổ Chi Phí Dự Toán Theo Ngân Sách:
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '0.75rem', color: '#111827' }}>
+                  Bảng Phân Bổ Chi Phí Dự Toán Theo Ngân Sách
                 </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
+                <p style={{ color: '#4B5563', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
                   Tổng ngân sách mục tiêu: <strong>{planResult.budget?.toLocaleString('vi-VN')} VNĐ</strong>. Dưới đây là tỷ lệ phân bổ chi phí khoa học được đề xuất:
                 </p>
 
@@ -1484,37 +1348,37 @@ const TravelPlannerPage = () => {
                     gap: '1rem',
                     marginBottom: '2rem'
                   }}>
-                    <div style={{ background: '#EFF6FF', padding: '1.25rem', borderRadius: '16px', border: '1px solid #BFDBFE' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#1E40AF', fontWeight: 600 }}>🏨 Lưu trú (Khách sạn)</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#1E3A8A', marginTop: '0.4rem' }}>
+                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Lưu trú (Khách sạn)</div>
+                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
                         {planResult.budgetBreakdown.accommodation?.toLocaleString('vi-VN')} đ
                       </div>
                     </div>
 
-                    <div style={{ background: '#ECFDF5', padding: '1.25rem', borderRadius: '16px', border: '1px solid #A7F3D0' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#065F46', fontWeight: 600 }}>🍜 Ăn uống ẩm thực</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#064E3B', marginTop: '0.4rem' }}>
+                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Ăn uống ẩm thực</div>
+                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
                         {planResult.budgetBreakdown.food?.toLocaleString('vi-VN')} đ
                       </div>
                     </div>
 
-                    <div style={{ background: '#FFF7ED', padding: '1.25rem', borderRadius: '16px', border: '1px solid #FED7AA' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#9A3412', fontWeight: 600 }}>🎟️ Vé tham quan & vui chơi</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#7C2D12', marginTop: '0.4rem' }}>
+                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Vé tham quan & vui chơi</div>
+                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
                         {planResult.budgetBreakdown.sightseeing?.toLocaleString('vi-VN')} đ
                       </div>
                     </div>
 
-                    <div style={{ background: '#F5F3FF', padding: '1.25rem', borderRadius: '16px', border: '1px solid #DDD6FE' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#5B21B6', fontWeight: 600 }}>🛵 Di chuyển tại chỗ</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#4C1D95', marginTop: '0.4rem' }}>
+                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Di chuyển tại chỗ</div>
+                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
                         {planResult.budgetBreakdown.transportation?.toLocaleString('vi-VN')} đ
                       </div>
                     </div>
 
-                    <div style={{ background: '#FDF2F8', padding: '1.25rem', borderRadius: '16px', border: '1px solid #FBCFE8' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#9D174D', fontWeight: 600 }}>🛡️ Quỹ dự phòng & mua sắm</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#831843', marginTop: '0.4rem' }}>
+                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
+                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Quỹ dự phòng & mua sắm</div>
+                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
                         {planResult.budgetBreakdown.contingency?.toLocaleString('vi-VN')} đ
                       </div>
                     </div>
@@ -1526,27 +1390,24 @@ const TravelPlannerPage = () => {
             {/* TAB CONTENT 5: MẸO & CẨM NANG */}
             {activeTab === 'tips' && (
               <div>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '1.25rem', color: 'var(--text-primary)' }}>
-                  💡 Lời Khuyên & Cẩm Nang Thực Tế Cho Chuyến Đi:
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '1.25rem', color: '#111827' }}>
+                  Lời Khuyên & Cẩm Nang Thực Tế Cho Chuyến Đi
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                   {planResult.travelTips?.map((tip, idx) => (
                     <div 
                       key={idx}
                       style={{
-                        background: 'var(--bg-secondary)',
+                        background: '#F0FDFA',
                         padding: '1.2rem 1.5rem',
                         borderRadius: '16px',
-                        borderLeft: '4px solid var(--accent-primary)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
+                        border: '1px solid #CCFBF1',
+                        borderLeft: '4px solid #00A699',
                         fontSize: '1rem',
-                        color: 'var(--text-primary)',
+                        color: '#111827',
                         lineHeight: 1.5
                       }}
                     >
-                      <CheckCircle2 size={20} color="var(--accent-primary)" style={{ flexShrink: 0 }} />
                       <span>{tip}</span>
                     </div>
                   ))}
