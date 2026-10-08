@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Bell } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Bell, CheckCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 
@@ -8,6 +8,7 @@ const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isBouncing, setIsBouncing] = useState(false);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { socket } = useAppContext();
 
@@ -31,9 +32,23 @@ const NotificationDropdown = () => {
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 15000); // reduced polling frequency since we have sockets
+    const interval = setInterval(fetchNotifications, 15000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (socket) {
@@ -41,7 +56,7 @@ const NotificationDropdown = () => {
         setNotifications(prev => [notif, ...prev]);
         setUnreadCount(prev => prev + 1);
         setIsBouncing(true);
-        setTimeout(() => setIsBouncing(false), 1000); // Ring animation
+        setTimeout(() => setIsBouncing(false), 1000);
       };
       
       socket.on('new_notification', handleNewNotification);
@@ -69,17 +84,29 @@ const NotificationDropdown = () => {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
       <button 
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label="Thông báo"
         style={{
-          background: 'rgba(255,255,255,0.1)', border: 'none',
-          padding: '0.5rem', borderRadius: '50%', color: 'var(--text-primary)',
-          cursor: 'pointer', position: 'relative',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: isOpen ? '#E5E7EB' : '#F3F4F6',
+          border: '1px solid #E5E7EB',
+          width: '38px',
+          height: '38px',
+          borderRadius: '50%',
+          color: '#374151',
+          cursor: 'pointer',
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           animation: isBouncing ? 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both' : 'none',
-          transform: 'translate3d(0, 0, 0)'
+          transition: 'all 0.2s ease',
+          flexShrink: 0
         }}
+        onMouseEnter={(e) => { if (!isOpen) e.currentTarget.style.background = '#E5E7EB'; }}
+        onMouseLeave={(e) => { if (!isOpen) e.currentTarget.style.background = '#F3F4F6'; }}
       >
         <style>
           {`
@@ -91,62 +118,109 @@ const NotificationDropdown = () => {
             }
           `}
         </style>
-        <Bell size={20} />
+        <Bell size={18} />
         {unreadCount > 0 && (
           <span style={{
-            position: 'absolute', top: '-5px', right: '-5px',
-            background: '#ef4444', color: 'var(--text-primary)', fontSize: '0.75rem',
-            fontWeight: 'bold', width: '20px', height: '20px',
-            borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center'
+            position: 'absolute',
+            top: '-2px',
+            right: '-2px',
+            background: '#EF4444',
+            color: '#FFFFFF',
+            fontSize: '0.7rem',
+            fontWeight: 700,
+            minWidth: '18px',
+            height: '18px',
+            borderRadius: '9px',
+            padding: '0 4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 0 0 2px #FFFFFF',
+            lineHeight: 1
           }}>
-            {unreadCount}
+            {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
         <div style={{
-          position: 'absolute', top: '120%', right: 0,
-          width: '320px', maxHeight: '400px', overflowY: 'auto',
-          background: '#1a1f2e', border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-          zIndex: 1000, padding: '1rem'
+          position: 'absolute',
+          top: 'calc(100% + 10px)',
+          right: 0,
+          width: '320px',
+          maxHeight: '420px',
+          overflowY: 'auto',
+          background: '#FFFFFF',
+          border: '1px solid #E5E7EB',
+          borderRadius: '16px',
+          boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+          zIndex: 1100,
+          padding: '1rem',
+          animation: 'fadeIn 0.2s ease-out'
         }}>
-          <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.125rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', color: '#fff' }}>Thông báo mới</h3>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '0.75rem',
+            paddingBottom: '0.5rem',
+            borderBottom: '1px solid #F3F4F6'
+          }}>
+            <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#111827' }}>
+              Thông báo mới
+            </h3>
+            {unreadCount > 0 && (
+              <span style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600 }}>
+                {unreadCount} chưa đọc
+              </span>
+            )}
+          </div>
+
           {notifications.length === 0 ? (
-            <p style={{ color: 'var(--text-muted)', textAlign: 'center', margin: '2rem 0' }}>Không có thông báo nào</p>
+            <div style={{ color: '#9CA3AF', textAlign: 'center', margin: '2rem 0', fontSize: '0.875rem' }}>
+              Không có thông báo nào
+            </div>
           ) : (
-            notifications.map(n => (
-              <div 
-                key={n.id} 
-                onClick={(e) => {
-                  if (n.locationId) {
-                    navigate(`/locations/${n.locationId}`);
-                    setIsOpen(false);
-                  }
-                  if (!n.read) {
-                    handleRead(n.id, e);
-                  }
-                }}
-                style={{
-                  padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
-                  borderRadius: '8px', marginBottom: '0.5rem', position: 'relative',
-                  cursor: n.locationId ? 'pointer' : 'default',
-                  transition: 'background 0.2s',
-                  color: '#fff',
-                  opacity: n.read ? 0.6 : 1
-                }}
-                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-                onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-              >
-                <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', lineHeight: 1.4 }}>{n.message}</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                    {new Date(n.createdAt).toLocaleString('vi-VN')}
-                  </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {notifications.map(n => (
+                <div 
+                  key={n.id} 
+                  onClick={(e) => {
+                    if (n.locationId) {
+                      navigate(`/locations/${n.locationId}`);
+                      setIsOpen(false);
+                    }
+                    if (!n.read) {
+                      handleRead(n.id, e);
+                    }
+                  }}
+                  style={{
+                    padding: '0.75rem',
+                    background: n.read ? '#F9FAFB' : '#FEF2F2',
+                    border: `1px solid ${n.read ? '#F3F4F6' : '#FEE2E2'}`,
+                    borderRadius: '10px',
+                    position: 'relative',
+                    cursor: n.locationId ? 'pointer' : 'default',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 56, 92, 0.3)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = n.read ? '#F3F4F6' : '#FEE2E2'; }}
+                >
+                  <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.85rem', lineHeight: 1.4, color: '#1F2937', fontWeight: n.read ? 400 : 600 }}>
+                    {n.message}
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.725rem', color: '#9CA3AF' }}>
+                      {new Date(n.createdAt).toLocaleString('vi-VN')}
+                    </span>
+                    {!n.read && (
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444' }} />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       )}
