@@ -6,6 +6,15 @@ const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
 const mysql = require('mysql2/promise');
+let jwt;
+try {
+  jwt = require('jsonwebtoken');
+} catch (e) {
+  jwt = null;
+}
+
+const JWT_SECRET = process.env.JWT_SECRET || 'secret_key_for_vietnam_tourism';
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL || 'http://vn-tourism-users:3005';
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -34,16 +43,55 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+// Khởi tạo bảng support_messages nếu chưa tồn tại
+const initChatTable = async () => {
+  try {
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS support_messages (
+        id VARCHAR(100) PRIMARY KEY,
+        sender_username VARCHAR(100) NOT NULL,
+        sender_role VARCHAR(20) NOT NULL DEFAULT 'user',
+        receiver_username VARCHAR(100) NOT NULL,
+        conversation_id VARCHAR(100) NOT NULL,
+        message TEXT NOT NULL,
+        is_read BOOLEAN DEFAULT FALSE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_conversation (conversation_id),
+        INDEX idx_sender (sender_username),
+        INDEX idx_receiver (receiver_username),
+        INDEX idx_created (created_at)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+    console.log('✅ Bảng support_messages đã sẵn sàng');
+  } catch (err) {
+    console.error('Lỗi khởi tạo bảng support_messages:', err.message);
+  }
+};
+initChatTable();
+
 // Connected sockets map
 const userSockets = new Map(); // username -> Set of socketIds
 
 io.on('connection', (socket) => {
   const username = socket.handshake.query.username;
+  const role = socket.handshake.query.role;
+
   if (username) {
     if (!userSockets.has(username)) {
       userSockets.set(username, new Set());
     }
     userSockets.get(username).add(socket.id);
+
+    // Join room theo username riêng
+    socket.join(`user_${username}`);
+
+    // Nếu là admin, join room 'admins'
+    if (role === 'admin' || username === 'admin') {
+      socket.join('admins');
+    }
+
+    // Thông báo cho tất cả admin trạng thái online
+    io.to('admins').emit('user_online_status', { username, online: true });
   }
 
   socket.on('join_location', (locationId) => {
@@ -54,11 +102,106 @@ io.on('connection', (socket) => {
     socket.leave(`location_${locationId}`);
   });
 
+  // Typing event
+  socket.on('support_typing', ({ conversationId, isTyping, senderRole }) => {
+    if (senderRole === 'admin') {
+      io.to(`user_${conversationId}`).emit('admin_typing', { isTyping });
+    } else {
+      io.to('admins').emit('user_typing', { conversationId, isTyping, username });
+    }
+  });
+
+  // Gửi tin nhắn qua Socket
+  socket.on('send_support_message', async (data, callback) => {
+    try {
+      const { message, targetUser, conversationId } = data;
+      if (!username || !message || !message.trim()) {
+        if (callback) callback({ success: false, message: 'Nội dung tin nhắn không hợp lệ' });
+        return;
+      }
+
+      const msgId = `msg-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      const isAdmin = role === 'admin' || username === 'admin';
+
+      let sender_username = username;
+      let sender_role = isAdmin ? 'admin' : 'user';
+      let receiver_username = '';
+      let conv_id = '';
+
+      if (isAdmin) {
+        const target = targetUser || conversationId;
+        if (!target) {
+          if (callback) callback({ success: false, message: 'Cần xác định người nhận' });
+          return;
+        }
+        receiver_username = target;
+        conv_id = target;
+      } else {
+        // NGƯỜI DÙNG CHỈ ĐƯỢC PHÉP GỬI CHO ADMIN, KHÔNG THỂ GỬI CHO NGƯỜI DÙNG KHÁC
+        receiver_username = 'admin';
+        conv_id = username;
+      }
+
+      await pool.execute(
+        'INSERT INTO support_messages (id, sender_username, sender_role, receiver_username, conversation_id, message, is_read) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [msgId, sender_username, sender_role, receiver_username, conv_id, message.trim(), false]
+      );
+
+      const newMsg = {
+        id: msgId,
+        sender_username,
+        sender_role,
+        receiver_username,
+        conversation_id: conv_id,
+        message: message.trim(),
+        is_read: false,
+        created_at: new Date().toISOString()
+      };
+
+      if (isAdmin) {
+        io.to(`user_${receiver_username}`).emit('new_support_message', newMsg);
+        io.to('admins').emit('new_support_message', newMsg);
+      } else {
+        io.to('admins').emit('new_support_message', newMsg);
+        io.to(`user_${username}`).emit('new_support_message', newMsg);
+      }
+
+      if (callback) callback({ success: true, data: newMsg });
+    } catch (err) {
+      console.error('Lỗi socket send_support_message:', err);
+      if (callback) callback({ success: false, message: 'Lỗi server' });
+    }
+  });
+
+  // Đánh dấu đã đọc qua Socket
+  socket.on('mark_support_read', async ({ conversationId }) => {
+    try {
+      if (!conversationId) return;
+      const isAdmin = role === 'admin' || username === 'admin';
+      if (isAdmin) {
+        await pool.execute(
+          'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
+          [conversationId, 'admin']
+        );
+        io.to(`user_${conversationId}`).emit('messages_marked_read', { conversationId });
+      } else {
+        await pool.execute(
+          'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
+          [username, username]
+        );
+        io.to('admins').emit('messages_marked_read', { conversationId: username });
+      }
+    } catch (err) {
+      console.error('Lỗi socket mark_support_read:', err);
+    }
+  });
+
   socket.on('disconnect', () => {
     if (username && userSockets.has(username)) {
       userSockets.get(username).delete(socket.id);
       if (userSockets.get(username).size === 0) {
         userSockets.delete(username);
+        io.to('admins').emit('user_online_status', { username, online: false });
       }
     }
   });
@@ -84,17 +227,39 @@ const notifyUser = async (username, notification) => {
   }
 };
 
-// Middleware to verify user token via user-service
+// Middleware to verify user token via jwt trực tiếp hoặc user-service
 const requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).json({ success: false, message: 'Yêu cầu đăng nhập' });
   }
 
+  const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+
+  // 1. Thử verify JWT trực tiếp (cực nhanh và độc lập)
+  if (jwt) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      req.user = decoded;
+      return next();
+    } catch (jwtErr) {
+      // nếu token hết hạn hoặc lỗi, fallback qua user service
+    }
+  }
+
+  // 2. Fallback gọi user-service
   try {
-    const userRes = await fetch('http://vn-tourism-users:3005/api/auth/me', {
-      headers: { 'Authorization': authHeader }
-    });
+    let userRes;
+    try {
+      userRes = await fetch(`${USER_SERVICE_URL}/api/auth/me`, {
+        headers: { 'Authorization': authHeader }
+      });
+    } catch (netErr) {
+      // Fallback localhost nếu chạy dev ngoài Docker
+      userRes = await fetch(`http://localhost:3005/api/auth/me`, {
+        headers: { 'Authorization': authHeader }
+      });
+    }
     const userData = await userRes.json();
     
     if (!userData.success) {
@@ -604,6 +769,207 @@ app.post('/api/locations/:id/react', requireAuth, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Lỗi' });
+  }
+});
+
+// ==========================================
+// SUPPORT CHAT APIS (Realtime User <-> Admin)
+// ==========================================
+
+// 1. GET /api/support-chat/conversations (Chỉ Admin mới có quyền)
+app.get('/api/support-chat/conversations', requireAuth, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Chỉ Quản trị viên mới có quyền xem danh sách hội thoại' });
+  }
+
+  try {
+    const [rows] = await pool.query(`
+      SELECT 
+        latest.conversation_id as username,
+        u.email,
+        u.role,
+        m.message as last_message,
+        m.sender_role as last_sender_role,
+        m.created_at as last_message_time,
+        COALESCE(unread.unread_count, 0) as unread_count
+      FROM (
+        SELECT conversation_id, MAX(created_at) as max_time
+        FROM support_messages
+        GROUP BY conversation_id
+      ) latest
+      JOIN support_messages m ON m.conversation_id = latest.conversation_id AND m.created_at = latest.max_time
+      LEFT JOIN users u ON u.username = latest.conversation_id
+      LEFT JOIN (
+        SELECT conversation_id, COUNT(*) as unread_count
+        FROM support_messages
+        WHERE receiver_username = 'admin' AND is_read = FALSE
+        GROUP BY conversation_id
+      ) unread ON unread.conversation_id = latest.conversation_id
+      ORDER BY m.created_at DESC
+    `);
+
+    const conversations = rows.map(r => ({
+      ...r,
+      is_online: userSockets.has(r.username)
+    }));
+
+    res.json({ success: true, data: conversations });
+  } catch (error) {
+    console.error('Lỗi lấy danh sách hội thoại:', error);
+    res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
+  }
+});
+
+// 2. GET /api/support-chat/messages/:conversationId
+// User chỉ được xem tin nhắn của mình; Admin được xem của bất kỳ ai
+app.get('/api/support-chat/messages/:conversationId', requireAuth, async (req, res) => {
+  const { conversationId } = req.params;
+  const isAdmin = req.user.role === 'admin';
+
+  if (!isAdmin && conversationId !== req.user.username) {
+    return res.status(403).json({ success: false, message: 'Bạn không có quyền xem cuộc trò chuyện của người khác' });
+  }
+
+  try {
+    const [messages] = await pool.execute(
+      'SELECT id, sender_username, sender_role, receiver_username, conversation_id, message, is_read, created_at FROM support_messages WHERE conversation_id = ? ORDER BY created_at ASC LIMIT 300',
+      [conversationId]
+    );
+
+    // Tự động đánh dấu đã đọc
+    if (isAdmin) {
+      await pool.execute(
+        'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
+        [conversationId, 'admin']
+      );
+      io.to(`user_${conversationId}`).emit('messages_marked_read', { conversationId });
+    } else {
+      await pool.execute(
+        'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
+        [req.user.username, req.user.username]
+      );
+      io.to('admins').emit('messages_marked_read', { conversationId: req.user.username });
+    }
+
+    res.json({ success: true, data: messages });
+  } catch (error) {
+    console.error('Lỗi lấy lịch sử chat:', error);
+    res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
+  }
+});
+
+// 3. POST /api/support-chat/send
+app.post('/api/support-chat/send', requireAuth, async (req, res) => {
+  const { message, targetUser, conversationId } = req.body;
+  if (!message || !message.trim()) {
+    return res.status(400).json({ success: false, message: 'Vui lòng nhập nội dung tin nhắn' });
+  }
+
+  const isAdmin = req.user.role === 'admin';
+  const msgId = `msg-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+  let sender_username = req.user.username;
+  let sender_role = isAdmin ? 'admin' : 'user';
+  let receiver_username = '';
+  let conv_id = '';
+
+  if (isAdmin) {
+    const target = targetUser || conversationId;
+    if (!target) {
+      return res.status(400).json({ success: false, message: 'Thiếu thông tin người nhận tin nhắn' });
+    }
+    receiver_username = target;
+    conv_id = target;
+  } else {
+    // NGƯỜI DÙNG CHỈ ĐƯỢC PHÉP GỬI CHO ADMIN, TUYỆT ĐỐI KHÔNG GỬI CHO NGƯỜI KHÁC
+    receiver_username = 'admin';
+    conv_id = req.user.username;
+  }
+
+  try {
+    await pool.execute(
+      'INSERT INTO support_messages (id, sender_username, sender_role, receiver_username, conversation_id, message, is_read) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [msgId, sender_username, sender_role, receiver_username, conv_id, message.trim(), false]
+    );
+
+    const newMsg = {
+      id: msgId,
+      sender_username,
+      sender_role,
+      receiver_username,
+      conversation_id: conv_id,
+      message: message.trim(),
+      is_read: false,
+      created_at: new Date().toISOString()
+    };
+
+    // Emit Realtime qua Socket
+    if (isAdmin) {
+      io.to(`user_${receiver_username}`).emit('new_support_message', newMsg);
+      io.to('admins').emit('new_support_message', newMsg);
+    } else {
+      io.to('admins').emit('new_support_message', newMsg);
+      io.to(`user_${sender_username}`).emit('new_support_message', newMsg);
+    }
+
+    res.json({ success: true, data: newMsg });
+  } catch (error) {
+    console.error('Lỗi lưu tin nhắn:', error);
+    res.status(500).json({ success: false, message: 'Lỗi gửi tin nhắn' });
+  }
+});
+
+// 4. PUT /api/support-chat/read/:conversationId
+app.put('/api/support-chat/read/:conversationId', requireAuth, async (req, res) => {
+  const { conversationId } = req.params;
+  const isAdmin = req.user.role === 'admin';
+
+  try {
+    if (isAdmin) {
+      await pool.execute(
+        'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
+        [conversationId, 'admin']
+      );
+      io.to(`user_${conversationId}`).emit('messages_marked_read', { conversationId });
+    } else {
+      await pool.execute(
+        'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
+        [req.user.username, req.user.username]
+      );
+      io.to('admins').emit('messages_marked_read', { conversationId: req.user.username });
+    }
+
+    res.json({ success: true, message: 'Đã đánh dấu đã đọc' });
+  } catch (error) {
+    console.error('Lỗi đánh dấu đã đọc:', error);
+    res.status(500).json({ success: false });
+  }
+});
+
+// 5. GET /api/support-chat/unread-count
+app.get('/api/support-chat/unread-count', requireAuth, async (req, res) => {
+  const isAdmin = req.user.role === 'admin';
+
+  try {
+    let unreadCount = 0;
+    if (isAdmin) {
+      const [rows] = await pool.execute(
+        'SELECT COUNT(*) as count FROM support_messages WHERE receiver_username = ? AND is_read = FALSE',
+        ['admin']
+      );
+      unreadCount = rows[0].count;
+    } else {
+      const [rows] = await pool.execute(
+        'SELECT COUNT(*) as count FROM support_messages WHERE conversation_id = ? AND receiver_username = ? AND is_read = FALSE',
+        [req.user.username, req.user.username]
+      );
+      unreadCount = rows[0].count;
+    }
+
+    res.json({ success: true, unreadCount });
+  } catch (error) {
+    console.error('Lỗi đếm tin nhắn chưa đọc:', error);
+    res.status(500).json({ success: false, unreadCount: 0 });
   }
 });
 

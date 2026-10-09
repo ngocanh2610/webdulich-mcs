@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
 const AppContext = createContext();
@@ -10,6 +10,24 @@ export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [socket, setSocket] = useState(null);
+  const [unreadSupportChat, setUnreadSupportChat] = useState(0);
+
+  const fetchUnreadChatCount = useCallback(async (token) => {
+    const currentToken = token || localStorage.getItem('token');
+    if (!currentToken) return;
+
+    try {
+      const res = await fetch('/api/support-chat/unread-count', {
+        headers: { 'Authorization': `Bearer ${currentToken}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUnreadSupportChat(data.unreadCount || 0);
+      }
+    } catch (err) {
+      console.error('Không thể lấy số tin nhắn chưa đọc:', err);
+    }
+  }, []);
 
   // Check token on mount
   useEffect(() => {
@@ -25,9 +43,10 @@ export const AppProvider = ({ children }) => {
           if (data.success) {
             setUser(data.user);
             const newSocket = io({
-              query: { username: data.user.username }
+              query: { username: data.user.username, role: data.user.role }
             });
             setSocket(newSocket);
+            fetchUnreadChatCount(token);
           } else {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -43,6 +62,35 @@ export const AppProvider = ({ children }) => {
       if (socket) socket.disconnect();
     };
   }, []);
+
+  // Lắng nghe socket events cho Chat Support
+  useEffect(() => {
+    if (!socket || !user) return;
+
+    const handleNewMessage = (msg) => {
+      // Nếu là Admin và tin nhắn gửi tới admin
+      if (user.role === 'admin' && msg.receiver_username === 'admin') {
+        // Tăng badge unread nếu không đang mở trang chat
+        setUnreadSupportChat(prev => prev + 1);
+      }
+      // Nếu là User và tin nhắn gửi từ admin tới user này
+      else if (user.role !== 'admin' && msg.receiver_username === user.username && msg.sender_role === 'admin') {
+        setUnreadSupportChat(prev => prev + 1);
+      }
+    };
+
+    const handleMessagesRead = () => {
+      fetchUnreadChatCount();
+    };
+
+    socket.on('new_support_message', handleNewMessage);
+    socket.on('messages_marked_read', handleMessagesRead);
+
+    return () => {
+      socket.off('new_support_message', handleNewMessage);
+      socket.off('messages_marked_read', handleMessagesRead);
+    };
+  }, [socket, user, fetchUnreadChatCount]);
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -66,7 +114,6 @@ export const AppProvider = ({ children }) => {
         if (provData.success) {
           const finalProvinces = provData.data.map(p => ({
             ...p,
-            // Sử dụng số lượng đếm được từ server, nếu không có thì mặc định là 0
             locationCount: counts[p.id] || counts[p.slug] || 0
           }));
           setProvinces(finalProvinces);
@@ -87,15 +134,17 @@ export const AppProvider = ({ children }) => {
     setUser(userData);
     
     const newSocket = io({
-      query: { username: userData.username }
+      query: { username: userData.username, role: userData.role }
     });
     setSocket(newSocket);
+    fetchUnreadChatCount(token);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
+    setUnreadSupportChat(0);
     
     if (socket) {
       socket.disconnect();
@@ -110,6 +159,9 @@ export const AppProvider = ({ children }) => {
     loading,
     user,
     socket,
+    unreadSupportChat,
+    setUnreadSupportChat,
+    fetchUnreadChatCount,
     login,
     logout
   };
