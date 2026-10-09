@@ -8,12 +8,14 @@ CREATE TABLE users (
   email VARCHAR(100) UNIQUE NOT NULL,
   password VARCHAR(255),
   role VARCHAR(50) DEFAULT 'user',
+  avatar LONGTEXT NULL,
+  status VARCHAR(20) DEFAULT 'active',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Thêm user admin mặc định
-INSERT IGNORE INTO users (id, username, email, password, role, created_at) 
-VALUES ('admin', 'admin', 'admin@vietnamtourism.vn', '$2a$10$Dn0PSZeWI4bDWbg9wSdK9e8Prc2hGxJS.oKQFwdbl8udQsVSMEWXq', 'admin', NOW()); 
+INSERT IGNORE INTO users (id, username, email, password, role, avatar, status, created_at) 
+VALUES ('admin', 'admin', 'admin@vietnamtourism.vn', '$2a$10$Dn0PSZeWI4bDWbg9wSdK9e8Prc2hGxJS.oKQFwdbl8udQsVSMEWXq', 'admin', NULL, 'active', NOW()); 
 
 -- Bảng OTPs (Lưu thông tin đăng ký tạm thời)
 CREATE TABLE otps (
