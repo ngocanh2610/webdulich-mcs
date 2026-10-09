@@ -49,6 +49,44 @@ const Navbar = () => {
       width: '100%', 
       zIndex: 1000
     }}>
+      {/* Top Utility Bar (Phong cách Vietravel & Du Lịch Bình Minh) */}
+      <div style={{
+        background: '#011E40',
+        color: '#E2E8F0',
+        fontSize: '0.8rem',
+        borderBottom: '1px solid rgba(255,255,255,0.08)'
+      }}>
+        <div style={{
+          maxWidth: '1440px',
+          margin: '0 auto',
+          padding: '0.35rem 1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '0.5rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Headset size={14} color="#F59E0B" /> Hotline CSKH: <strong style={{ color: '#FCD34D' }}>0816 951 801</strong>
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#94A3B8' }}>
+              ✉️ doanngocanh26102005@gmail.com
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#34D399' }}>
+              ● Trực tuyến 24/7 toàn quốc
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <Link to="/planner" style={{ color: '#FDE047', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.3rem', textDecoration: 'none' }}>
+              <Sparkles size={13} color="#F59E0B" /> Kế Hoạch Du Lịch
+            </Link>
+            <span style={{ color: '#64748B' }}>|</span>
+            <span style={{ color: '#CBD5E1' }}>Bản đồ {mode} Tỉnh Thành</span>
+          </div>
+        </div>
+      </div>
+
       <div className="nav-inner-container">
         {/* Brand Logo */}
         <Link 
@@ -62,14 +100,14 @@ const Navbar = () => {
           }}
         >
           <div style={{ 
-            background: 'var(--accent-gradient)', 
+            background: 'linear-gradient(135deg, #02326A 0%, #005294 100%)', 
             width: '40px',
             height: '40px',
             borderRadius: '12px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(255, 56, 92, 0.25)',
+            boxShadow: '0 3px 10px rgba(2, 50, 106, 0.25)',
             flexShrink: 0
           }}>
             <Compass size={22} color="white" />
@@ -79,10 +117,10 @@ const Navbar = () => {
             fontWeight: 800, 
             fontSize: '1.25rem', 
             letterSpacing: '-0.3px',
-            color: '#111827',
+            color: 'var(--brand-navy)',
             whiteSpace: 'nowrap'
           }}>
-            Vietnam<span style={{ color: 'var(--accent-primary)' }}>Tourism</span>
+            Vietnam<span style={{ color: 'var(--brand-red)' }}>Tourism</span>
           </span>
         </Link>
         
@@ -108,14 +146,14 @@ const Navbar = () => {
               display: 'inline-flex', 
               alignItems: 'center', 
               gap: '0.45rem', 
-              background: isActive('/planner') ? '#00A699' : '#F0FDFA', 
-              color: isActive('/planner') ? '#FFFFFF' : '#00A699', 
+              background: isActive('/planner') ? '#E11D48' : '#EFF6FF', 
+              color: isActive('/planner') ? '#FFFFFF' : '#02326A', 
               padding: '0.45rem 1rem', 
               borderRadius: '20px', 
               fontWeight: 700, 
               fontSize: '0.875rem',
-              border: isActive('/planner') ? '1px solid #00A699' : '1px solid #99F6E4',
-              boxShadow: isActive('/planner') ? '0 4px 12px rgba(0, 166, 153, 0.25)' : 'none',
+              border: isActive('/planner') ? '1px solid #E11D48' : '1px solid #BFDBFE',
+              boxShadow: isActive('/planner') ? '0 4px 12px rgba(225, 29, 72, 0.25)' : 'none',
               textDecoration: 'none',
               whiteSpace: 'nowrap',
               flexShrink: 0,
@@ -123,16 +161,17 @@ const Navbar = () => {
             }}
             onMouseEnter={(e) => {
               if (!isActive('/planner')) {
-                e.currentTarget.style.background = '#CCFBF1';
+                e.currentTarget.style.background = '#DBEAFE';
               }
             }}
             onMouseLeave={(e) => {
               if (!isActive('/planner')) {
-                e.currentTarget.style.background = '#F0FDFA';
+                e.currentTarget.style.background = '#EFF6FF';
               }
             }}
           >
-            <span>Lập Kế Hoạch AI</span>
+            <Sparkles size={15} color={isActive('/planner') ? '#FFFFFF' : '#E11D48'} />
+            <span>Lập Kế Hoạch</span>
           </Link>
         </div>
 

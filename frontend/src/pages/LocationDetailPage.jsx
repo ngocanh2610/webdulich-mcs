@@ -498,51 +498,54 @@ const LocationDetailPage = () => {
               )}
             </div>
             
-            <h1 style={{ fontSize: '3rem', marginBottom: '1.5rem', lineHeight: 1.2 }}>{location.name}</h1>
+            <h1 style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', marginBottom: '1.25rem', lineHeight: 1.25, color: 'var(--brand-navy)', fontWeight: 900 }}>{location.name}</h1>
             
-            <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>Thông tin chi tiết</h3>
-              <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '1.125rem', whiteSpace: 'pre-line' }}>
+            <div className="glass-panel" style={{ padding: '1.75rem 2rem', marginBottom: '2rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.85rem', color: 'var(--brand-navy)', fontWeight: 800 }}>Thông Tin Giới Thiệu</h3>
+              <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '1.05rem', whiteSpace: 'pre-line' }}>
                 {location.description}
               </p>
             </div>
             
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <Tag size={20} color="var(--text-muted)" />
+            <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <Tag size={18} color="var(--brand-navy)" />
               {location.tags?.map(tag => (
-                <span key={tag} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-light)', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.875rem' }}>
-                  {tag}
+                <span key={tag} style={{ background: '#F1F5F9', border: '1px solid #CBD5E1', color: '#334155', padding: '0.4rem 0.85rem', borderRadius: '8px', fontSize: '0.825rem', fontWeight: 600 }}>
+                  #{tag}
                 </span>
               ))}
             </div>
             
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border-light)' }}>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #E2E8F0' }}>
               <button 
                 onClick={handleReact}
                 style={{ 
-                  display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem',
-                  borderRadius: '30px', border: hasReacted ? 'none' : '1px solid var(--border-light)',
-                  background: hasReacted ? 'var(--accent-primary)' : 'rgba(255,255,255,0.05)',
-                  color: hasReacted ? 'white' : 'var(--text-primary)',
+                  display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.4rem',
+                  borderRadius: '30px', 
+                  border: hasReacted ? 'none' : '1px solid #FECDD3',
+                  background: hasReacted ? 'var(--brand-red)' : '#FFF1F2',
+                  color: hasReacted ? 'white' : 'var(--brand-red)',
                   cursor: 'pointer', transition: 'all 0.2s',
-                  fontWeight: 600, fontSize: '1rem'
+                  fontWeight: 700, fontSize: '0.95rem'
                 }}
               >
-                <Heart fill={hasReacted ? 'white' : 'transparent'} size={20} /> 
+                <Heart fill={hasReacted ? 'white' : 'transparent'} size={18} /> 
                 {location.reactions?.length || 0} Yêu thích
               </button>
               
               <button 
-                onClick={() => document.getElementById('comment-input').focus()}
+                onClick={() => document.getElementById('comment-input')?.focus()}
                 style={{ 
-                  display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem',
-                  borderRadius: '30px', border: '1px solid var(--border-light)',
-                  background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)',
+                  display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.4rem',
+                  borderRadius: '30px', 
+                  border: '1px solid #BFDBFE',
+                  background: '#EFF6FF', 
+                  color: 'var(--brand-navy)',
                   cursor: 'pointer', transition: 'all 0.2s',
-                  fontWeight: 600, fontSize: '1rem'
+                  fontWeight: 700, fontSize: '0.95rem'
                 }}
               >
-                <MessageSquare size={20} />
+                <MessageSquare size={18} />
                 {comments.length} Bình luận
               </button>
             </div>
