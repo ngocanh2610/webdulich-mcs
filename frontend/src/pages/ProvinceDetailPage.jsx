@@ -95,78 +95,85 @@ const ProvinceDetailPage = () => {
           <button 
             onClick={() => navigate('/provinces')} 
             style={{ 
-              background: 'transparent', 
-              border: 'none', 
-              color: 'var(--text-secondary)',
-              display: 'flex', 
+              background: 'rgba(0, 0, 0, 0.45)', 
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)', 
+              color: '#FFFFFF',
+              display: 'inline-flex', 
               alignItems: 'center', 
               gap: '0.5rem',
               cursor: 'pointer',
-              marginBottom: '1rem',
-              padding: 0
+              marginBottom: '1.25rem',
+              padding: '0.45rem 1rem',
+              borderRadius: '20px',
+              fontWeight: 600,
+              fontSize: '0.875rem'
             }}
           >
-            <ArrowLeft size={16} /> Quay lại
+            <ArrowLeft size={16} /> Quay lại danh sách tỉnh thành
           </button>
           
-          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
             <span style={{
               display: 'inline-block',
-              padding: '4px 12px',
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              padding: '0.3rem 0.85rem',
+              backgroundColor: 'rgba(2, 50, 106, 0.85)',
               color: '#FFFFFF',
-              border: '1px solid rgba(255, 255, 255, 0.5)',
-              borderRadius: '16px',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              marginBottom: '1rem'
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '20px',
+              fontSize: '0.85rem',
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
             }}>
               {province.region}
             </span>
             {province.mergedFrom && (
-              <span style={{ background: 'var(--accent-secondary)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+              <span style={{ background: 'var(--brand-red)', color: 'white', padding: '0.3rem 0.85rem', borderRadius: '20px', fontSize: '0.825rem', fontWeight: 700 }}>
                 Sáp nhập từ: {province.mergedFrom.join(', ')}
               </span>
             )}
           </div>
           
-          <h1 style={{ fontSize: '4rem', marginBottom: '1rem', lineHeight: 1.1, color: '#FFFFFF' }}>{province.name}</h1>
-          <p style={{ fontSize: '1.25rem', color: 'rgba(255, 255, 255, 0.9)', maxWidth: '800px', lineHeight: 1.6 }}>
+          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '0.85rem', lineHeight: 1.15, color: '#FFFFFF', fontWeight: 900, textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>
+            {province.name}
+          </h1>
+          <p style={{ fontSize: '1.15rem', color: 'rgba(255, 255, 255, 0.95)', maxWidth: '850px', lineHeight: 1.7, textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
             {province.description}
           </p>
         </div>
       </div>
 
       {/* Content */}
-      <div className="container" style={{ marginTop: '2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
-          <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px' }}>
-              <Maximize size={32} color="var(--accent-primary)" />
+      <div className="container" style={{ marginTop: '2.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
+          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+            <div style={{ background: '#EFF6FF', padding: '0.9rem', borderRadius: '12px', color: 'var(--brand-navy)' }}>
+              <Maximize size={28} />
             </div>
             <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Diện tích</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{province.area.toLocaleString()} <span style={{ fontSize: '1rem', fontWeight: 400, color: 'var(--text-secondary)' }}>km²</span></div>
+              <div style={{ color: '#64748B', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Diện tích tự nhiên</div>
+              <div style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--brand-navy)' }}>{province.area.toLocaleString()} <span style={{ fontSize: '0.95rem', fontWeight: 500, color: '#64748B' }}>km²</span></div>
             </div>
           </div>
           
-          <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px' }}>
-              <Users size={32} color="var(--accent-primary)" />
+          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+            <div style={{ background: '#FEF2F2', padding: '0.9rem', borderRadius: '12px', color: 'var(--brand-red)' }}>
+              <Users size={28} />
             </div>
             <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Dân số</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{province.population.toLocaleString()} <span style={{ fontSize: '1rem', fontWeight: 400, color: 'var(--text-secondary)' }}>người</span></div>
+              <div style={{ color: '#64748B', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dân số ước tính</div>
+              <div style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--brand-navy)' }}>{province.population.toLocaleString()} <span style={{ fontSize: '0.95rem', fontWeight: 500, color: '#64748B' }}>người</span></div>
             </div>
           </div>
           
-          <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px' }}>
-              <MapPin size={32} color="var(--accent-primary)" />
+          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+            <div style={{ background: '#FEF3C7', padding: '0.9rem', borderRadius: '12px', color: '#D97706' }}>
+              <MapPin size={28} />
             </div>
             <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Trung tâm hành chính</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{province.capital}</div>
+              <div style={{ color: '#64748B', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Trung tâm hành chính</div>
+              <div style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--brand-navy)' }}>{province.capital}</div>
             </div>
           </div>
         </div>
@@ -175,11 +182,11 @@ const ProvinceDetailPage = () => {
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Địa điểm nổi bật</h2>
-              <p style={{ color: 'var(--text-secondary)' }}>Khám phá những điểm đến tuyệt vời tại {province.name}</p>
+              <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--brand-navy)', marginBottom: '0.4rem' }}>Địa Điểm Nổi Bật</h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Khám phá các danh thắng, khu du lịch và di tích tiêu biểu tại {province.name}</p>
             </div>
             <button 
-              className="btn-primary" 
+              className="btn-action-red" 
               onClick={() => {
                 if (!user) {
                   navigate('/auth');
@@ -188,7 +195,7 @@ const ProvinceDetailPage = () => {
                 }
               }}
             >
-              <Plus size={18} /> Đóng góp địa điểm
+              <Plus size={18} /> Đóng góp địa điểm mới
             </button>
           </div>
           

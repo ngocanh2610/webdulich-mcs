@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import ProvinceCard from '../components/ProvinceCard';
 import SearchFilter from '../components/SearchFilter';
@@ -6,10 +7,18 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 const ProvincesPage = () => {
   const { mode, provinces, loading } = useAppContext();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [regionFilter, setRegionFilter] = useState('all');
+  const [searchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+  const [regionFilter, setRegionFilter] = useState(searchParams.get('region') || 'all');
   const [regions, setRegions] = useState([]);
   const [counts, setCounts] = useState({});
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    const r = searchParams.get('region');
+    if (q !== null) setSearchTerm(q);
+    if (r !== null) setRegionFilter(r);
+  }, [searchParams]);
 
   useEffect(() => {
     // Fetch regions

@@ -150,10 +150,10 @@ const TravelPlannerPage = () => {
         <div style={{
           textAlign: 'center',
           padding: '2.5rem 1.5rem',
-          background: '#F9FAFB',
+          background: '#FFFFFF',
           borderRadius: '24px',
-          border: '1px solid #E5E7EB',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)',
           marginBottom: '2rem',
           position: 'relative',
           overflow: 'hidden'
@@ -161,24 +161,24 @@ const TravelPlannerPage = () => {
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            background: '#F0FDFA',
-            color: '#00A699',
+            background: '#EFF6FF',
+            color: 'var(--brand-navy)',
             padding: '0.4rem 1rem',
             borderRadius: '20px',
             fontSize: '0.85rem',
             fontWeight: 700,
             marginBottom: '1rem',
-            border: '1px solid #99F6E4',
+            border: '1px solid #BFDBFE',
             letterSpacing: '0.5px'
           }}>
-            GỢI Ý LỊCH TRÌNH DU LỊCH THÔNG MINH
+            ⚡ TRỢ LÝ LẬP LỊCH TRÌNH DU LỊCH
           </div>
 
           <h1 style={{
             fontSize: '2.4rem',
             fontWeight: 800,
             fontFamily: 'var(--font-heading)',
-            color: '#111827',
+            color: 'var(--brand-navy)',
             lineHeight: 1.25,
             marginBottom: '0.75rem'
           }}>
@@ -357,13 +357,13 @@ const TravelPlannerPage = () => {
                       style={{
                         padding: '0.85rem',
                         borderRadius: '12px',
-                        border: `2px solid ${groupType === g.label ? '#00A699' : '#E5E7EB'}`,
-                        background: groupType === g.label ? '#F0FDFA' : '#FFFFFF',
+                        border: `2px solid ${groupType === g.label ? 'var(--brand-navy)' : '#E5E7EB'}`,
+                        background: groupType === g.label ? '#EFF6FF' : '#FFFFFF',
                         cursor: 'pointer',
                         transition: 'all 0.15s'
                       }}
                     >
-                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: groupType === g.label ? '#00A699' : '#111827' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: groupType === g.label ? 'var(--brand-navy)' : '#111827' }}>
                         {g.label}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: '#4B5563', marginTop: '2px' }}>
@@ -390,10 +390,10 @@ const TravelPlannerPage = () => {
                         style={{
                           padding: '0.55rem 0.95rem',
                           borderRadius: '25px',
-                          border: `1px solid ${isSelected ? '#00A699' : '#E5E7EB'}`,
-                          background: isSelected ? '#00A699' : '#F9FAFB',
+                          border: `1px solid ${isSelected ? 'var(--brand-navy)' : '#E5E7EB'}`,
+                          background: isSelected ? 'var(--brand-navy)' : '#F9FAFB',
                           color: isSelected ? '#FFFFFF' : '#374151',
-                          fontWeight: isSelected ? 600 : 500,
+                          fontWeight: isSelected ? 700 : 500,
                           fontSize: '0.85rem',
                           cursor: 'pointer',
                           display: 'inline-flex',
@@ -461,15 +461,15 @@ const TravelPlannerPage = () => {
                 type="submit"
                 disabled={loading}
                 style={{
-                  background: 'linear-gradient(135deg, #00A699 0%, #008489 100%)',
+                  background: 'linear-gradient(135deg, #E11D48 0%, #DC2626 100%)',
                   color: '#FFFFFF',
                   border: 'none',
-                  padding: '1rem 3rem',
+                  padding: '1.1rem 3.5rem',
                   borderRadius: '35px',
                   fontSize: '1.1rem',
-                  fontWeight: 700,
+                  fontWeight: 800,
                   cursor: loading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 6px 20px rgba(0, 166, 153, 0.35)',
+                  boxShadow: '0 6px 20px rgba(225, 29, 72, 0.35)',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.75rem',
@@ -479,13 +479,13 @@ const TravelPlannerPage = () => {
                 onMouseEnter={e => { 
                   if (!loading) {
                     e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 166, 153, 0.45)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(225, 29, 72, 0.45)';
                   }
                 }}
                 onMouseLeave={e => { 
                   if (!loading) {
                     e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 166, 153, 0.35)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(225, 29, 72, 0.35)';
                   }
                 }}
               >
