@@ -42,6 +42,7 @@ export const AppProvider = ({ children }) => {
           const data = await res.json();
           if (data.success) {
             setUser(data.user);
+            localStorage.setItem('user', JSON.stringify(data.user));
             const newSocket = io({
               query: { username: data.user.username, role: data.user.role }
             });
@@ -50,6 +51,10 @@ export const AppProvider = ({ children }) => {
           } else {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
+            setUser(null);
+            if (data.message && data.message.includes('vô hiệu hóa')) {
+              alert(data.message);
+            }
           }
         } catch (e) {
           console.error(e);
@@ -140,6 +145,14 @@ export const AppProvider = ({ children }) => {
     fetchUnreadChatCount(token);
   };
 
+  const updateUser = (updatedData) => {
+    setUser(prev => {
+      const merged = { ...prev, ...updatedData };
+      localStorage.setItem('user', JSON.stringify(merged));
+      return merged;
+    });
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -163,6 +176,7 @@ export const AppProvider = ({ children }) => {
     setUnreadSupportChat,
     fetchUnreadChatCount,
     login,
+    updateUser,
     logout
   };
 

@@ -1,35 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Map as MapIcon, Compass, User, LogOut, ShieldCheck, Sparkles, Menu, X, ArrowRight, Headset } from 'lucide-react';
+import { Map as MapIcon, Compass, User, LogOut, ShieldCheck, Sparkles, Menu, X, ArrowRight, Headset, ChevronDown, Users } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import NotificationDropdown from './NotificationDropdown';
 
 const Navbar = () => {
   const { mode, setMode, user, logout, unreadSupportChat } = useAppContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const mobileMenuRef = useRef(null);
+  const userMenuRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Close mobile drawer when location changes
+  // Close menus when location changes
   useEffect(() => {
     setMobileMenuOpen(false);
+    setUserMenuOpen(false);
   }, [location.pathname]);
 
-  // Close mobile drawer on click outside
+  // Close menus on click outside
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
         setMobileMenuOpen(false);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
     };
-    if (mobileMenuOpen) {
-      document.addEventListener('mousedown', handleOutsideClick);
-    }
+    document.addEventListener('mousedown', handleOutsideClick);
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, [mobileMenuOpen]);
+  }, []);
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -252,77 +256,258 @@ const Navbar = () => {
           <NotificationDropdown />
 
           {/* User Account / Login */}
+          {/* User Account / Login */}
           {user ? (
-            <div style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '0.65rem', 
-              background: '#F9FAFB', 
-              padding: '0.35rem 0.75rem 0.35rem 0.45rem', 
-              borderRadius: '24px', 
-              border: '1px solid #E5E7EB',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
-              whiteSpace: 'nowrap',
-              flexShrink: 0
-            }}>
-              <div style={{ 
-                width: '32px', 
-                height: '32px', 
-                borderRadius: '50%', 
-                background: 'var(--accent-gradient)', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                color: '#FFFFFF',
-                flexShrink: 0
-              }}>
-                <User size={16} />
-              </div>
-              <span style={{ 
-                fontWeight: 600, 
-                fontSize: '0.875rem',
-                color: '#1F2937', 
-                maxWidth: '120px', 
-                overflow: 'hidden', 
-                textOverflow: 'ellipsis', 
-                whiteSpace: 'nowrap' 
-              }}>
-                {user.username}
-              </span>
-              {user.role === 'admin' && (
-                <span style={{ 
-                  fontSize: '0.65rem', 
-                  fontWeight: 700,
-                  background: '#EF4444', 
-                  color: '#FFFFFF',
-                  padding: '0.15rem 0.45rem', 
-                  borderRadius: '10px',
-                  letterSpacing: '0.5px'
-                }}>
-                  ADMIN
-                </span>
-              )}
-              <div style={{ width: '1px', height: '18px', background: '#E5E7EB', margin: '0 0.15rem' }} />
-              <button 
-                type="button"
-                onClick={logout}
+            <div ref={userMenuRef} style={{ position: 'relative' }}>
+              <div 
                 style={{ 
-                  background: 'transparent', 
-                  border: 'none', 
-                  color: '#9CA3AF', 
-                  cursor: 'pointer', 
                   display: 'inline-flex', 
-                  alignItems: 'center',
-                  padding: '0.2rem',
-                  borderRadius: '6px',
-                  transition: 'color 0.15s ease'
+                  alignItems: 'center', 
+                  gap: '0.5rem', 
+                  background: '#F9FAFB', 
+                  padding: '0.3rem 0.65rem 0.3rem 0.35rem', 
+                  borderRadius: '24px', 
+                  border: '1px solid #E5E7EB',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
                 }}
-                onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
-                onMouseLeave={e => e.currentTarget.style.color = '#9CA3AF'}
-                title="Đăng xuất"
+                onMouseEnter={e => e.currentTarget.style.borderColor = '#D1D5DB'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = '#E5E7EB'}
               >
-                <LogOut size={17} />
-              </button>
+                {/* Avatar with click to profile */}
+                <div 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/profile');
+                  }}
+                  style={{ 
+                    width: '32px', 
+                    height: '32px', 
+                    borderRadius: '50%', 
+                    background: 'var(--accent-gradient)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    color: '#FFFFFF',
+                    flexShrink: 0,
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 6px rgba(255, 56, 92, 0.25)',
+                    border: '1.5px solid #FFFFFF'
+                  }}
+                  title="Nhấn để xem thông tin cá nhân"
+                >
+                  {user.avatar ? (
+                    <img 
+                      src={user.avatar} 
+                      alt={user.username} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.parentElement.innerText = user.username.charAt(0).toUpperCase();
+                      }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: '0.85rem', fontWeight: 700 }}>
+                      {user.username.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+
+                {/* Username & role pill */}
+                <div 
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}
+                >
+                  <span style={{ 
+                    fontWeight: 600, 
+                    fontSize: '0.875rem',
+                    color: '#1F2937', 
+                    maxWidth: '110px', 
+                    overflow: 'hidden', 
+                    textOverflow: 'ellipsis', 
+                    whiteSpace: 'nowrap' 
+                  }}>
+                    {user.username}
+                  </span>
+                  {user.role === 'admin' && (
+                    <span style={{ 
+                      fontSize: '0.65rem', 
+                      fontWeight: 700,
+                      background: '#EF4444', 
+                      color: '#FFFFFF',
+                      padding: '0.15rem 0.45rem', 
+                      borderRadius: '10px',
+                      letterSpacing: '0.5px'
+                    }}>
+                      ADMIN
+                    </span>
+                  )}
+                  <ChevronDown size={14} color="#6B7280" />
+                </div>
+              </div>
+
+              {/* Account Dropdown Menu */}
+              {userMenuOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 8px)',
+                  right: 0,
+                  width: '260px',
+                  background: '#FFFFFF',
+                  borderRadius: '18px',
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+                  border: '1px solid #E5E7EB',
+                  overflow: 'hidden',
+                  zIndex: 1100,
+                  animation: 'fadeIn 0.15s ease-out'
+                }}>
+                  {/* User Profile Header in Dropdown */}
+                  <div 
+                    onClick={() => {
+                      navigate('/profile');
+                      setUserMenuOpen(false);
+                    }}
+                    style={{
+                      padding: '1rem',
+                      background: 'linear-gradient(135deg, #FFF1F2 0%, #EFF6FF 100%)',
+                      borderBottom: '1px solid #E5E7EB',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem'
+                    }}
+                  >
+                    <div style={{
+                      width: '42px',
+                      height: '42px',
+                      borderRadius: '50%',
+                      background: 'var(--accent-gradient)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#FFFFFF',
+                      fontWeight: 700,
+                      fontSize: '1rem',
+                      overflow: 'hidden',
+                      flexShrink: 0,
+                      border: '2px solid #FFFFFF',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    }}>
+                      {user.avatar ? (
+                        <img 
+                          src={user.avatar} 
+                          alt={user.username} 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        user.username.charAt(0).toUpperCase()
+                      )}
+                    </div>
+                    <div style={{ overflow: 'hidden' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#111827', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {user.username}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#6B7280', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {user.email || 'Xem hồ sơ của bạn'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div style={{ padding: '0.5rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigate('/profile');
+                        setUserMenuOpen(false);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '0.65rem 0.85rem',
+                        borderRadius: '10px',
+                        border: 'none',
+                        background: 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.65rem',
+                        fontSize: '0.875rem',
+                        color: '#374151',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        textAlign: 'left'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#F3F4F6'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <User size={16} color="var(--accent-primary)" />
+                      <span>Thông tin cá nhân</span>
+                    </button>
+
+                    {user.role === 'admin' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigate('/profile?tab=users');
+                          setUserMenuOpen(false);
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '0.65rem 0.85rem',
+                          borderRadius: '10px',
+                          border: 'none',
+                          background: 'transparent',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.65rem',
+                          fontSize: '0.875rem',
+                          color: '#1D4ED8',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          textAlign: 'left'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#EFF6FF'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <Users size={16} color="#2563EB" />
+                        <span>Quản lý người dùng</span>
+                      </button>
+                    )}
+
+                    <div style={{ height: '1px', background: '#E5E7EB', margin: '0.35rem 0' }} />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        logout();
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '0.65rem 0.85rem',
+                        borderRadius: '10px',
+                        border: 'none',
+                        background: 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.65rem',
+                        fontSize: '0.875rem',
+                        color: '#EF4444',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        textAlign: 'left'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#FEF2F2'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <LogOut size={16} />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <button 
@@ -388,6 +573,86 @@ const Navbar = () => {
             animation: 'fadeIn 0.2s ease-out'
           }}
         >
+          {/* User Profile Card (Mobile) */}
+          {user ? (
+            <div 
+              onClick={() => {
+                navigate('/profile');
+                setMobileMenuOpen(false);
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.85rem',
+                padding: '0.85rem 1rem',
+                background: 'linear-gradient(135deg, #FFF1F2 0%, #EFF6FF 100%)',
+                borderRadius: '14px',
+                border: '1px solid #FECDD3',
+                cursor: 'pointer'
+              }}
+            >
+              <div style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '50%',
+                background: 'var(--accent-gradient)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FFFFFF',
+                fontWeight: 700,
+                fontSize: '1.1rem',
+                flexShrink: 0,
+                overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(255, 56, 92, 0.25)',
+                border: '2px solid #FFFFFF'
+              }}>
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  user.username.charAt(0).toUpperCase()
+                )}
+              </div>
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.95rem', color: '#1E293B' }}>{user.username}</span>
+                  {user.role === 'admin' && (
+                    <span style={{ fontSize: '0.65rem', background: '#EF4444', color: '#FFFFFF', padding: '1px 6px', borderRadius: '8px', fontWeight: 700 }}>
+                      ADMIN
+                    </span>
+                  )}
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Chạm để xem thông tin cá nhân</div>
+              </div>
+              <ArrowRight size={16} color="var(--accent-primary)" />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                navigate('/auth');
+                setMobileMenuOpen(false);
+              }}
+              style={{
+                padding: '0.75rem 1rem',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'var(--accent-gradient)',
+                color: '#FFFFFF',
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              <User size={18} />
+              <span>Đăng nhập / Đăng ký</span>
+            </button>
+          )}
+
           <Link 
             to="/" 
             onClick={() => setMobileMenuOpen(false)}
@@ -480,69 +745,124 @@ const Navbar = () => {
             </button>
           </div>
 
-          {user && user.role === 'admin' && (
+          {user && (
             <>
-              <button
-                type="button"
-                onClick={() => {
-                  navigate('/admin/approvals');
-                  setMobileMenuOpen(false);
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  background: '#FEF9C3',
-                  color: '#854D0E',
-                  border: '1px solid #FDE047',
-                  padding: '0.75rem 1rem',
-                  borderRadius: '12px',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',
-                  cursor: 'pointer'
-                }}
-              >
-                <ShieldCheck size={18} color="#CA8A04" />
-                <span>Quản lý duyệt bài</span>
-              </button>
+              {user.role === 'admin' && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate('/profile?tab=users');
+                      setMobileMenuOpen(false);
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      background: '#EFF6FF',
+                      color: '#1D4ED8',
+                      border: '1px solid #BFDBFE',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '12px',
+                      fontWeight: 600,
+                      fontSize: '0.9rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <Users size={18} color="#2563EB" />
+                    <span>Quản lý tài khoản người dùng</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate('/admin/approvals');
+                      setMobileMenuOpen(false);
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      background: '#FEF9C3',
+                      color: '#854D0E',
+                      border: '1px solid #FDE047',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '12px',
+                      fontWeight: 600,
+                      fontSize: '0.9rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <ShieldCheck size={18} color="#CA8A04" />
+                    <span>Quản lý duyệt bài</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate('/admin/chat');
+                      setMobileMenuOpen(false);
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      background: '#EFF6FF',
+                      color: '#1D4ED8',
+                      border: '1px solid #BFDBFE',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '12px',
+                      fontWeight: 600,
+                      fontSize: '0.9rem',
+                      cursor: 'pointer',
+                      position: 'relative'
+                    }}
+                  >
+                    <Headset size={18} color="#2563EB" />
+                    <span>Chat Hỗ trợ khách hàng</span>
+                    {unreadSupportChat > 0 && (
+                      <span style={{
+                        background: '#EF4444',
+                        color: '#FFFFFF',
+                        borderRadius: '10px',
+                        fontSize: '0.7rem',
+                        fontWeight: 800,
+                        padding: '2px 7px'
+                      }}>
+                        {unreadSupportChat} mới
+                      </span>
+                    )}
+                  </button>
+                </>
+              )}
 
               <button
                 type="button"
                 onClick={() => {
-                  navigate('/admin/chat');
                   setMobileMenuOpen(false);
+                  logout();
                 }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.5rem',
-                  background: '#EFF6FF',
-                  color: '#1D4ED8',
-                  border: '1px solid #BFDBFE',
+                  background: '#FEF2F2',
+                  color: '#DC2626',
+                  border: '1px solid #FECACA',
                   padding: '0.75rem 1rem',
                   borderRadius: '12px',
                   fontWeight: 600,
                   fontSize: '0.9rem',
                   cursor: 'pointer',
-                  position: 'relative'
+                  marginTop: '0.25rem'
                 }}
               >
-                <Headset size={18} color="#2563EB" />
-                <span>Chat Hỗ trợ khách hàng</span>
-                {unreadSupportChat > 0 && (
-                  <span style={{
-                    background: '#EF4444',
-                    color: '#FFFFFF',
-                    borderRadius: '10px',
-                    fontSize: '0.7rem',
-                    fontWeight: 800,
-                    padding: '2px 7px'
-                  }}>
-                    {unreadSupportChat} mới
-                  </span>
-                )}
+                <LogOut size={18} />
+                <span>Đăng xuất</span>
               </button>
             </>
           )}
