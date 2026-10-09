@@ -95,3 +95,19 @@ CREATE TABLE location_reactions (
   FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
   UNIQUE(location_id, username)
 );
+
+-- Bảng Tin nhắn Hỗ trợ Realtime giữa Người dùng và Admin (User <-> Admin)
+CREATE TABLE IF NOT EXISTS support_messages (
+  id VARCHAR(100) PRIMARY KEY,
+  sender_username VARCHAR(100) NOT NULL,
+  sender_role VARCHAR(20) NOT NULL DEFAULT 'user',
+  receiver_username VARCHAR(100) NOT NULL,
+  conversation_id VARCHAR(100) NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_conversation (conversation_id),
+  INDEX idx_sender (sender_username),
+  INDEX idx_receiver (receiver_username),
+  INDEX idx_created (created_at)
+);

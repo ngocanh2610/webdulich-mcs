@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Map as MapIcon, Compass, User, LogOut, ShieldCheck, Sparkles, Menu, X, ArrowRight } from 'lucide-react';
+import { Map as MapIcon, Compass, User, LogOut, ShieldCheck, Sparkles, Menu, X, ArrowRight, Headset } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import NotificationDropdown from './NotificationDropdown';
 
 const Navbar = () => {
-  const { mode, setMode, user, logout } = useAppContext();
+  const { mode, setMode, user, logout, unreadSupportChat } = useAppContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef(null);
   const navigate = useNavigate();
@@ -168,34 +168,84 @@ const Navbar = () => {
             <span className="nav-mode-badge-compact"><strong style={{ color: '#111827' }}>{mode} Tỉnh</strong></span>
           </button>
 
-          {/* Admin Approval Button */}
+          {/* Admin Approval & Support Chat Buttons */}
           {user && user.role === 'admin' && (
-            <button
-              type="button"
-              onClick={() => navigate('/admin/approvals')}
-              style={{
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '0.4rem',
-                background: '#FEF9C3', 
-                color: '#854D0E',
-                border: '1px solid #FDE047',
-                padding: '0.45rem 0.85rem', 
-                borderRadius: '20px',
-                fontWeight: 600, 
-                fontSize: '0.85rem', 
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-                transition: 'all 0.15s ease'
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = '#FEF08A'}
-              onMouseLeave={e => e.currentTarget.style.background = '#FEF9C3'}
-              title="Quản lý duyệt bài đăng"
-            >
-              <ShieldCheck size={16} color="#CA8A04" />
-              <span>Duyệt bài</span>
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => navigate('/admin/approvals')}
+                style={{
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '0.4rem',
+                  background: '#FEF9C3', 
+                  color: '#854D0E',
+                  border: '1px solid #FDE047',
+                  padding: '0.45rem 0.85rem', 
+                  borderRadius: '20px',
+                  fontWeight: 600, 
+                  fontSize: '0.85rem', 
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#FEF08A'}
+                onMouseLeave={e => e.currentTarget.style.background = '#FEF9C3'}
+                title="Quản lý duyệt bài đăng"
+              >
+                <ShieldCheck size={16} color="#CA8A04" />
+                <span>Duyệt bài</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate('/admin/chat')}
+                style={{
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '0.4rem',
+                  background: isActive('/admin/chat') ? '#2563EB' : '#EFF6FF', 
+                  color: isActive('/admin/chat') ? '#FFFFFF' : '#1D4ED8',
+                  border: '1px solid #BFDBFE',
+                  padding: '0.45rem 0.85rem', 
+                  borderRadius: '20px',
+                  fontWeight: 600, 
+                  fontSize: '0.85rem', 
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  position: 'relative',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={e => {
+                  if (!isActive('/admin/chat')) e.currentTarget.style.background = '#DBEAFE';
+                }}
+                onMouseLeave={e => {
+                  if (!isActive('/admin/chat')) e.currentTarget.style.background = '#EFF6FF';
+                }}
+                title="Quản lý tin nhắn hỗ trợ khách hàng realtime"
+              >
+                <Headset size={16} color={isActive('/admin/chat') ? '#FFFFFF' : '#2563EB'} />
+                <span>Chat Hỗ trợ</span>
+                {unreadSupportChat > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '-4px',
+                    right: '-4px',
+                    background: '#EF4444',
+                    color: '#FFFFFF',
+                    borderRadius: '10px',
+                    fontSize: '0.65rem',
+                    fontWeight: 800,
+                    padding: '1px 5px',
+                    border: '1px solid #FFFFFF'
+                  }}>
+                    {unreadSupportChat}
+                  </span>
+                )}
+              </button>
+            </>
           )}
 
           {/* Notifications Dropdown */}
@@ -431,30 +481,70 @@ const Navbar = () => {
           </div>
 
           {user && user.role === 'admin' && (
-            <button
-              type="button"
-              onClick={() => {
-                navigate('/admin/approvals');
-                setMobileMenuOpen(false);
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                background: '#FEF9C3',
-                color: '#854D0E',
-                border: '1px solid #FDE047',
-                padding: '0.75rem 1rem',
-                borderRadius: '12px',
-                fontWeight: 600,
-                fontSize: '0.9rem',
-                cursor: 'pointer'
-              }}
-            >
-              <ShieldCheck size={18} color="#CA8A04" />
-              <span>Quản lý duyệt bài</span>
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  navigate('/admin/approvals');
+                  setMobileMenuOpen(false);
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  background: '#FEF9C3',
+                  color: '#854D0E',
+                  border: '1px solid #FDE047',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  cursor: 'pointer'
+                }}
+              >
+                <ShieldCheck size={18} color="#CA8A04" />
+                <span>Quản lý duyệt bài</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  navigate('/admin/chat');
+                  setMobileMenuOpen(false);
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  background: '#EFF6FF',
+                  color: '#1D4ED8',
+                  border: '1px solid #BFDBFE',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  position: 'relative'
+                }}
+              >
+                <Headset size={18} color="#2563EB" />
+                <span>Chat Hỗ trợ khách hàng</span>
+                {unreadSupportChat > 0 && (
+                  <span style={{
+                    background: '#EF4444',
+                    color: '#FFFFFF',
+                    borderRadius: '10px',
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                    padding: '2px 7px'
+                  }}>
+                    {unreadSupportChat} mới
+                  </span>
+                )}
+              </button>
+            </>
           )}
         </div>
       )}
