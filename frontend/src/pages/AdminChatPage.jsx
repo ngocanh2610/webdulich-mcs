@@ -315,7 +315,7 @@ const AdminChatPage = () => {
       width: '100%',
       maxWidth: '1440px',
       margin: '0 auto',
-      padding: '76px 16px 16px',
+      padding: '120px 16px 16px',
       height: '100vh',
       boxSizing: 'border-box',
       display: 'flex',

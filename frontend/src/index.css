@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Phong cách Chuyên nghiệp Du Lịch Việt Nam (Inspired by Vietravel & Du Lịch Bình Minh) */
+  /* Phong cách Chuyên nghiệp Du Lịch Việt Nam */
   --brand-navy: #02326A;        /* Xanh đại dương hoàng gia - Thương hiệu chủ đạo uy tín */
   --brand-navy-dark: #011E40;   /* Xanh thẫm sang trọng */
   --brand-navy-light: #005294;  /* Xanh sáng năng động */
   --brand-blue: #0284C7;        /* Xanh biển trời miền nhiệt đới */
-  --brand-red: #E11D48;         /* Đỏ cờ / Đỏ Vietravel rực rỡ - Điểm nhấn hành động, Hot Deal */
+  --brand-red: #E11D48;         /* Đỏ cờ rực rỡ - Điểm nhấn hành động, Hot Deal */
   --brand-red-hover: #BE123C;
   --brand-gold: #F59E0B;        /* Vàng ánh kim / Ánh bình minh - Đánh giá sao, ưu đãi */
   --brand-gold-dark: #D97706;
@@ -311,7 +311,7 @@ a:hover {
   border-color: var(--brand-navy);
 }
 
-/* Commercial Tour & Destination Cards (Vietravel / Bình Minh style) */
+/* Destination & Tour Cards */
 .card {
   background: #FFFFFF;
   border: 1px solid var(--border-light);

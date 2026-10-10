@@ -104,7 +104,7 @@ const Home = () => {
       </section>
 
 
-      {/* Why Choose Vietnam Tourism (Vietravel Trust Section) */}
+      {/* Why Choose Vietnam Tourism */}
       <section style={{ padding: '5rem 0', background: '#F8FAFC' }}>
         <div className="container" style={{ textAlign: 'center' }}>
           <div style={{ 

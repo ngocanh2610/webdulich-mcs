@@ -91,7 +91,7 @@ const Footer = () => {
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.9rem' }}>
               <li>
                 <Link to="/planner" style={{ color: '#FDE047', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Sparkles size={14} color="#FBBF24" /> Lập Lịch Trình Thông Minh
+                  <Sparkles size={14} color="#FBBF24" /> Lập Lịch Trình AI
                 </Link>
               </li>
               <li>

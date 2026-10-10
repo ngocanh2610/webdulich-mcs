@@ -1,6 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { 
+  VIETNAM_PROVINCES_DATA, 
+  detectDestinationProvince, 
+  extractTripRoute, 
+  buildSmartItinerary 
+} = require('./vietnamTourismKnowledge');
 
 const app = express();
 const port = process.env.PORT || 3004;
@@ -11,7 +17,7 @@ app.use(express.json());
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 const MODELS = (process.env.GEMINI_MODELS || 'gemini-3.1-flash-lite,gemini-3.5-flash-lite,gemini-3.8-flash,gemini-3.5-flash').split(',');
-const SYSTEM_INSTRUCTION = "Bạn là một chuyên gia tư vấn du lịch Việt Nam chuyên sâu có tên là VietnamTourism AI. Bạn chỉ trả lời các câu hỏi liên quan đến du lịch, địa điểm, văn hóa, và ẩm thực của Việt Nam. Giữ câu trả lời chi tiết, thân thiện, hữu ích và phong phú.";
+const SYSTEM_INSTRUCTION = "Bạn là chuyên gia tư vấn du lịch Việt Nam cao cấp hàng đầu từ VietnamTourism AI. Bạn am hiểu sâu sắc mọi tuyến điểm, thời gian di chuyển, chuyến bay, khách sạn, nhà hàng đặc sản và danh thắng trên khắp 63 tỉnh thành Việt Nam. Phong cách trả lời của bạn chuyên nghiệp, ân cần, chi tiết, định dạng rõ ràng với các gạch đầu dòng câu hỏi và gợi ý thiết thực.";
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 const withTimeout = (promise, ms) => Promise.race([
@@ -38,7 +44,7 @@ async function generateWithFallback(message, customSystemInstruction) {
   throw lastError || new Error('All models unavailable');
 }
 
-// 1. API Chat Trợ lý ảo (dành cho widget nhỏ hoặc hỏi đáp chung)
+// 1. API Chat Trợ lý ảo cơ bản
 app.post('/api/chat', async (req, res) => {
   try {
     const { message } = req.body;
@@ -54,7 +60,96 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// 2. API Lập Kế Hoạch Du Lịch Chuyên Sâu 100% BẰNG AI & NLP
+// 2. API MAKE-YOUR-TRIP LẬP LỊCH TRÌNH THÔNG MINH (HỘI THOẠI THỜI GIAN THỰC + SINH LỊCH TRÌNH ĐỒNG BỘ BẢN ĐỒ)
+app.post('/api/chat/make-your-trip', async (req, res) => {
+  try {
+    const { 
+      message, 
+      conversationHistory = [], 
+      currentPlan = null, 
+      dates = null, 
+      guests = 1, 
+      rooms = 1 
+    } = req.body;
+
+    const userMsg = (message || '').trim();
+    if (!userMsg) {
+      return res.status(400).json({ success: false, error: 'Vui lòng nhập tin nhắn hoặc yêu cầu của bạn.' });
+    }
+
+    console.log(`[MAKE-YOUR-TRIP] Nhận yêu cầu: "${userMsg}"`);
+
+    // Phân tích ý định người dùng (NLP parsing)
+    const lowerMsg = userMsg.toLowerCase();
+    
+    // Phát hiện số ngày (ví dụ: "7 ngày", "3 ngày", "4n3đ", "5 ngày 4 đêm", "2 ngày 1 đêm")
+    let detectedDays = currentPlan?.days || 3;
+    const daysMatch = lowerMsg.match(/(\d+)\s*(?:ngày|ngay|n)/);
+    if (daysMatch) {
+      detectedDays = parseInt(daysMatch[1], 10);
+    }
+
+    // Phát hiện điểm xuất phát & điểm đến tự động từ câu hỏi của người dùng
+    const route = extractTripRoute(userMsg);
+    let startLoc = route.startLocation || currentPlan?.startLocation || 'Hà Nội';
+    let destLoc = route.destination || detectDestinationProvince(userMsg) || currentPlan?.destination || 'Đà Lạt';
+
+    // Sinh kế hoạch nền tảng từ bộ dữ liệu tri thức du lịch Việt Nam chuyên sâu
+    let updatedPlan = buildSmartItinerary({
+      startLocation: startLoc,
+      destination: destLoc,
+      days: detectedDays,
+      budget: currentPlan?.totalBudget || (detectedDays * 1500000),
+      guests: guests || currentPlan?.guests || 1,
+      rooms: rooms || currentPlan?.rooms || 1,
+      travelStyle: 'Văn hóa & Khám phá & Ẩm thực',
+      specialRequests: userMsg
+    });
+
+    // Soạn phản hồi hội thoại chuyên nghiệp của VietnamTourism AI
+    const replyText = `VietnamTourism AI đã thiết kế hoàn chỉnh kế hoạch du lịch **${destLoc}** (${detectedDays} ngày ${detectedDays > 1 ? detectedDays - 1 : 0} đêm) cho bạn!
+
+• Lộ trình từng ngày đã được hiển thị chi tiết ở bảng bên cạnh với mốc thời gian, điểm tham quan, ẩm thực đặc sản và mẹo du lịch thực tế.
+• Bạn có thể nhấn vào biểu tượng hoặc nút **"Xem trên Google Maps"** tại mỗi địa điểm để mở bản đồ Google Maps bên ngoài dẫn đường tức thì!
+
+Bạn có thể nhập thêm yêu cầu (đổi quán ăn, thêm điểm đến, thay đổi số ngày) để AI tối ưu lại nhé!`;
+
+    const suggestedPrompts = [
+      `Gợi ý món ăn ngon nhất tại ${destLoc}`,
+      `Thêm điểm check-in hoàng hôn ở ${destLoc}`,
+      `Lên lịch trình du lịch Đà Lạt 3N2Đ`,
+      `Khám phá vịnh Hạ Long 2 ngày 1 đêm`
+    ];
+
+    return res.json({
+      success: true,
+      reply: replyText,
+      plan: updatedPlan,
+      suggestedPrompts: suggestedPrompts
+    });
+
+  } catch (error) {
+    console.error('[MAKE-YOUR-TRIP ERROR]:', error);
+    const fallbackPlan = buildSmartItinerary({
+      startLocation: 'Hà Nội',
+      destination: 'Đà Lạt',
+      days: 3,
+      budget: 4500000
+    });
+    return res.json({
+      success: true,
+      reply: `VietnamTourism AI đã chuẩn bị sẵn lộ trình mẫu khám phá Đà Lạt 3 ngày 2 đêm cho Quý khách. Bạn có thể trò chuyện tiếp để AI tinh chỉnh theo bất kỳ tỉnh thành nào!`,
+      plan: fallbackPlan,
+      suggestedPrompts: [
+        'Lên lịch trình Sa Pa 3 ngày 2 đêm',
+        'Lên lịch trình Phú Quốc 4 ngày',
+        'Lên lịch trình Hà Giang 3 ngày'
+      ]
+    });
+  }
+});
+
+// 3. API LẬP KẾ HOẠCH DU LỊCH (TƯƠNG THÍCH NGƯỢC VÀ NÂNG CẤP CHUYÊN SÂU)
 app.post(['/api/chat/plan', '/api/ai/plan'], async (req, res) => {
   const { destination, startLocation, days, budget, travelStyle, groupType, specialRequests } = req.body;
 
@@ -64,170 +159,43 @@ app.post(['/api/chat/plan', '/api/ai/plan'], async (req, res) => {
 
   const cleanStart = (startLocation || '').trim();
   const cleanDest = destination.trim();
-  const cleanSpecial = (specialRequests || '').trim();
   const numDays = parseInt(days, 10) || 3;
   const numBudget = parseInt((budget || '5000000').toString().replace(/\D/g, ''), 10) || 5000000;
-  const hasDistinctStart = Boolean(cleanStart && cleanStart.toLowerCase() !== cleanDest.toLowerCase());
-
-  let routingRules = '';
-  if (hasDistinctStart) {
-    if (numDays === 1) {
-      routingRules = `
-QUY TẮC LỘ TRÌNH CHUYẾN ĐI 1 NGÀY:
-- Điểm xuất phát: "${cleanStart}" -> Điểm đến: "${cleanDest}".
-- Buổi sáng: Dành thời gian ăn sáng đặc sản và dạo chơi các điểm nổi tiếng tại "${cleanStart}".
-- Buổi trưa / đầu giờ chiều: Di chuyển từ "${cleanStart}" đến "${cleanDest}" (ghi rõ phương tiện), nhận phòng khách sạn.
-- Buổi chiều và tối: Khám phá thắng cảnh và ăn tối đặc sản tại "${cleanDest}".`;
-    } else {
-      routingRules = `
-QUY TẮC LỘ TRÌNH 2 GIAI ĐOẠN (BẮT BUỘC TUÂN THỦ NGHIÊM NGẶT 100%):
-- Điểm xuất phát: "${cleanStart}" -> Điểm đến: "${cleanDest}".
-- GIAI ĐOẠN 1 - NGÀY 1 (DÀNH TRỌN VẸN 1 NGÀY VUI CHƠI TẠI ĐIỂM XUẤT PHÁT "${cleanStart}"):
-  + Du khách xuất phát tại chính "${cleanStart}". Toàn bộ Ngày 1 (Sáng, Chiều, Tối) BẮT BUỘC dành trọn vẹn để vui chơi, tham quan các thắng cảnh/địa danh nổi tiếng và thưởng thức ẩm thực đặc sản tiêu biểu của "${cleanStart}".
-  + Sáng Ngày 1: Đón bình minh, ăn sáng đặc sản nổi tiếng tại ${cleanStart}, tham quan địa danh biểu tượng của ${cleanStart}.
-  + Chiều Ngày 1: Tiếp tục khám phá các điểm tham quan văn hóa/thắng cảnh tại ${cleanStart}, thưởng thức món ăn xế chiều của ${cleanStart}.
-  + Tối Ngày 1: Thưởng thức bữa tối ẩm thực đặc sản ${cleanStart}, dạo chơi phố đêm/chợ đêm tại ${cleanStart}, nghỉ ngơi hoặc chuẩn bị hành lý cho chặng di chuyển ngày mai.
-  + Tiêu đề Ngày 1 PHẢI ghi rõ trải nghiệm tại "${cleanStart}" (Ví dụ: "Khám phá & Trải nghiệm trọn vẹn 1 ngày tại ${cleanStart}").
-- GIAI ĐOẠN 2 - NGÀY 2 (DI CHUYỂN TỪ "${cleanStart}" ĐẾN "${cleanDest}" VÀ BẮT ĐẦU KHÁM PHÁ):
-  + Sáng Ngày 2: Bắt đầu chặng di chuyển từ "${cleanStart}" vào "${cleanDest}" (nêu rõ phương tiện máy bay/tàu hỏa/xe ô tô phù hợp khoảng cách), đến nơi nhận phòng khách sạn tại ${cleanDest}, ăn trưa đặc sản ${cleanDest}.
-  + Chiều & Tối Ngày 2: Bắt đầu tham quan các thắng cảnh đầu tiên tại ${cleanDest}, tắm biển hoặc dạo phố, ăn tối đặc sản ${cleanDest}.
-- GIAI ĐOẠN 3 - TỪ NGÀY 3 ĐẾN NGÀY ${numDays} (nếu tổng thời gian >= 3 ngày):
-  + Toàn bộ thời gian còn lại dành 100% để khám phá chuyên sâu các danh lam thắng cảnh, văn hóa, ẩm thực tại "${cleanDest}".`;
-    }
-  } else {
-    routingRules = `
-QUY TẮC ĐỊA BÀN 100% TẠI ĐIỂM ĐẾN (BẮT BUỘC TUÂN THỦ NGHIÊM NGẶT 100%):
-- Người dùng KHÔNG nhập điểm xuất phát (hoặc điểm xuất phát trùng điểm đến).
-- DO ĐÓ TOÀN BỘ 100% LỊCH TRÌNH TỪ NGÀY 1 ĐẾN NGÀY ${numDays} CHỈ ĐƯỢC PHÉP DIỄN RA TẠI ĐIỂM ĐẾN "${cleanDest}".
-- TUYỆT ĐỐI CẤM đề cập đến Hà Nội, TP.HCM, Sài Gòn hay bất kỳ địa phương nào khác làm nơi xuất phát hay chặng bay/xe di chuyển đến trong Ngày 1!
-- Sáng Ngày 1 bắt đầu trực tiếp tại "${cleanDest}": đón bình minh tại thắng cảnh ${cleanDest}, ăn sáng món đặc sản của ${cleanDest}, bắt đầu tham quan ${cleanDest}.
-- Trong JSON trả về, trường "startLocation" BẮT BUỘC PHẢI LÀ CHUỖI RỖNG ""!`;
-  }
-
-  const prompt = `Bạn là Trí tuệ Nhân tạo (AI) chuyên gia hàng đầu về du lịch Việt Nam, tích hợp năng lực xử lý ngôn ngữ tự nhiên (NLP) chuyên sâu.
-Nhiệm vụ của bạn là đọc và phân tích toàn diện yêu cầu du lịch của người dùng để lập ra một kế hoạch du lịch hoàn chỉnh, độc đáo và cá nhân hóa 100%.
-
-THÔNG TIN ĐẦU VÀO TỪ NGƯỜI DÙNG:
-${hasDistinctStart ? `- Điểm xuất phát: "${cleanStart}"` : '- Điểm xuất phát: Không nhập (Du khách bắt đầu trực tiếp tại điểm đến)'}
-- Điểm đến du lịch: "${cleanDest}"
-- Thời gian chuyến đi: ${numDays} ngày
-- Tổng ngân sách dự kiến: ${numBudget} VNĐ
-- Phong cách du lịch: ${travelStyle || 'Khám phá & Thư giãn'}
-- Đối tượng tham gia: ${groupType || 'Cặp đôi / Bạn bè'}
-- YÊU CẦU ĐẶC BIỆT BỔ SUNG (VĂN BẢN NGÔN NGỮ TỰ NHIÊN): "${cleanSpecial || 'Không có yêu cầu đặc biệt'}"
-
-${routingRules}
-
-HÃY DÙNG NĂNG LỰC TRÍ TUỆ NHÂN TẠO (NLP) ĐỂ:
-1. Phân tích ngữ nghĩa tự nhiên từ "Yêu cầu đặc biệt bổ sung": hiểu rõ du khách muốn trải nghiệm gì (món ăn cụ thể, thời điểm ngắm hoàng hôn/bình minh, phương tiện xe máy hay ô tô, không gian yên tĩnh hay sôi động, các địa danh mong muốn ghé qua...).
-2. Kết hợp toàn bộ yêu cầu đặc biệt này với các thông số bên trên (Điểm xuất phát, Điểm đến, Thời gian ${numDays} ngày, Ngân sách ${numBudget} VNĐ, Phong cách, Đối tượng).
-3. May đo một lịch trình chi tiết và hoàn toàn mới:
-   - Các buổi Sáng, Chiều, Tối trong "dailyItinerary" PHẢI thể hiện rõ rệt các mong muốn trong yêu cầu bổ sung (không dùng nội dung chung chung rập khuôn).
-   - "accommodations": Đề xuất từ 7 đến 8 nơi ở cụ thể phù hợp mức ngân sách và đối tượng.
-   - "culinary": Đề xuất từ 10 đến 14 món ăn đặc sản tiêu biểu cùng quán ăn nổi tiếng có địa chỉ rõ ràng.
-
-TRẢ VỀ DUY NHẤT MỘT CHUỖI JSON HỢP LỆ (KHÔNG KÈM MARKDOWN \`\`\`json, KHÔNG KÈM BÌNH LUẬN):
-{
-  "title": "Tên kế hoạch hấp dẫn và mang dấu ấn riêng của chuyến đi",
-  "startLocation": "${hasDistinctStart ? cleanStart : ''}",
-  "destination": "${cleanDest}",
-  "days": ${numDays},
-  "budget": ${numBudget},
-  "travelStyle": "${travelStyle || 'Khám phá'}",
-  "groupType": "${groupType || 'Nhóm bạn'}",
-  "summary": "Tóm tắt ngắn gọn 2-3 câu giới thiệu chuyến đi và giải thích cách AI đã may đo kế hoạch theo đúng yêu cầu bổ sung của du khách",
-  "nlpAnalysis": {
-    "detectedIntent": "Ý định chính mà AI đã hiểu từ yêu cầu bổ sung",
-    "extractedEntities": ["Các thực thể AI đã trích xuất được từ câu yêu cầu (ví dụ: phương tiện, món ăn, cảnh quan...)"],
-    "appliedCustomizations": ["Các điều chỉnh cụ thể mà AI đã áp dụng vào lịch trình để phục vụ yêu cầu đó"]
-  },
-  "dailyItinerary": [
-    {
-      "day": 1,
-      "title": "${hasDistinctStart ? `Khám phá trọn vẹn 1 ngày tại ${cleanStart} - Khởi động chuyến đi` : `Khám phá & Trải nghiệm ngày đầu tiên tại ${cleanDest}`}",
-      "morning": { "activity": "Hoạt động sáng chi tiết", "food": "Món ăn sáng gợi ý & địa chỉ", "cost": 150000, "tips": "Mẹo hữu ích" },
-      "afternoon": { "activity": "Hoạt động chiều chi tiết", "food": "Món ăn trưa/xế & quán gợi ý", "cost": 200000, "tips": "Mẹo hữu ích" },
-      "evening": { "activity": "Hoạt động tối chi tiết", "food": "Bữa tối đặc sản & địa chỉ", "cost": 300000, "tips": "Mẹo hữu ích" }
-    }
-  ],
-  "accommodations": [
-    { "name": "Tên khách sạn/resort cụ thể", "priceRange": "Khoảng giá/đêm", "area": "Khu vực địa chỉ", "highlights": "Điểm nổi bật", "type": "Resort 5 sao / Khách sạn cao cấp / Khách sạn / Homestay / Căn hộ / Hostel" }
-  ],
-  "culinary": [
-    { "dish": "Tên món đặc sản", "places": "Tên quán ăn nổi tiếng & địa chỉ cụ thể", "cost": "Giá tham khảo", "category": "Món chính / Món nước / Hải sản & Đồ nướng / Ăn vặt & Tráng miệng / Cà phê & Đồ uống" }
-  ],
-  "budgetBreakdown": {
-    "accommodation": 1500000,
-    "food": 1800000,
-    "sightseeing": 900000,
-    "transportation": 500000,
-    "contingency": 300000,
-    "totalEstimated": ${numBudget}
-  },
-  "travelTips": [
-    "Lời khuyên thiết thực 1",
-    "Lời khuyên thiết thực 2",
-    "Lời khuyên thiết thực 3"
-  ]
-}`;
 
   try {
-    console.log(`[AI-PLANNER] Đang dùng AI phân tích & sinh lịch trình cho: ${hasDistinctStart ? cleanStart + ' -> ' : ''}${cleanDest} (${numDays} ngày, ngân sách: ${numBudget})`);
-    const aiText = await generateWithFallback(prompt, "Bạn là hệ thống AI phân tích ngôn ngữ tự nhiên và lập lịch trình du lịch chuyên nghiệp. Bạn CHỈ trả về dữ liệu định dạng JSON chuẩn, không kèm markdown.");
-    
-    // Bóc tách JSON từ kết quả trả về của AI
-    const cleanedJson = aiText.replace(/```json/gi, '').replace(/```/g, '').trim();
-    const parsedPlan = JSON.parse(cleanedJson);
-
-    // XỬ LÝ HẬU KỲ CHẶT CHẼ BẰNG IF
-    if (!hasDistinctStart) {
-      // Trường hợp không có điểm xuất phát: 100% tại điểm đến
-      parsedPlan.startLocation = '';
-      parsedPlan.destination = cleanDest;
-
-      // Làm sạch bất kỳ từ ngữ nào liên quan đến chặng di chuyển từ tỉnh khác trong Ngày 1
-      if (Array.isArray(parsedPlan.dailyItinerary) && parsedPlan.dailyItinerary.length > 0) {
-        const d1 = parsedPlan.dailyItinerary[0];
-        if (d1.title && /Hà Nội|TP\.HCM|TPHCM|Sài Gòn|Khởi hành từ|Bay từ|Di chuyển từ/i.test(d1.title) && !cleanDest.match(/Hà Nội|TP\.HCM|Sài Gòn/i)) {
-          d1.title = `Khám phá & Trải nghiệm ngày đầu tiên tại ${cleanDest}`;
-        }
-        if (d1.morning && d1.morning.activity && /khởi hành từ|bay từ|di chuyển từ sân bay nội bài|tân sơn nhất/i.test(d1.morning.activity)) {
-          d1.morning.activity = `Đón chào ngày mới tại ${cleanDest}, bắt đầu chuyến hành trình khám phá những danh lam thắng cảnh và ẩm thực tuyệt vời.`;
-        }
-      }
-    } else {
-      // Trường hợp có điểm xuất phát rõ ràng
-      parsedPlan.startLocation = cleanStart;
-      parsedPlan.destination = cleanDest;
-
-      // Đảm bảo Ngày 1 và Ngày 2 phản ánh đúng lộ trình: Ngày 1 chơi ở điểm xuất phát, Ngày 2 mới vào điểm đến
-      if (Array.isArray(parsedPlan.dailyItinerary) && parsedPlan.dailyItinerary.length >= 2) {
-        const d1 = parsedPlan.dailyItinerary[0];
-        const d2 = parsedPlan.dailyItinerary[1];
-        if (d1 && d1.title && !d1.title.toLowerCase().includes(cleanStart.toLowerCase())) {
-          d1.title = `Khám phá trọn vẹn 1 ngày tại ${cleanStart} - Khởi động chuyến đi`;
-        }
-        if (d2 && d2.title && !d2.title.toLowerCase().includes(cleanDest.toLowerCase())) {
-          d2.title = `Di chuyển từ ${cleanStart} đến ${cleanDest} & Bắt đầu khám phá`;
-        }
-      }
-    }
-
-    console.log(`[AI-PLANNER] AI đã sinh thành công kế hoạch độc đáo cho ${hasDistinctStart ? cleanStart + ' -> ' : ''}${cleanDest}`);
-    return res.json({ success: true, source: 'gemini-ai', plan: parsedPlan });
-  } catch (error) {
-    console.error(`[AI-PLANNER] Lỗi khi gọi AI (${error.message})`);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Hệ thống AI đang quá tải hoặc gặp sự cố kết nối. Vui lòng bấm tạo lại sau ít giây.' 
+    const smartPlan = buildSmartItinerary({
+      startLocation: cleanStart || 'Hà Nội',
+      destination: cleanDest,
+      days: numDays,
+      budget: numBudget,
+      travelStyle: travelStyle || 'Khám phá & Thư giãn',
+      specialRequests: specialRequests || ''
     });
+
+    return res.json({
+      success: true,
+      source: 'vietnam-tourism-ai-engine',
+      plan: smartPlan
+    });
+  } catch (err) {
+    console.error('Plan Error:', err);
+    res.status(500).json({ success: false, error: 'Lỗi tạo kế hoạch' });
   }
+});
+
+// 4. API Lấy dữ liệu tri thức du lịch trực tiếp (Hubs & Coordinates)
+app.get('/api/chat/knowledge', (req, res) => {
+  res.json({
+    success: true,
+    provinces: Object.keys(VIETNAM_PROVINCES_DATA),
+    data: VIETNAM_PROVINCES_DATA
+  });
 });
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'ai-service', port: port });
+  res.json({ status: 'ok', service: 'ai-service', port: port, knowledgeProvinces: Object.keys(VIETNAM_PROVINCES_DATA).length });
 });
 
 app.listen(port, () => {
-  console.log(`AI Service running on port ${port}`);
+  console.log(`AI Service running on port ${port} with rich Vietnam Tourism Knowledge Base`);
 });

@@ -249,23 +249,36 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <div style={{ 
-            background: 'rgba(255, 255, 255, 0.95)', 
-            backdropFilter: 'blur(10px)', 
-            padding: '1rem 1.25rem', 
-            borderRadius: '14px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '0.75rem',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
-            border: '1px solid rgba(226, 232, 240, 0.8)'
-          }}>
-            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand-navy)', flexShrink: 0 }}>
+          <div 
+            onClick={() => navigate('/planner')}
+            style={{ 
+              background: 'rgba(255, 255, 255, 0.95)', 
+              backdropFilter: 'blur(10px)', 
+              padding: '1rem 1.25rem', 
+              borderRadius: '14px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.75rem',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+              border: '1px solid rgba(226, 232, 240, 0.8)',
+              cursor: 'pointer',
+              transition: 'transform 0.2s, box-shadow 0.2s'
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(2, 50, 106, 0.18)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
+            }}
+          >
+            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0284C7', flexShrink: 0 }}>
               <Calendar size={20} />
             </div>
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--brand-navy)' }}>Lập Kế Hoạch</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Gợi ý lịch trình thông minh</div>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--brand-navy)' }}>Lập Lịch Trình AI</div>
+              <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Tự động thiết kế lịch trình</div>
             </div>
           </div>
 
