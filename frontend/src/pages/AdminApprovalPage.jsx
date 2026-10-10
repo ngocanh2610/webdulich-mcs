@@ -143,7 +143,7 @@ const AdminApprovalPage = () => {
   };
 
   return (
-    <div style={{ paddingTop: '100px', paddingBottom: '5rem', minHeight: '100vh', background: 'var(--bg-primary)' }}>
+    <div style={{ paddingTop: '120px', paddingBottom: '5rem', minHeight: '100vh', background: 'var(--bg-primary)' }}>
       <div className="container">
         {/* Header bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>

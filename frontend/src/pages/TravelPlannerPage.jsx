@@ -1,1435 +1,1480 @@
 import React, { useState } from 'react';
 import { 
-  Printer, Copy, RotateCcw, AlertCircle, Check, Navigation, Search, ExternalLink
+  Calendar, Users, Share2, Info, ChevronLeft, ChevronRight, 
+  MapPin, Clock, DollarSign, MoreVertical, Sparkles,
+  Plane, Hotel, Utensils, ExternalLink, Check, Copy,
+  Ticket, Car, Compass, ArrowRight, RotateCcw
 } from 'lucide-react';
+import MakeYourTripChat from '../components/MakeYourTripChat';
 
-const TRAVEL_STYLES = [
-  { id: 'beach', label: 'Biển đảo & Bơi lội' },
-  { id: 'photo', label: 'Check-in & Sống ảo' },
-  { id: 'food', label: 'Ẩm thực & Food tour' },
-  { id: 'nature', label: 'Khám phá thiên nhiên' },
-  { id: 'culture', label: 'Văn hóa & Lịch sử' },
-  { id: 'resort', label: 'Nghỉ dưỡng thư thái' },
-  { id: 'adventure', label: 'Phượt mạo hiểm' },
+/**
+ * TRAVEL PLANNER PAGE - VIETNAMTOURISM AI
+ * 1. Cột trái: Trợ lý AI tư vấn tương tác trực tiếp
+ * 2. Cột phải: 
+ *    - Khi chưa có kế hoạch: Màn hình gợi ý & truyền cảm hứng 63 tỉnh thành Việt Nam
+ *    - Khi đã có kế hoạch: Lịch trình chi tiết từng ngày kèm nút "Xem trên Google Maps"
+ */
+
+// Danh sách điểm đến nổi bật gợi ý ban đầu
+const POPULAR_DESTINATIONS = [
+  {
+    name: 'Đà Lạt Mộng Mơ',
+    province: 'Đà Lạt',
+    tag: '3 Ngày 2 Đêm • Tây Nguyên',
+    desc: 'Săn mây Cầu Đất, đồi thông Langbiang, thác Datanla & lẩu gà lá é thơm cay.',
+    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lên lịch trình du lịch Đà Lạt 3 ngày 2 đêm săn mây và khám phá ẩm thực'
+  },
+  {
+    name: 'Sa Pa - Nóc Nhà Đông Dương',
+    province: 'Sa Pa',
+    tag: '3 Ngày 2 Đêm • Tây Bắc',
+    desc: 'Chinh phục đỉnh Fansipan 3.143m, bản Cát Cát & đèo Ô Quy Hồ lộng gió.',
+    image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lập kế hoạch du lịch Sa Pa 3 ngày 2 đêm Fansipan và bản Cát Cát'
+  },
+  {
+    name: 'Hà Giang Hùng Vĩ',
+    province: 'Hà Giang',
+    tag: '3 Ngày 2 Đêm • Đông Bắc',
+    desc: 'Cột cờ Lũng Cú, đèo Mã Pí Lèng, chèo thuyền hẻm Tu Sản sông Nho Quế ngọc bích.',
+    image: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lên lịch trình phượt Hà Giang 3 ngày 2 đêm ngắm hẻm Tu Sản sông Nho Quế'
+  },
+  {
+    name: 'Đảo Ngọc Phú Quốc',
+    province: 'Phú Quốc',
+    tag: '4 Ngày 3 Đêm • Kiên Giang',
+    desc: 'Bãi Sao cát trắng mịn, cáp treo Hòn Thơm vượt biển, Grand World & bún quậy.',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Thiết kế chuyến đi Phú Quốc 4 ngày 3 đêm nghỉ dưỡng biển đảo'
+  },
+  {
+    name: 'Ninh Bình - Tràng An Tam Cốc',
+    province: 'Ninh Bình',
+    tag: '2 Ngày 1 Đêm • Miền Bắc',
+    desc: 'Di sản thế giới kép UNESCO, chèo thuyền Tràng An, đỉnh Hang Múa & chùa Bái Đính.',
+    image: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lập lịch trình du lịch Ninh Bình 2 ngày 1 đêm Tràng An và Hang Múa'
+  },
+  {
+    name: 'Kỳ Quan Vịnh Hạ Long',
+    province: 'Quảng Ninh',
+    tag: '2 Ngày 1 Đêm • Miền Bắc',
+    desc: 'Du thuyền ngắm vịnh di sản, hang Sửng Sốt, đảo Titop & bảo tàng Quảng Ninh.',
+    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lên kế hoạch du lịch vịnh Hạ Long 2 ngày 1 đêm trọn gói'
+  },
+  {
+    name: 'Đà Nẵng - Hội An',
+    province: 'Đà Nẵng',
+    tag: '4 Ngày 3 Đêm • Miền Trung',
+    desc: 'Bà Nà Hills Cầu Vàng, biển Mỹ Khê, phố cổ Hội An lung linh hoa đăng & cầu Rồng.',
+    image: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lên lịch trình khám phá Đà Nẵng và phố cổ Hội An 4 ngày 3 đêm'
+  },
+  {
+    name: 'Quy Nhơn - Kỳ Co Eo Gió',
+    province: 'Quy Nhơn',
+    tag: '3 Ngày 2 Đêm • Bình Định',
+    desc: 'Maldives phiên bản Việt, bãi tắm Kỳ Co, Eo Gió hùng vĩ & bánh xèo tôm nhảy.',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lập lịch trình du lịch Quy Nhơn 3 ngày 2 đêm Kỳ Co Eo Gió'
+  },
+  {
+    name: 'Cần Thơ Sông Nước',
+    province: 'Cần Thơ',
+    tag: '2 Ngày 1 Đêm • Miền Tây',
+    desc: 'Chợ nổi Cái Răng sớm mai, bến Ninh Kiều, nhà cổ Bình Thủy & lẩu mắm đậm đà.',
+    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lên lịch trình Cần Thơ 2 ngày 1 đêm chợ nổi Cái Răng và Bến Ninh Kiều'
+  }
 ];
 
-const GROUP_TYPES = [
-  { id: 'solo', label: 'Đi 1 mình', desc: 'Tự do trải nghiệm theo cách riêng' },
-  { id: 'couple', label: 'Cặp đôi', desc: 'Lãng mạn, riêng tư và nhẹ nhàng' },
-  { id: 'friends', label: 'Nhóm bạn', desc: 'Sôi động, nhiều hoạt động vui nhộn' },
-  { id: 'family', label: 'Gia đình', desc: 'Tiện nghi, an toàn cho người già & trẻ nhỏ' },
+// Lời chào khởi đầu của AI
+const INITIAL_CHAT = [
+  {
+    sender: 'ai',
+    text: `Xin chào! Tôi là Trợ lý AI Lập Lịch Trình của VietnamTourism.
+
+Hãy cho tôi biết chuyến đi bạn mong muốn đến bất kỳ tỉnh thành nào trên khắp 63 tỉnh thành Việt Nam:
+• Bạn muốn đi đâu? (Đà Lạt, Sa Pa, Hà Giang, Phú Quốc, Ninh Bình, Hạ Long, Huế, Đà Nẵng, Cần Thơ, Quy Nhơn...)
+• Đi trong bao nhiêu ngày? (2 ngày 1 đêm, 3 ngày 2 đêm, 4 ngày, 7 ngày...)
+• Bạn có sở thích hay yêu cầu đặc biệt nào không?
+
+Ngay sau khi bạn gửi yêu cầu, tôi sẽ thiết kế và hiển thị lịch trình chi tiết từng ngày kèm đường link mở trực tiếp trên Google Maps!`
+  }
 ];
 
 const TravelPlannerPage = () => {
-  // Input Form States
-  const [startLocation, setStartLocation] = useState('');
-  const [destination, setDestination] = useState('Đà Nẵng');
-  const [days, setDays] = useState(3);
-  const [budget, setBudget] = useState(6000000);
-  const [selectedStyles, setSelectedStyles] = useState(['Biển đảo & Bơi lội', 'Ẩm thực & Food tour']);
-  const [groupType, setGroupType] = useState('Cặp đôi');
-  const [specialRequests, setSpecialRequests] = useState('Thích ăn hải sản tươi sống gần biển, ngắm hoàng hôn, ưu tiên di chuyển xe máy linh hoạt.');
-
-  // App Execution States
-  const [loading, setLoading] = useState(false);
-  const [loadingStep, setLoadingStep] = useState(0);
-  const [planResult, setPlanResult] = useState(null);
-  const [activeTab, setActiveTab] = useState('timeline');
+  // Bắt đầu: CHƯA có lịch trình sẵn (plan = null), chờ người dùng yêu cầu mới render
+  const [plan, setPlan] = useState(null);
+  const [activeTab, setActiveTab] = useState('daily'); // 'daily', 'services'
   const [activeDay, setActiveDay] = useState(1);
-  const [copied, setCopied] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
 
-  // Filter & Search states cho Ở đâu và Ăn gì
-  const [stayCategory, setStayCategory] = useState('ALL');
-  const [staySearch, setStaySearch] = useState('');
-  const [foodCategory, setFoodCategory] = useState('ALL');
-  const [foodSearch, setFoodSearch] = useState('');
+  // Chat AI
+  const [messages, setMessages] = useState(INITIAL_CHAT);
+  const [chatLoading, setChatLoading] = useState(false);
+  const [suggestedPrompts, setSuggestedPrompts] = useState([
+    'Lên lịch trình Đà Lạt 3 ngày 2 đêm',
+    'Lập kế hoạch đi Sa Pa 3 ngày 2 đêm',
+    'Lịch trình Phú Quốc 4 ngày 3 đêm',
+    'Phượt Hà Giang 3N2Đ ngắm sông Nho Quế',
+    'Du lịch Ninh Bình 2 ngày 1 đêm'
+  ]);
 
-  const toggleStyle = (styleLabel) => {
-    if (selectedStyles.includes(styleLabel)) {
-      if (selectedStyles.length > 1) {
-        setSelectedStyles(selectedStyles.filter(s => s !== styleLabel));
+  // Modal chia sẻ & chọn ngày/khách
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showGuestPicker, setShowGuestPicker] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  // Chọn ngày hiện tại đang xem (nếu có plan)
+  const currentDayData = plan?.dailyItinerary?.find(d => d.day === activeDay) || plan?.dailyItinerary?.[0] || { activities: [] };
+
+  // Bộ sinh lịch trình dự phòng thông minh ngay tại Client khi máy chủ đang khởi động lại
+  const buildClientFallbackPlan = (userText, currentPlan) => {
+    const lower = (userText || '').toLowerCase();
+    let days = currentPlan?.days || 3;
+    const matchDays = lower.match(/(\d+)\s*(?:ngày|ngay|n)/);
+    if (matchDays) days = parseInt(matchDays[1], 10);
+    days = Math.max(1, Math.min(30, days));
+
+    let dest = 'Tam Đảo';
+    if (lower.includes('tam đảo') || lower.includes('tam dao') || lower.includes('vĩnh phúc')) dest = 'Tam Đảo';
+    else if (lower.includes('hà nam') || lower.includes('ha nam') || lower.includes('tam chúc') || lower.includes('tam chuc') || lower.includes('phủ lý') || lower.includes('vũ đại')) dest = 'Hà Nam';
+    else if (lower.includes('đà lạt') || lower.includes('da lat') || lower.includes('lâm đồng')) dest = 'Đà Lạt';
+    else if (lower.includes('sa pa') || lower.includes('sapa') || lower.includes('lào cai')) dest = 'Sa Pa';
+    else if (lower.includes('hà giang') || lower.includes('ha giang') || lower.includes('đồng văn')) dest = 'Hà Giang';
+    else if (lower.includes('đà nẵng') || lower.includes('da nang')) dest = 'Đà Nẵng';
+    else if (lower.includes('hội an') || lower.includes('hoi an') || lower.includes('quảng nam')) dest = 'Hội An';
+    else if (lower.includes('phú quốc') || lower.includes('phu quoc') || lower.includes('kiên giang')) dest = 'Phú Quốc';
+    else if (lower.includes('ninh bình') || lower.includes('tràng an') || lower.includes('tam cốc')) dest = 'Ninh Bình';
+    else if (lower.includes('hạ long') || lower.includes('quảng ninh') || lower.includes('vịnh hạ long')) dest = 'Quảng Ninh';
+    else if (lower.includes('huế') || lower.includes('thừa thiên huế')) dest = 'Huế';
+    else if (lower.includes('nha trang') || lower.includes('khánh hòa')) dest = 'Nha Trang';
+    else if (lower.includes('quy nhơn') || lower.includes('bình định')) dest = 'Quy Nhơn';
+    else if (lower.includes('phú yên') || lower.includes('tuy hòa')) dest = 'Phú Yên';
+    else if (lower.includes('mộc châu') || lower.includes('sơn la')) dest = 'Mộc Châu';
+    else if (lower.includes('cao bằng') || lower.includes('bản giốc')) dest = 'Cao Bằng';
+    else if (lower.includes('cần thơ') || lower.includes('ninh kiều')) dest = 'Cần Thơ';
+    else if (lower.includes('vũng tàu') || lower.includes('bà rịa')) dest = 'Vũng Tàu';
+    else if (lower.includes('tây ninh') || lower.includes('núi bà đen')) dest = 'Tây Ninh';
+    else if (lower.includes('hải phòng') || lower.includes('cát bà') || lower.includes('đồ sơn')) dest = 'Hải Phòng';
+    else {
+      const wordMatch = userText.match(/(?:đi|du lịch|lịch trình|khám phá|tới|đến)\s+([A-ZÀ-Ỹa-zà-ỹ\s]{2,20})/i);
+      if (wordMatch && wordMatch[1] && wordMatch[1].trim().length >= 2) {
+        dest = wordMatch[1].trim();
+        dest = dest.charAt(0).toUpperCase() + dest.slice(1);
+      } else {
+        dest = currentPlan?.destination || 'Tam Đảo';
       }
-    } else {
-      setSelectedStyles([...selectedStyles, styleLabel]);
     }
+
+    const PROV_DETAILS = {
+      'Tam Đảo': {
+        attractions: [
+          { name: 'Quảng trường & Thị trấn Tam Đảo', address: 'Thị trấn Tam Đảo, Vĩnh Phúc', duration: '2 giờ', cost: 0, costText: 'Tham quan tự do', image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=800&auto=format&fit=crop&q=80', advice: 'Tản bộ ngắm thị trấn sương mờ Châu Âu; chụp ảnh đài phun nước trung tâm.' },
+          { name: 'Nhà thờ Đá Cổ Tam Đảo', address: 'Dốc Tam Đảo, Vĩnh Phúc', duration: '1 giờ 30 phút', cost: 0, costText: 'Miễn phí tham quan', image: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&auto=format&fit=crop&q=80', advice: 'Kiến trúc Gothic Pháp cổ bằng đá xanh rêu phong đứng sừng sững trên sườn núi; ngắm toàn cảnh thung lũng.' },
+          { name: 'Cầu Mây Tam Đảo (Tổ hợp săn mây)', address: 'Thôn 2, Thị trấn Tam Đảo, Vĩnh Phúc', duration: '2 giờ 30 phút', cost: 50000, costText: 'Dự kiến: 50.000đ/vé', image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80', advice: 'Cây cầu đan bằng tre nứa len lỏi giữa biển mây và đồi hoa dã quỳ rực rỡ.' },
+          { name: 'Quán Gió Tam Đảo (Cà phê trên mây)', address: 'Thôn 1, Thị trấn Tam Đảo, Vĩnh Phúc', duration: '2 giờ', cost: 60000, costText: 'Đồ uống: 50.000đ - 80.000đ', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80', advice: 'Quán cà phê nhô ra vách đá đón gió ngàn và ngắm biển mây xế chiều.' }
+        ],
+        foods: [
+          { name: 'Ngọn su su xào tỏi Tam Đảo', dish: 'Ngọn su su non xào cháy tỏi giòn ngọt', address: 'Khu ẩm thực dốc chợ Tam Đảo', advice: 'Đặc sản trứ danh ngọn su su giòn sần sật xào cháy tỏi thơm lừng.' },
+          { name: 'Gà đồi Tam Đảo nướng bọc đất sét', dish: 'Gà đồi nướng than hoa vàng óng', address: 'Nhà hàng Phố Mây Tam Đảo', advice: 'Thịt gà săn chắc da vàng giòn rụm chấm muối tiêu chanh ớt rừng.' },
+          { name: 'Thịt bò tái kiến đốt', dish: 'Bò tươi nướng than hồng the hương kiến rừng', address: 'Trung tâm ẩm thực Tam Đảo', advice: 'Món ăn độc lạ mang hương vị the dịu của các tổ kiến rừng Tam Đảo.' }
+        ],
+        hotel: 'Resort / Homestay view mây Tam Đảo'
+      },
+      'Hà Nam': {
+        attractions: [
+          { name: 'Quần thể Khu du lịch Tam Chúc (Ngôi chùa lớn nhất thế giới)', address: 'Thị trấn Ba Sao, Huyện Kim Bảng, Hà Nam', duration: '4 giờ', cost: 200000, costText: 'Dự kiến: 200.000đ vé du thuyền + xe điện', image: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&auto=format&fit=crop&q=80', advice: 'Ngồi thuyền trên hồ Lục Nhạc ngắm núi non bồng bềnh; chiêm bái Điện Tam Thế nguy nga.' },
+          { name: 'Đền Trúc - Ngũ Động Thi Sơn', address: 'Thôn Quyển Sơn, Thi Sơn, Kim Bảng, Hà Nam', duration: '2 giờ', cost: 20000, costText: 'Dự kiến: 20.000đ/vé', image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80', advice: 'Rừng trúc xanh mát rợp bóng bên sông Đáy và hệ thống 5 hang động đá vôi kỳ bí.' },
+          { name: 'Làng Vũ Đại & Nhà Bá Kiến', address: 'Xã Hòa Hậu, Huyện Lý Nhân, Hà Nam', duration: '2 giờ', cost: 0, costText: 'Miễn phí tham quan', image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80', advice: 'Ngôi nhà 3 gian gỗ lim hơn 100 năm tuổi nguyên bản của Bá Kiến trong tác phẩm Nam Cao.' },
+          { name: 'Chùa Bà Đanh & Núi Ngọc', address: 'Thôn Đanh, Ngọc Sơn, Kim Bảng, Hà Nam', duration: '1 giờ 30 phút', cost: 0, costText: 'Miễn phí viếng chùa', image: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=800&auto=format&fit=crop&q=80', advice: 'Ngôi chùa cổ tĩnh mịch bên dòng sông Đáy gắn với câu nói "vắng như chùa Bà Đanh".' }
+        ],
+        foods: [
+          { name: 'Cá kho làng Vũ Đại (Cá kho niêu đất Bá Kiến)', dish: 'Cá trắm đen kho niêu đất 16 tiếng củi nhãn', address: 'Làng Hòa Hậu, Lý Nhân, Hà Nam', advice: 'Thịt cá chắc nịch xương nhừ tơi thấm đẫm riềng gừng ăn cùng cơm nóng.' },
+          { name: 'Bánh cuốn chả Phủ Lý', dish: 'Bánh cuốn tráng mỏng chả than hoa', address: 'Đường Trần Phú / Biên Hòa, Phủ Lý', advice: 'Ăn nguội cùng nước mắm ấm chua ngọt thả chả nướng xém cạnh thơm phức.' },
+          { name: 'Chuối ngự Đại Hoàng', dish: 'Chuối ngự tiến vua vỏ mỏng vàng óng', address: 'Xã Hòa Hậu, Lý Nhân, Hà Nam', advice: 'Quả chuối nhỏ xinh vỏ mỏng ruột vàng, ngọt đậm đà hương thơm tiến vua.' }
+        ],
+        hotel: 'Khách sạn trung tâm TP. Phủ Lý / Ba Sao'
+      }
+    };
+
+    const targetData = PROV_DETAILS[dest] || {
+      attractions: [
+        { name: `Khu danh thắng nổi tiếng tại ${dest}`, address: `Khu du lịch sinh thái, ${dest}`, duration: '2 giờ 30 phút', cost: 50000, costText: 'Dự kiến: 50.000đ/vé', image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80', advice: `Khám phá cảnh quan thiên nhiên đặc sắc tại ${dest}.` },
+        { name: `Quảng trường trung tâm & Di tích lịch sử ${dest}`, address: `Trung tâm hành chính, ${dest}`, duration: '2 giờ', cost: 0, costText: 'Tham quan tự do', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80', advice: `Tìm hiểu văn hóa truyền thống địa phương.` },
+        { name: `Chùa cổ & Danh thắng tâm linh ${dest}`, address: `Địa phận ${dest}`, duration: '1 giờ 30 phút', cost: 0, costText: 'Miễn phí viếng chùa', image: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&auto=format&fit=crop&q=80', advice: `Không gian tâm linh thanh tịnh, trang phục lịch sự.` },
+        { name: `Chợ đêm & Tuyến phố ẩm thực ${dest}`, address: `Khu phố trung tâm, ${dest}`, duration: '2 giờ', cost: 100000, costText: 'Ăn uống tự do', image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80', advice: `Thưởng thức quà vặt đặc sản đường phố về đêm.` }
+      ],
+      foods: [
+        { name: `Quán đặc sản truyền thống ${dest}`, dish: `Ẩm thực đặc sản ${dest}`, address: `Trung tâm ${dest}`, advice: `Thưởng thức hương vị bản địa thơm ngon.` },
+        { name: `Nhà hàng ẩm thực vùng miền ${dest}`, dish: `Món ngon địa phương`, address: `Đường ẩm thực, ${dest}`, advice: `Không gian ấm cúng, nguyên liệu tươi sạch.` }
+      ],
+      hotel: `Khách sạn nghỉ dưỡng trung tâm ${dest}`
+    };
+
+    const g = currentPlan?.guests || 1;
+    const r = currentPlan?.rooms || 1;
+    const nights = days > 1 ? days - 1 : 1;
+    const timeSlots = ['08:30', '11:30', '15:00', '18:30'];
+
+    const baseDate = new Date();
+    baseDate.setDate(baseDate.getDate() + 3);
+    const formatDate = (d) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    const startDateStr = formatDate(baseDate);
+    const endDate = new Date(baseDate);
+    endDate.setDate(endDate.getDate() + days - 1);
+    const endDateStr = formatDate(endDate);
+
+    const dailyItinerary = [];
+    for (let day = 1; day <= days; day++) {
+      const curDate = new Date(baseDate);
+      curDate.setDate(curDate.getDate() + day - 1);
+      const curDateStr = formatDate(curDate);
+
+      const att1 = targetData.attractions[((day - 1) * 2) % targetData.attractions.length];
+      const foodItem = targetData.foods[(day - 1) % targetData.foods.length];
+      const att2 = targetData.attractions[((day - 1) * 2 + 1) % targetData.attractions.length];
+
+      const activities = [
+        {
+          order: 1,
+          time: timeSlots[0],
+          name: att1.name,
+          address: att1.address,
+          duration: att1.duration || '2 giờ',
+          costText: att1.costText || 'Tham quan tự do',
+          cost: att1.cost || 0,
+          image: att1.image,
+          advice: att1.advice
+        },
+        {
+          order: 2,
+          time: timeSlots[1],
+          name: foodItem.name,
+          address: foodItem.address,
+          duration: '1 giờ 15 phút',
+          costText: 'Dự kiến: 50.000đ - 80.000đ/người',
+          cost: 60000,
+          image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&auto=format&fit=crop&q=80',
+          advice: foodItem.advice
+        },
+        {
+          order: 3,
+          time: timeSlots[2],
+          name: att2.name,
+          address: att2.address,
+          duration: att2.duration || '2 giờ',
+          costText: att2.costText || 'Tham quan tự do',
+          cost: att2.cost || 0,
+          image: att2.image,
+          advice: att2.advice
+        },
+        {
+          order: 4,
+          time: timeSlots[3],
+          name: `Phố đêm & Ẩm thực tối ${dest}`,
+          address: `Khu phố trung tâm, ${dest}`,
+          duration: '2 giờ',
+          costText: 'Ăn tối & dạo phố tự do',
+          cost: 100000,
+          image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80',
+          advice: `Tản bộ ngắm phố đêm ${dest}, thưởng thức ẩm thực đường phố và quà lưu niệm.`
+        }
+      ];
+
+      dailyItinerary.push({
+        day,
+        date: curDateStr,
+        title: `Khám phá & Trải nghiệm ${dest} (Ngày ${day})`,
+        activityCount: activities.length,
+        transitSummary: `Di chuyển thuận tiện bằng taxi hoặc thuê xe máy giữa các điểm tại ${dest}.`,
+        activities
+      });
+    }
+
+    const isNear = ['Tam Đảo', 'Hà Nam', 'Hà Nội', 'Ninh Bình', 'Quảng Ninh', 'Sa Pa', 'Hải Phòng', 'Cao Bằng', 'Hà Giang'].includes(dest);
+    const transitCostPerPerson = isNear ? 350000 : 1650000;
+    const transitCostTotal = transitCostPerPerson * g;
+    const hotelPricePerNight = ['Tam Đảo'].includes(dest) ? 700000 : 600000;
+    const hotelCostTotal = hotelPricePerNight * nights * r;
+    let ticketCostPerPerson = 0;
+    dailyItinerary.forEach(d => d.activities.forEach(a => ticketCostPerPerson += (a.cost || 0)));
+    const ticketCostTotal = ticketCostPerPerson * g;
+    const foodCostTotal = 280000 * days * g;
+    const localTransportTotal = 120000 * days;
+    const totalBudget = transitCostTotal + hotelCostTotal + ticketCostTotal + foodCostTotal + localTransportTotal;
+    const fixedCost = transitCostTotal + Math.round(hotelCostTotal * 0.3) + ticketCostTotal;
+
+    const overviewServices = [
+      {
+        category: isNear ? 'Vé xe Limousine khứ hồi' : 'Vé máy bay khứ hồi',
+        provider: isNear ? 'Xe Limousine VIP đưa đón' : 'Vietnam Airlines / Vietjet Air',
+        route: `Hà Nội ⇄ ${dest}`,
+        price: transitCostTotal,
+        detail: `${transitCostPerPerson.toLocaleString('vi-VN')}đ/khách x ${g} khách`,
+        status: 'Xác nhận tức thì',
+        type: isNear ? 'transit' : 'flight'
+      },
+      {
+        category: 'Lưu trú nghỉ dưỡng',
+        provider: targetData.hotel,
+        nights: `${nights} đêm (${g} khách, ${r} phòng)`,
+        detail: `${hotelPricePerNight.toLocaleString('vi-VN')}đ/đêm x ${nights} đêm x ${r} phòng`,
+        price: hotelCostTotal,
+        status: 'Giữ phòng linh hoạt',
+        type: 'hotel'
+      },
+      {
+        category: 'Vé thắng cảnh & Trải nghiệm',
+        provider: `Các điểm tham quan tại ${dest}`,
+        detail: `Trọn gói vé tham quan cho ${g} khách (${ticketCostPerPerson.toLocaleString('vi-VN')}đ/người)`,
+        price: ticketCostTotal,
+        status: 'Đặt trước tiện lợi',
+        type: 'ticket'
+      },
+      {
+        category: 'Dự toán ẩm thực & ăn uống',
+        provider: 'Đặc sản địa phương 3 bữa/ngày',
+        detail: `280.000đ/ngày x ${days} ngày x ${g} khách`,
+        price: foodCostTotal,
+        status: 'Tự do trải nghiệm',
+        type: 'food'
+      }
+    ];
+
+    return {
+      title: `Lịch trình du lịch ${dest} (${days} Ngày ${days > 1 ? days - 1 : 0} Đêm)`,
+      startLocation: 'Hà Nội',
+      destination: dest,
+      startDate: startDateStr,
+      endDate: endDateStr,
+      days,
+      guests: g,
+      rooms: r,
+      fixedCost,
+      totalBudget,
+      summary: `Kế hoạch hành trình tối ưu được hệ thống VietnamTourism AI thiết kế riêng cho chuyến khám phá ${dest} trong ${days} ngày. Lộ trình được bố trí khoa học, giúp bạn tận hưởng tối đa cảnh đẹp, ẩm thực địa phương và thư giãn trọn vẹn.`,
+      dailyItinerary,
+      overviewServices,
+      travelTips: [
+        `Nên chuẩn bị trang phục phù hợp với thời tiết đặc trưng của ${dest}.`,
+        `Bấm trực tiếp vào từng địa điểm trên lịch trình để mở vị trí và chỉ đường trên Google Maps.`,
+        `Thưởng thức các món đặc sản địa phương tại các địa chỉ uy tín được gợi ý.`
+      ]
+    };
   };
 
-  const handleGeneratePlan = async (e) => {
-    e.preventDefault();
-    if (!destination.trim()) {
-      setErrorMsg('Vui lòng nhập điểm đến du lịch mong muốn');
-      return;
-    }
-
-    setErrorMsg('');
-    setLoading(true);
-    setLoadingStep(1);
-
-    const stepInterval = setInterval(() => {
-      setLoadingStep(prev => (prev < 4 ? prev + 1 : prev));
-    }, 900);
+  // Xử lý gửi tin nhắn tới AI Backend
+  const handleSendMessage = async (text) => {
+    const newMsgList = [...messages, { sender: 'user', text }];
+    setMessages(newMsgList);
+    setChatLoading(true);
 
     try {
-      const response = await fetch('/api/chat/plan', {
+      const response = await fetch('/api/chat/make-your-trip', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          startLocation: startLocation.trim(),
-          destination: destination.trim(),
-          days: parseInt(days, 10),
-          budget: parseInt(budget, 10),
-          travelStyle: selectedStyles.join(', '),
-          groupType: groupType,
-          specialRequests: specialRequests.trim()
+          message: text,
+          conversationHistory: newMsgList,
+          currentPlan: plan,
+          guests: plan?.guests || 1,
+          rooms: plan?.rooms || 1
         })
       });
 
-      const data = await response.json();
-      if (data.success && data.plan) {
-        if (!startLocation.trim()) {
-          data.plan.startLocation = '';
-        } else if (!data.plan.startLocation && startLocation.trim()) {
-          data.plan.startLocation = startLocation.trim();
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.plan) {
+          if (data.reply) {
+            setMessages(prev => [...prev, { sender: 'ai', text: data.reply }]);
+          }
+          setPlan(data.plan);
+          setActiveDay(1);
+          if (data.suggestedPrompts) {
+            setSuggestedPrompts(data.suggestedPrompts);
+          }
+          return;
         }
-        setPlanResult(data.plan);
-        setActiveDay(1);
-        setActiveTab('timeline');
-        // Scroll to result section
-        setTimeout(() => {
-          const el = document.getElementById('itinerary-results');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      } else {
-        setErrorMsg(data.error || 'Không thể tạo lịch trình, vui lòng thử lại sau.');
       }
+
+      // Nếu Backend đang tải hoặc chưa sẵn sàng, kích hoạt bộ sinh dự phòng thông minh ngay tại Client
+      const fallbackPlan = buildClientFallbackPlan(text, plan);
+      setPlan(fallbackPlan);
+      setActiveDay(1);
+      setMessages(prev => [...prev, {
+        sender: 'ai',
+        text: `VietnamTourism AI đã thiết kế hoàn chỉnh kế hoạch du lịch **${fallbackPlan.destination}** (${fallbackPlan.days} ngày ${fallbackPlan.days > 1 ? fallbackPlan.days - 1 : 0} đêm) cho bạn!\n\n• Lộ trình từng ngày đã được hiển thị chi tiết ở bảng bên cạnh với mốc thời gian, điểm tham quan, ẩm thực đặc sản và mẹo du lịch thực tế.\n• Bạn có thể nhấn vào biểu tượng hoặc nút **"Xem trên Google Maps"** tại mỗi địa điểm để mở bản đồ Google Maps bên ngoài dẫn đường tức thì!\n\nBạn có thể nhập thêm yêu cầu (đổi quán ăn, thêm điểm đến, thay đổi số ngày) để AI tối ưu lại nhé!`
+      }]);
     } catch (err) {
-      console.error(err);
-      setErrorMsg('Lỗi kết nối máy chủ AI. Vui lòng kiểm tra lại kết nối mạng.');
+      console.error('Make your trip fallback execution:', err);
+      const fallbackPlan = buildClientFallbackPlan(text, plan);
+      setPlan(fallbackPlan);
+      setActiveDay(1);
+      setMessages(prev => [...prev, {
+        sender: 'ai',
+        text: `VietnamTourism AI đã thiết kế hoàn chỉnh kế hoạch du lịch **${fallbackPlan.destination}** (${fallbackPlan.days} ngày ${fallbackPlan.days > 1 ? fallbackPlan.days - 1 : 0} đêm) cho bạn!\n\n• Lộ trình chi tiết từng ngày đã được hiển thị ở bảng bên phải kèm liên kết Google Maps dẫn đường trực tiếp.`
+      }]);
     } finally {
-      clearInterval(stepInterval);
-      setLoading(false);
+      setChatLoading(false);
     }
   };
 
-  const handleCopyItinerary = () => {
-    if (!planResult) return;
-    let text = `KẾ HOẠCH DU LỊCH: ${planResult.title}\n`;
-    if (planResult.startLocation) {
-      text += `Lộ trình: ${planResult.startLocation} ➔ ${planResult.destination} | `;
-    } else {
-      text += `Điểm đến: ${planResult.destination} | `;
+  const handleCopyShareLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
+  // Hàm tính toán lại chi phí động tức thì khi đổi số khách hoặc số phòng
+  const updatePlanGuestsOrRooms = (newGuests, newRooms) => {
+    if (!plan) return;
+    const g = Math.max(1, newGuests !== undefined ? newGuests : (plan.guests || 1));
+    const r = Math.max(1, newRooms !== undefined ? newRooms : (plan.rooms || 1));
+    const days = plan.days || 3;
+    const nights = days > 1 ? days - 1 : 1;
+
+    // Chi phí di chuyển
+    const isNear = ['Hà Nội', 'Ninh Bình', 'Quảng Ninh', 'Sa Pa', 'Hải Phòng', 'Hòa Bình', 'Mai Châu', 'Mộc Châu', 'Cao Bằng', 'Hà Giang'].includes(plan.destination) && ['Hà Nội'].includes(plan.startLocation || 'Hà Nội');
+    const transitCostPerPerson = isNear ? 450000 : 1650000;
+    const transitCostTotal = transitCostPerPerson * g;
+
+    // Chi phí khách sạn theo địa điểm và số đêm
+    let hotelPricePerNight = 650000;
+    if (['Phú Quốc', 'Nha Trang', 'Đà Nẵng', 'Đà Lạt'].includes(plan.destination)) {
+      hotelPricePerNight = 850000;
+    } else if (['Hà Giang', 'Cao Bằng', 'Cần Thơ', 'Tây Ninh'].includes(plan.destination)) {
+      hotelPricePerNight = 500000;
     }
-    text += `Thời gian: ${planResult.days} ngày | Ngân sách: ${planResult.budget?.toLocaleString('vi-VN')} VNĐ\n`;
-    if (planResult.nlpAnalysis?.extractedEntities?.length > 0) {
-      text += `Phân tích NLP: ${planResult.nlpAnalysis.extractedEntities.join(', ')}\n`;
-    }
-    text += `Giới thiệu: ${planResult.summary}\n\n`;
-    
-    planResult.dailyItinerary?.forEach(day => {
-      text += `${day.title}\n`;
-      text += `  Sáng: ${day.morning?.activity} (Ăn: ${day.morning?.food})\n`;
-      text += `  Chiều: ${day.afternoon?.activity} (Ăn: ${day.afternoon?.food})\n`;
-      text += `  Tối: ${day.evening?.activity} (Ăn: ${day.evening?.food})\n\n`;
+    const hotelCostTotal = hotelPricePerNight * nights * r;
+
+    // Chi phí vé tham quan từ các hoạt động thực tế trong lịch trình
+    let ticketCostPerPerson = 0;
+    plan.dailyItinerary?.forEach(day => {
+      day.activities?.forEach(act => {
+        ticketCostPerPerson += (act.cost || 0);
+      });
     });
+    const ticketCostTotal = ticketCostPerPerson * g;
 
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    // Chi phí ăn uống đặc sản 3 bữa
+    const foodPerDayPerPerson = 280000;
+    const foodCostTotal = foodPerDayPerPerson * days * g;
+
+    // Đi lại nội thành
+    const localTransportTotal = 120000 * days;
+
+    // Tổng chi phí ước tính thực tế
+    const newTotalBudget = transitCostTotal + hotelCostTotal + ticketCostTotal + foodCostTotal + localTransportTotal;
+    const newFixedCost = transitCostTotal + Math.round(hotelCostTotal * 0.3) + ticketCostTotal;
+
+    const newOverviewServices = [
+      {
+        category: isNear ? 'Vé xe Limousine khứ hồi' : 'Vé máy bay khứ hồi',
+        provider: isNear ? 'Xe Limousine VIP đưa đón' : 'Vietnam Airlines / Vietjet Air',
+        route: `${plan.startLocation || 'Hà Nội'} ⇄ ${plan.destination}`,
+        price: transitCostTotal,
+        detail: `${transitCostPerPerson.toLocaleString('vi-VN')}đ/khách x ${g} khách`,
+        status: 'Xác nhận tức thì',
+        type: isNear ? 'transit' : 'flight'
+      },
+      {
+        category: 'Lưu trú khách sạn',
+        provider: plan.overviewServices?.[1]?.provider || `Khách sạn nghỉ dưỡng ${plan.destination}`,
+        nights: `${nights} đêm (${g} khách, ${r} phòng)`,
+        detail: `${hotelPricePerNight.toLocaleString('vi-VN')}đ/đêm x ${nights} đêm x ${r} phòng`,
+        price: hotelCostTotal,
+        status: 'Giữ phòng linh hoạt',
+        type: 'hotel'
+      },
+      {
+        category: 'Vé thắng cảnh & Trải nghiệm',
+        provider: `Các điểm tham quan tại ${plan.destination}`,
+        detail: `Trọn gói vé tham quan cho ${g} khách (${ticketCostPerPerson.toLocaleString('vi-VN')}đ/người)`,
+        price: ticketCostTotal,
+        status: 'Đặt trước tiện lợi',
+        type: 'ticket'
+      },
+      {
+        category: 'Dự toán ẩm thực & ăn uống',
+        provider: 'Đặc sản địa phương 3 bữa/ngày',
+        detail: `${foodPerDayPerPerson.toLocaleString('vi-VN')}đ/ngày x ${days} ngày x ${g} khách`,
+        price: foodCostTotal,
+        status: 'Tự do trải nghiệm',
+        type: 'food'
+      }
+    ];
+
+    setPlan(prev => ({
+      ...prev,
+      guests: g,
+      rooms: r,
+      totalBudget: newTotalBudget,
+      fixedCost: newFixedCost,
+      overviewServices: newOverviewServices
+    }));
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleResetTrip = () => {
+    setPlan(null);
+    setMessages(INITIAL_CHAT);
+    setSuggestedPrompts([
+      'Lên lịch trình Đà Lạt 3 ngày 2 đêm',
+      'Lập kế hoạch đi Sa Pa 3 ngày 2 đêm',
+      'Lịch trình Phú Quốc 4 ngày 3 đêm',
+      'Phượt Hà Giang 3N2Đ ngắm sông Nho Quế',
+      'Du lịch Ninh Bình 2 ngày 1 đêm'
+    ]);
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-secondary)', paddingTop: '90px', paddingBottom: '60px' }}>
-      <div className="container" style={{ maxWidth: '1180px', margin: '0 auto', padding: '0 1rem' }}>
-        
-        {/* HERO SECTION */}
+    <div style={{
+      minHeight: '100vh',
+      background: '#F8FAFC',
+      // Navbar cao ~108px -> paddingTop 120px để tránh hoàn toàn bị thọt/che khuất
+      paddingTop: '120px',
+      paddingBottom: '40px',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      
+      {/* 1. TOP HEADER CONTROL BAR (Hiển thị thông tin hành trình khi đã có Plan) */}
+      {plan && (
         <div style={{
-          textAlign: 'center',
-          padding: '2.5rem 1.5rem',
           background: '#FFFFFF',
-          borderRadius: '24px',
-          border: '1px solid #E2E8F0',
-          boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)',
-          marginBottom: '2rem',
-          position: 'relative',
-          overflow: 'hidden'
+          borderBottom: '1px solid #E2E8F0',
+          padding: '0.75rem 1.5rem',
+          position: 'sticky',
+          top: '108px',
+          zIndex: 40,
+          boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+          marginBottom: '1rem'
         }}>
           <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            background: '#EFF6FF',
-            color: 'var(--brand-navy)',
-            padding: '0.4rem 1rem',
-            borderRadius: '20px',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            marginBottom: '1rem',
-            border: '1px solid #BFDBFE',
-            letterSpacing: '0.5px'
-          }}>
-            ⚡ TRỢ LÝ LẬP LỊCH TRÌNH DU LỊCH
-          </div>
-
-          <h1 style={{
-            fontSize: '2.4rem',
-            fontWeight: 800,
-            fontFamily: 'var(--font-heading)',
-            color: 'var(--brand-navy)',
-            lineHeight: 1.25,
-            marginBottom: '0.75rem'
-          }}>
-            Lập Kế Hoạch Du Lịch Thông Minh Theo Nhu Cầu
-          </h1>
-
-          <p style={{
-            color: '#4B5563',
-            fontSize: '1.05rem',
-            maxWidth: '780px',
+            maxWidth: '1600px',
             margin: '0 auto',
-            lineHeight: 1.6
-          }}>
-            Nhập số ngày đi, ngân sách dự tính và sở thích của bạn — Trợ lý sẽ tính toán, tối ưu cung đường và sinh ra lịch trình hoàn chỉnh: <strong>chơi gì, ở đâu, ăn gì</strong> với bảng dự toán chi phí chi tiết.
-          </p>
-        </div>
-
-        {/* INPUT PLANNING FORM */}
-        <div style={{
-          background: '#FFFFFF',
-          borderRadius: '20px',
-          padding: '2rem',
-          border: '1px solid #E5E7EB',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
-          marginBottom: '2.5rem'
-        }}>
-          <form onSubmit={handleGeneratePlan}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '1.5rem', marginBottom: '1.75rem' }}>
-              
-              {/* 1. Điểm xuất phát (tùy chọn) */}
-              <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  1. Điểm xuất phát (tùy chọn):
-                </label>
-                <input 
-                  type="text"
-                  value={startLocation}
-                  onChange={(e) => setStartLocation(e.target.value)}
-                  placeholder="Ví dụ: Hà Nội, TP.HCM... (không bắt buộc)"
-                  style={{
-                    width: '100%',
-                    padding: '0.85rem 1rem',
-                    borderRadius: '12px',
-                    border: '1px solid #D1D5DB',
-                    fontSize: '1rem',
-                    fontFamily: 'inherit',
-                    outline: 'none',
-                    color: '#111827',
-                    background: '#FFFFFF',
-                    transition: 'border 0.2s'
-                  }}
-                />
-              </div>
-
-              {/* 2. Điểm đến */}
-              <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  2. Điểm đến mong muốn:
-                </label>
-                <input 
-                  type="text"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  placeholder="Ví dụ: Đà Nẵng, Hạ Long, Xuyên Việt..."
-                  style={{
-                    width: '100%',
-                    padding: '0.85rem 1rem',
-                    borderRadius: '12px',
-                    border: '1px solid #D1D5DB',
-                    fontSize: '1rem',
-                    fontFamily: 'inherit',
-                    outline: 'none',
-                    color: '#111827',
-                    background: '#FFFFFF',
-                    transition: 'border 0.2s'
-                  }}
-                  required
-                />
-              </div>
-
-              {/* 3. Số ngày chuyến đi */}
-              <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  3. Thời gian chuyến đi:
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <input 
-                    type="number"
-                    min="1"
-                    max="60"
-                    value={days}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === '') {
-                        setDays('');
-                      } else {
-                        setDays(Math.max(1, Math.min(60, parseInt(val, 10))));
-                      }
-                    }}
-                    onBlur={() => {
-                      if (!days || days < 1) setDays(3);
-                    }}
-                    placeholder="Nhập số ngày (Ví dụ: 3, 7, 14, 30...)"
-                    style={{
-                      width: '100%',
-                      padding: '0.85rem 3.5rem 0.85rem 1rem',
-                      borderRadius: '12px',
-                      border: '1px solid #D1D5DB',
-                      fontSize: '1rem',
-                      fontFamily: 'inherit',
-                      outline: 'none',
-                      color: '#111827',
-                      background: '#FFFFFF',
-                      transition: 'border 0.2s'
-                    }}
-                    required
-                  />
-                  <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#00A699', fontSize: '0.9rem' }}>
-                    Ngày
-                  </span>
-                </div>
-              </div>
-
-              {/* 4. Ngân sách dự kiến */}
-              <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  4. Tổng ngân sách dự kiến:
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <input 
-                    type="text"
-                    value={budget ? Number(budget).toLocaleString('vi-VN') : ''}
-                    onChange={(e) => {
-                      const raw = e.target.value.replace(/\D/g, '');
-                      setBudget(raw ? parseInt(raw, 10) : '');
-                    }}
-                    onBlur={() => {
-                      if (!budget || budget < 500000) setBudget(5000000);
-                    }}
-                    placeholder="Nhập số tiền ngân sách (Ví dụ: 5.000.000...)"
-                    style={{
-                      width: '100%',
-                      padding: '0.85rem 3.5rem 0.85rem 1rem',
-                      borderRadius: '12px',
-                      border: '1px solid #D1D5DB',
-                      fontSize: '1rem',
-                      fontFamily: 'inherit',
-                      outline: 'none',
-                      color: '#111827',
-                      background: '#FFFFFF',
-                      transition: 'border 0.2s'
-                    }}
-                    required
-                  />
-                  <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: '#00A699', fontSize: '0.9rem' }}>
-                    VNĐ
-                  </span>
-                </div>
-              </div>
-
-            </div>
-
-            {/* 5. Đối tượng & 6. Phong cách du lịch */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.75rem', marginBottom: '1.75rem' }}>
-              
-              {/* Đối tượng */}
-              <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  5. Bạn đi cùng ai?
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-                  {GROUP_TYPES.map(g => (
-                    <div
-                      key={g.id}
-                      onClick={() => setGroupType(g.label)}
-                      style={{
-                        padding: '0.85rem',
-                        borderRadius: '12px',
-                        border: `2px solid ${groupType === g.label ? 'var(--brand-navy)' : '#E5E7EB'}`,
-                        background: groupType === g.label ? '#EFF6FF' : '#FFFFFF',
-                        cursor: 'pointer',
-                        transition: 'all 0.15s'
-                      }}
-                    >
-                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: groupType === g.label ? 'var(--brand-navy)' : '#111827' }}>
-                        {g.label}
-                      </div>
-                      <div style={{ fontSize: '0.75rem', color: '#4B5563', marginTop: '2px' }}>
-                        {g.desc}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Phong cách */}
-              <div>
-                <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                  6. Phong cách du lịch ưu thích:
-                </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  {TRAVEL_STYLES.map(style => {
-                    const isSelected = selectedStyles.includes(style.label);
-                    return (
-                      <button
-                        key={style.id}
-                        type="button"
-                        onClick={() => toggleStyle(style.label)}
-                        style={{
-                          padding: '0.55rem 0.95rem',
-                          borderRadius: '25px',
-                          border: `1px solid ${isSelected ? 'var(--brand-navy)' : '#E5E7EB'}`,
-                          background: isSelected ? 'var(--brand-navy)' : '#F9FAFB',
-                          color: isSelected ? '#FFFFFF' : '#374151',
-                          fontWeight: isSelected ? 700 : 500,
-                          fontSize: '0.85rem',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.35rem',
-                          transition: 'all 0.15s'
-                        }}
-                      >
-                        {style.label}
-                        {isSelected && <Check size={14} />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-            </div>
-
-            {/* 7. Yêu cầu chi tiết dạng văn bản */}
-            <div style={{ marginBottom: '2rem' }}>
-              <label style={{ display: 'block', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.6rem', color: '#111827' }}>
-                7. Yêu cầu đặc biệt bổ sung:
-              </label>
-              <textarea
-                rows={2}
-                value={specialRequests}
-                onChange={(e) => setSpecialRequests(e.target.value)}
-                placeholder="Ví dụ: Thích quán cafe view biển hoàng hôn, muốn thử món bánh tráng cuốn thịt heo, thích đi xe máy hơn taxi..."
-                style={{
-                  width: '100%',
-                  padding: '0.85rem 1rem',
-                  borderRadius: '12px',
-                  border: '1px solid #D1D5DB',
-                  fontSize: '0.95rem',
-                  fontFamily: 'inherit',
-                  outline: 'none',
-                  color: '#111827',
-                  background: '#FFFFFF',
-                  resize: 'vertical'
-                }}
-              />
-            </div>
-
-            {errorMsg && (
-              <div style={{
-                background: '#FEF2F2',
-                color: '#DC2626',
-                padding: '0.85rem 1.25rem',
-                borderRadius: '12px',
-                fontSize: '0.9rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                marginBottom: '1.5rem',
-                border: '1px solid #FEE2E2'
-              }}>
-                <AlertCircle size={18} />
-                <span>{errorMsg}</span>
-              </div>
-            )}
-
-            {/* Action Submit Button */}
-            <div style={{ textAlign: 'center' }}>
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  background: 'linear-gradient(135deg, #E11D48 0%, #DC2626 100%)',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  padding: '1.1rem 3.5rem',
-                  borderRadius: '35px',
-                  fontSize: '1.1rem',
-                  fontWeight: 800,
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 6px 20px rgba(225, 29, 72, 0.35)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  transition: 'all 0.2s',
-                  transform: loading ? 'scale(0.98)' : 'scale(1)'
-                }}
-                onMouseEnter={e => { 
-                  if (!loading) {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(225, 29, 72, 0.45)';
-                  }
-                }}
-                onMouseLeave={e => { 
-                  if (!loading) {
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(225, 29, 72, 0.35)';
-                  }
-                }}
-              >
-                <span>{loading ? 'Hệ Thống Đang Lập Kế Hoạch...' : 'Khởi Tạo Kế Hoạch Du Lịch'}</span>
-              </button>
-            </div>
-          </form>
-
-          {/* LOADING STATE ANIMATION */}
-          {loading && (
-            <div style={{
-              marginTop: '2.5rem',
-              padding: '2rem',
-              borderRadius: '16px',
-              background: '#F0FDFA',
-              border: '1px dashed #5EEAD4',
-              textAlign: 'center'
-            }}>
-              <div style={{
-                width: '45px',
-                height: '45px',
-                border: '3px solid #CCFBF1',
-                borderTopColor: '#00A699',
-                borderRadius: '50%',
-                margin: '0 auto 1.25rem',
-                animation: 'spin 0.8s linear infinite'
-              }} />
-              <style>{`
-                @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-              `}</style>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0F766E' }}>
-                {loadingStep === 1 && 'Đang phân tích yêu cầu & đặc điểm điểm đến...'}
-                {loadingStep === 2 && 'Đang tính toán ngân sách & tối ưu khoảng cách...'}
-                {loadingStep === 3 && 'Đang chọn lọc nơi lưu trú & món ăn đặc sản...'}
-                {loadingStep >= 4 && 'Đang hoàn thiện lịch trình du lịch chi tiết cho bạn...'}
-              </h3>
-              <p style={{ color: '#0D9488', fontSize: '0.9rem' }}>
-                Hệ thống đang đối sánh sở thích với hàng trăm địa điểm du lịch thực tế tại {destination}...
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* RESULTS SECTION */}
-        {planResult && (
-          <div id="itinerary-results" style={{
-            background: '#FFFFFF',
-            borderRadius: '24px',
-            border: '1px solid #E5E7EB',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-            padding: '2.5rem',
-            marginBottom: '3rem'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px'
           }}>
             
-            {/* Header Result */}
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              gap: '1.5rem',
-              paddingBottom: '2rem',
-              borderBottom: '1px solid #E5E7EB',
-              marginBottom: '2rem'
-            }}>
-              <div>
-                <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  background: '#F0FDFA',
-                  color: '#00A699',
-                  border: '1px solid #99F6E4',
-                  padding: '0.35rem 0.85rem',
-                  borderRadius: '20px',
-                  fontSize: '0.85rem',
-                  fontWeight: 700,
-                  marginBottom: '0.75rem'
-                }}>
-                  KẾ HOẠCH ĐÃ HOÀN TẤT VÀ TỐI ƯU HOÁ
-                </div>
-                <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem', fontFamily: 'var(--font-heading)' }}>
-                  {planResult.title}
-                </h2>
-                <p style={{ color: '#4B5563', fontSize: '1.05rem', maxWidth: '780px', lineHeight: 1.6 }}>
-                  {planResult.summary}
-                </p>
+            {/* Trái: Điểm đến, Date picker & Guest picker */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              
+              {/* Badge điểm đến */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: '#F0F9FF',
+                color: '#0284C7',
+                border: '1px solid #BAE6FD',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '10px',
+                fontWeight: 700,
+                fontSize: '0.9rem'
+              }}>
+                <MapPin size={16} />
+                <span>{plan.destination} ({plan.days} Ngày)</span>
               </div>
 
-              {/* Action Buttons: Print, Copy, Reset */}
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {/* Date range picker button */}
+              <div style={{ position: 'relative' }}>
                 <button
                   type="button"
-                  onClick={handleCopyItinerary}
+                  onClick={() => setShowDatePicker(!showDatePicker)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.4rem',
+                    gap: '8px',
                     background: '#FFFFFF',
-                    color: '#111827',
-                    border: '1px solid #D1D5DB',
-                    padding: '0.65rem 1.1rem',
-                    borderRadius: '12px',
+                    border: '1px solid #CBD5E1',
+                    borderRadius: '10px',
+                    padding: '0.45rem 0.85rem',
+                    fontSize: '0.88rem',
                     fontWeight: 600,
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s'
+                    color: '#0F172A',
+                    cursor: 'pointer'
                   }}
                 >
-                  {copied ? <Check size={16} /> : <Copy size={16} />}
-                  <span>{copied ? 'Đã sao chép!' : 'Sao chép'}</span>
+                  <Calendar size={15} color="#0284C7" />
+                  <span>{plan.startDate} - {plan.endDate}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748B' }}>▾</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={handlePrint}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    background: '#FFFFFF',
-                    color: '#111827',
-                    border: '1px solid #D1D5DB',
-                    padding: '0.65rem 1.1rem',
-                    borderRadius: '12px',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s'
-                  }}
-                >
-                  <Printer size={16} />
-                  <span>In / PDF</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = document.querySelector('form');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    background: '#F0FDFA',
-                    color: '#00A699',
-                    border: '1px solid #99F6E4',
-                    padding: '0.65rem 1.1rem',
-                    borderRadius: '12px',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#CCFBF1'}
-                  onMouseLeave={e => e.currentTarget.style.background = '#F0FDFA'}
-                >
-                  <RotateCcw size={16} />
-                  <span>Đổi tiêu chí</span>
-                </button>
-              </div>
-            </div>
-
-
-
-            {/* QUICK STATS CARDS - Bỏ 2 ô "Gợi ý nơi ở" và "Ẩm thực đặc sản", chữ màu đen */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: '1rem',
-              marginBottom: '2rem'
-            }}>
-              <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>
-                  {planResult.startLocation ? 'Lộ trình di chuyển' : 'Điểm đến'}
-                </div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem', wordBreak: 'break-word' }}>
-                  {planResult.startLocation ? `${planResult.startLocation} ➔ ${planResult.destination}` : planResult.destination}
-                </div>
-              </div>
-
-              <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>Thời lượng</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
-                  {planResult.days} Ngày ({planResult.days > 1 ? `${planResult.days - 1} Đêm` : 'Trong ngày'})
-                </div>
-              </div>
-
-              <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>Tổng ngân sách</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
-                  {planResult.budget?.toLocaleString('vi-VN')} đ
-                </div>
-              </div>
-
-              <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                <div style={{ color: '#4B5563', fontSize: '0.85rem', fontWeight: 600 }}>Đối tượng</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#111827', marginTop: '0.4rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {planResult.groupType || groupType}
-                </div>
-              </div>
-            </div>
-
-            {/* NAVIGATION TABS */}
-            <div style={{
-              display: 'flex',
-              gap: '0.5rem',
-              borderBottom: '2px solid #E5E7EB',
-              marginBottom: '2rem',
-              overflowX: 'auto',
-              paddingBottom: '2px'
-            }}>
-              {[
-                { id: 'timeline', label: `Lịch Trình Từng Ngày (${planResult.dailyItinerary?.length || 0})` },
-                { id: 'stay', label: `Ở Đâu (${planResult.accommodations?.length || 0})` },
-                { id: 'food', label: `Ăn Gì (${planResult.culinary?.length || 0})` },
-                { id: 'budget', label: 'Dự Toán Chi Phí' },
-                { id: 'tips', label: 'Mẹo & Cẩm Nang' }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  style={{
-                    padding: '0.85rem 1.5rem',
-                    border: 'none',
-                    borderBottom: activeTab === tab.id ? '3px solid #00A699' : '3px solid transparent',
-                    background: 'none',
-                    color: activeTab === tab.id ? '#00A699' : '#6B7280',
-                    fontWeight: activeTab === tab.id ? 700 : 500,
-                    fontSize: '1rem',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    transition: 'all 0.15s'
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* TAB CONTENT 1: TIMELINE LỊCH TRÌNH */}
-            {activeTab === 'timeline' && (
-              <div>
-                {/* Day Selector Buttons */}
-                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-                  {planResult.dailyItinerary?.map(d => (
-                    <button
-                      key={d.day}
-                      type="button"
-                      onClick={() => setActiveDay(d.day)}
-                      style={{
-                        padding: '0.65rem 1.25rem',
-                        borderRadius: '12px',
-                        border: activeDay === d.day ? '1px solid #00A699' : '1px solid #E5E7EB',
-                        background: activeDay === d.day ? '#00A699' : '#FFFFFF',
-                        color: activeDay === d.day ? '#FFFFFF' : '#111827',
-                        fontWeight: activeDay === d.day ? 700 : 600,
-                        fontSize: '0.95rem',
-                        cursor: 'pointer',
-                        boxShadow: activeDay === d.day ? '0 4px 12px rgba(0, 166, 153, 0.25)' : 'none',
-                        transition: 'all 0.15s'
-                      }}
-                    >
-                      Ngày {d.day}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => setActiveDay('all')}
-                    style={{
-                      padding: '0.65rem 1.25rem',
-                      borderRadius: '12px',
-                      border: activeDay === 'all' ? '1px solid #00A699' : '1px solid #E5E7EB',
-                      background: activeDay === 'all' ? '#00A699' : '#FFFFFF',
-                      color: activeDay === 'all' ? '#FFFFFF' : '#111827',
-                      fontWeight: 700,
-                      fontSize: '0.95rem',
-                      cursor: 'pointer',
-                      boxShadow: activeDay === 'all' ? '0 4px 12px rgba(0, 166, 153, 0.25)' : 'none',
-                      transition: 'all 0.15s'
-                    }}
-                  >
-                    Xem toàn bộ các ngày
-                  </button>
-                </div>
-
-                {/* Days Display */}
-                {planResult.dailyItinerary
-                  ?.filter(d => activeDay === 'all' || d.day === activeDay)
-                  .map(dayItem => (
-                    <div 
-                      key={dayItem.day}
-                      style={{
-                        background: '#F9FAFB',
-                        borderRadius: '20px',
-                        padding: '1.75rem',
-                        marginBottom: '2rem',
-                        border: '1px solid #E5E7EB'
-                      }}
-                    >
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
-                        marginBottom: '1.5rem',
-                        paddingBottom: '1rem',
-                        borderBottom: '1px solid #E5E7EB'
-                      }}>
-                        <div style={{
-                          background: '#00A699',
-                          color: '#FFFFFF',
-                          width: '36px',
-                          height: '36px',
-                          borderRadius: '10px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 800,
-                          fontSize: '1rem'
-                        }}>
-                          {dayItem.day}
-                        </div>
-                        <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827' }}>
-                          {dayItem.title}
-                        </h3>
-                      </div>
-
-                      {/* 3 Periods: Morning, Afternoon, Evening */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-                        
-                        {/* Morning */}
-                        <div style={{
-                          background: '#FFFFFF',
-                          borderRadius: '16px',
-                          padding: '1.4rem',
-                          border: '1px solid #E5E7EB',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-                        }}>
-                          <div style={{ color: '#111827', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
-                            Buổi Sáng
-                          </div>
-                          <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Hoạt động chính:</strong>
-                            <p style={{ color: '#111827', marginTop: '3px', fontWeight: 600 }}>{dayItem.morning?.activity}</p>
-                          </div>
-                          <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Ăn sáng gợi ý:</strong>
-                            <p style={{ color: '#111827', marginTop: '3px' }}>{dayItem.morning?.food}</p>
-                          </div>
-                          {dayItem.morning?.tips && (
-                            <div style={{ background: '#F0FDFA', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#0F766E', marginTop: '0.5rem', border: '1px solid #CCFBF1' }}>
-                              <strong>Mẹo:</strong> {dayItem.morning.tips}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Afternoon */}
-                        <div style={{
-                          background: '#FFFFFF',
-                          borderRadius: '16px',
-                          padding: '1.4rem',
-                          border: '1px solid #E5E7EB',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-                        }}>
-                          <div style={{ color: '#111827', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
-                            Buổi Chiều
-                          </div>
-                          <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Hoạt động chính:</strong>
-                            <p style={{ color: '#111827', marginTop: '3px', fontWeight: 600 }}>{dayItem.afternoon?.activity}</p>
-                          </div>
-                          <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Bữa trưa & xế:</strong>
-                            <p style={{ color: '#111827', marginTop: '3px' }}>{dayItem.afternoon?.food}</p>
-                          </div>
-                          {dayItem.afternoon?.tips && (
-                            <div style={{ background: '#F0FDFA', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#0F766E', marginTop: '0.5rem', border: '1px solid #CCFBF1' }}>
-                              <strong>Mẹo:</strong> {dayItem.afternoon.tips}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Evening */}
-                        <div style={{
-                          background: '#FFFFFF',
-                          borderRadius: '16px',
-                          padding: '1.4rem',
-                          border: '1px solid #E5E7EB',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-                        }}>
-                          <div style={{ color: '#111827', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.85rem' }}>
-                            Buổi Tối
-                          </div>
-                          <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Hoạt động đêm:</strong>
-                            <p style={{ color: '#111827', marginTop: '3px', fontWeight: 600 }}>{dayItem.evening?.activity}</p>
-                          </div>
-                          <div style={{ marginBottom: '0.75rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#4B5563', textTransform: 'uppercase' }}>Bữa tối đặc sản:</strong>
-                            <p style={{ color: '#111827', marginTop: '3px' }}>{dayItem.evening?.food}</p>
-                          </div>
-                          {dayItem.evening?.tips && (
-                            <div style={{ background: '#F0FDFA', padding: '0.6rem 0.8rem', borderRadius: '8px', fontSize: '0.85rem', color: '#0F766E', marginTop: '0.5rem', border: '1px solid #CCFBF1' }}>
-                              <strong>Mẹo:</strong> {dayItem.evening.tips}
-                            </div>
-                          )}
-                        </div>
-
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
-
-            {/* TAB CONTENT 2: GỢI Ý LƯU TRÚ (Ở ĐÂU) */}
-            {activeTab === 'stay' && (() => {
-              const allStays = planResult.accommodations || [];
-              const filteredStays = allStays.filter(item => {
-                const typeStr = (item.type || '').toLowerCase();
-                const matchesCat = stayCategory === 'ALL' || 
-                  (stayCategory === 'hotel' && (typeStr.includes('khách sạn') || typeStr.includes('hotel'))) ||
-                  (stayCategory === 'resort' && typeStr.includes('resort')) ||
-                  (stayCategory === 'homestay' && typeStr.includes('homestay')) ||
-                  (stayCategory === 'apartment' && (typeStr.includes('căn hộ') || typeStr.includes('apartment') || typeStr.includes('condotel') || typeStr.includes('villa'))) ||
-                  (stayCategory === 'hostel' && (typeStr.includes('hostel') || typeStr.includes('dorm')));
-                
-                const searchLow = staySearch.toLowerCase().trim();
-                const matchesSearch = !searchLow ||
-                  (item.name || '').toLowerCase().includes(searchLow) ||
-                  (item.area || '').toLowerCase().includes(searchLow) ||
-                  (item.highlights || '').toLowerCase().includes(searchLow);
-                return matchesCat && matchesSearch;
-              });
-
-              return (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
-                    <div>
-                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827' }}>
-                        Gợi ý Địa Điểm Lưu Trú ({allStays.length} lựa chọn)
-                      </h3>
-                      <p style={{ color: '#4B5563', fontSize: '0.9rem', marginTop: '0.2rem' }}>
-                        Đầy đủ phân khúc từ Resort nghỉ dưỡng, Khách sạn trung tâm, Căn hộ đến Homestay bản địa
-                      </p>
-                    </div>
-
-                    {/* Search box for stay */}
-                    <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-                      <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }} />
-                      <input 
-                        type="text"
-                        value={staySearch}
-                        onChange={(e) => setStaySearch(e.target.value)}
-                        placeholder="Tìm tên khách sạn, khu vực..."
-                        style={{
-                          width: '100%',
-                          padding: '0.65rem 1rem 0.65rem 2.4rem',
-                          borderRadius: '12px',
-                          border: '1px solid #D1D5DB',
-                          background: '#FFFFFF',
-                          fontSize: '0.9rem',
-                          outline: 'none',
-                          color: '#111827'
-                        }}
-                      />
-                      {staySearch && (
-                        <button 
-                          onClick={() => setStaySearch('')} 
-                          style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'none', cursor: 'pointer', color: '#6B7280' }}
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Filter category chips */}
-                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '4px' }}>
-                    {[
-                      { id: 'ALL', label: `Tất cả (${allStays.length})` },
-                      { id: 'resort', label: 'Resort nghỉ dưỡng' },
-                      { id: 'hotel', label: 'Khách sạn' },
-                      { id: 'homestay', label: 'Homestay bản địa' },
-                      { id: 'apartment', label: 'Căn hộ / Villa' },
-                      { id: 'hostel', label: 'Hostel tiết kiệm' }
-                    ].map(f => (
-                      <button
-                        key={f.id}
-                        type="button"
-                        onClick={() => setStayCategory(f.id)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          borderRadius: '20px',
-                          border: stayCategory === f.id ? '2px solid #00A699' : '1px solid #E5E7EB',
-                          background: stayCategory === f.id ? '#F0FDFA' : '#FFFFFF',
-                          color: stayCategory === f.id ? '#00A699' : '#111827',
-                          fontWeight: stayCategory === f.id ? 700 : 500,
-                          fontSize: '0.85rem',
-                          cursor: 'pointer',
-                          whiteSpace: 'nowrap',
-                          transition: 'all 0.15s'
-                        }}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Cards display */}
-                  {filteredStays.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#F9FAFB', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                      <p style={{ color: '#4B5563', marginBottom: '1rem' }}>Không tìm thấy nơi lưu trú nào phù hợp với bộ lọc hiện tại.</p>
-                      <button 
-                        type="button" 
-                        onClick={() => { setStayCategory('ALL'); setStaySearch(''); }}
-                        style={{ padding: '0.5rem 1.2rem', borderRadius: '10px', border: 'none', background: '#00A699', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
-                      >
-                        Xóa bộ lọc
-                      </button>
-                    </div>
-                  ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
-                      {filteredStays.map((hotel, idx) => {
-                        const mapsQuery = encodeURIComponent(`${hotel.name} ${hotel.area || ''} ${planResult.destination}`);
-                        const bookingQuery = encodeURIComponent(`đặt phòng ${hotel.name} ${planResult.destination}`);
-
-                        return (
-                          <div 
-                            key={idx}
-                            style={{
-                              background: '#F9FAFB',
-                              padding: '1.6rem',
-                              borderRadius: '20px',
-                              border: '1px solid #E5E7EB',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'space-between',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
-                              transition: 'transform 0.2s, box-shadow 0.2s'
-                            }}
-                          >
-                            <div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                                <div style={{
-                                  background: '#F0FDFA',
-                                  color: '#00A699',
-                                  padding: '0.25rem 0.8rem',
-                                  borderRadius: '20px',
-                                  fontSize: '0.75rem',
-                                  fontWeight: 700,
-                                  letterSpacing: '0.3px',
-                                  border: '1px solid #99F6E4'
-                                }}>
-                                  {hotel.type || 'Lưu trú'}
-                                </div>
-                                <span style={{
-                                  background: '#F3F4F6',
-                                  color: '#374151',
-                                  fontSize: '0.85rem',
-                                  fontWeight: 700,
-                                  padding: '0.2rem 0.6rem',
-                                  borderRadius: '8px'
-                                }}>
-                                  Lựa chọn #{idx + 1}
-                                </span>
-                              </div>
-
-                              <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem', lineHeight: 1.3 }}>
-                                {hotel.name}
-                              </h4>
-
-                              <div style={{
-                                display: 'inline-block',
-                                background: '#F0FDFA',
-                                border: '1px solid #99F6E4',
-                                color: '#00A699',
-                                fontWeight: 800,
-                                fontSize: '1.05rem',
-                                padding: '0.35rem 0.8rem',
-                                borderRadius: '10px',
-                                marginBottom: '0.85rem'
-                              }}>
-                                {hotel.priceRange}
-                              </div>
-
-                              <p style={{ color: '#374151', fontSize: '0.95rem', marginBottom: '0.75rem' }}>
-                                <strong>Khu vực:</strong> {hotel.area}
-                              </p>
-
-                              <div style={{ color: '#111827', fontSize: '0.92rem', background: '#FFFFFF', padding: '0.85rem', borderRadius: '12px', border: '1px solid #E5E7EB', marginBottom: '1.25rem', lineHeight: 1.5 }}>
-                                <div style={{ fontWeight: 700, color: '#111827', marginBottom: '0.25rem', fontSize: '0.85rem' }}>
-                                  Điểm nổi bật & Tiện ích:
-                                </div>
-                                {hotel.highlights}
-                              </div>
-                            </div>
-
-                            {/* Action links */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem', paddingTop: '0.75rem', borderTop: '1px solid #E5E7EB' }}>
-                              <a
-                                href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  gap: '0.4rem',
-                                  padding: '0.6rem 0.5rem',
-                                  borderRadius: '10px',
-                                  background: '#FFFFFF',
-                                  border: '1px solid #D1D5DB',
-                                  color: '#111827',
-                                  fontSize: '0.85rem',
-                                  fontWeight: 600,
-                                  textDecoration: 'none'
-                                }}
-                              >
-                                Bản đồ
-                              </a>
-
-                              <a
-                                href={`https://www.google.com/search?q=${bookingQuery}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  gap: '0.4rem',
-                                  padding: '0.6rem 0.5rem',
-                                  borderRadius: '10px',
-                                  background: '#00A699',
-                                  border: '1px solid #00A699',
-                                  color: '#FFFFFF',
-                                  fontSize: '0.85rem',
-                                  fontWeight: 600,
-                                  textDecoration: 'none',
-                                  boxShadow: '0 2px 8px rgba(0, 166, 153, 0.25)'
-                                }}
-                              >
-                                <ExternalLink size={14} />
-                                Giá phòng
-                              </a>
-                            </div>
-
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
-
-            {/* TAB CONTENT 3: ẨM THỰC ĐẶC SẢN (ĂN GÌ) */}
-            {activeTab === 'food' && (() => {
-              const allFoods = planResult.culinary || [];
-              const filteredFoods = allFoods.filter(item => {
-                const catStr = (item.category || '').toLowerCase();
-                const dishStr = (item.dish || '').toLowerCase();
-
-                const matchesCat = foodCategory === 'ALL' ||
-                  (foodCategory === 'main' && (catStr.includes('món chính') || catStr.includes('cơm') || dishStr.includes('cơm') || dishStr.includes('bánh tráng cuốn') || dishStr.includes('nem'))) ||
-                  (foodCategory === 'noodle' && (catStr.includes('món nước') || dishStr.includes('phở') || dishStr.includes('bún') || dishStr.includes('mì') || dishStr.includes('hủ tiếu') || dishStr.includes('bánh canh') || dishStr.includes('miến') || dishStr.includes('cháo'))) ||
-                  (foodCategory === 'seafood' && (catStr.includes('hải sản') || catStr.includes('nướng') || dishStr.includes('hải sản') || dishStr.includes('nướng') || dishStr.includes('lẩu') || dishStr.includes('ghẹ') || dishStr.includes('tôm') || dishStr.includes('mực') || dishStr.includes('ốc') || dishStr.includes('bò') || dishStr.includes('dê'))) ||
-                  (foodCategory === 'snack' && (catStr.includes('ăn vặt') || catStr.includes('tráng miệng') || dishStr.includes('chè') || dishStr.includes('bánh') || dishStr.includes('kem') || dishStr.includes('sữa chua') || dishStr.includes('xôi') || dishStr.includes('cốm'))) ||
-                  (foodCategory === 'drink' && (catStr.includes('cà phê') || catStr.includes('đồ uống') || dishStr.includes('cà phê') || dishStr.includes('trà') || dishStr.includes('cocktail') || dishStr.includes('rượu') || dishStr.includes('nước mót') || dishStr.includes('sữa')));
-
-                const searchLow = foodSearch.toLowerCase().trim();
-                const matchesSearch = !searchLow ||
-                  (item.dish || '').toLowerCase().includes(searchLow) ||
-                  (item.places || item.recommendedPlaces || '').toLowerCase().includes(searchLow);
-
-                return matchesCat && matchesSearch;
-              });
-
-              return (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
-                    <div>
-                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827' }}>
-                        Danh sách Món ngon & Quán ăn đặc sản ({allFoods.length} món)
-                      </h3>
-                      <p style={{ color: '#4B5563', fontSize: '0.9rem', marginTop: '0.2rem' }}>
-                        Các món ăn trứ danh địa phương kèm địa chỉ quán chuẩn vị lâu đời nhất
-                      </p>
-                    </div>
-
-                    {/* Search box for food */}
-                    <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-                      <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }} />
-                      <input 
-                        type="text"
-                        value={foodSearch}
-                        onChange={(e) => setFoodSearch(e.target.value)}
-                        placeholder="Tìm món ngon, tên quán, địa chỉ..."
-                        style={{
-                          width: '100%',
-                          padding: '0.65rem 1rem 0.65rem 2.4rem',
-                          borderRadius: '12px',
-                          border: '1px solid #D1D5DB',
-                          background: '#FFFFFF',
-                          fontSize: '0.9rem',
-                          outline: 'none',
-                          color: '#111827'
-                        }}
-                      />
-                      {foodSearch && (
-                        <button 
-                          onClick={() => setFoodSearch('')} 
-                          style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'none', cursor: 'pointer', color: '#6B7280' }}
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Filter category chips */}
-                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '4px' }}>
-                    {[
-                      { id: 'ALL', label: `Tất cả (${allFoods.length})` },
-                      { id: 'main', label: 'Món chính truyền thống' },
-                      { id: 'noodle', label: 'Món nước & Phở / Bún' },
-                      { id: 'seafood', label: 'Hải sản & Đồ nướng' },
-                      { id: 'snack', label: 'Ăn vặt & Tráng miệng' },
-                      { id: 'drink', label: 'Cà phê & Thức uống' }
-                    ].map(f => (
-                      <button
-                        key={f.id}
-                        type="button"
-                        onClick={() => setFoodCategory(f.id)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          borderRadius: '20px',
-                          border: foodCategory === f.id ? '2px solid #00A699' : '1px solid #E5E7EB',
-                          background: foodCategory === f.id ? '#F0FDFA' : '#FFFFFF',
-                          color: foodCategory === f.id ? '#00A699' : '#111827',
-                          fontWeight: foodCategory === f.id ? 700 : 500,
-                          fontSize: '0.85rem',
-                          cursor: 'pointer',
-                          whiteSpace: 'nowrap',
-                          transition: 'all 0.15s'
-                        }}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Foods Grid */}
-                  {filteredFoods.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#F9FAFB', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                      <p style={{ color: '#4B5563', marginBottom: '1rem' }}>Không tìm thấy món ăn nào phù hợp với từ khóa.</p>
-                      <button 
-                        type="button" 
-                        onClick={() => { setFoodCategory('ALL'); setFoodSearch(''); }}
-                        style={{ padding: '0.5rem 1.2rem', borderRadius: '10px', border: 'none', background: '#00A699', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
-                      >
-                        Xóa bộ lọc
-                      </button>
-                    </div>
-                  ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
-                      {filteredFoods.map((food, idx) => {
-                        const firstPlace = (food.places || food.recommendedPlaces || '').split(',')[0];
-                        const mapQuery = encodeURIComponent(`${food.dish} ${firstPlace} ${planResult.destination}`);
-
-                        return (
-                          <div 
-                            key={idx}
-                            style={{
-                              background: '#F9FAFB',
-                              padding: '1.5rem',
-                              borderRadius: '18px',
-                              border: '1px solid #E5E7EB',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'space-between',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
-                              transition: 'transform 0.2s, box-shadow 0.2s'
-                            }}
-                          >
-                            <div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.65rem' }}>
-                                <span style={{
-                                  background: '#F0FDFA',
-                                  color: '#00A699',
-                                  border: '1px solid #99F6E4',
-                                  padding: '0.2rem 0.65rem',
-                                  borderRadius: '12px',
-                                  fontSize: '0.75rem',
-                                  fontWeight: 700
-                                }}>
-                                  {food.category || 'Ẩm thực'}
-                                </span>
-
-                                <span style={{
-                                  background: '#FFFFFF',
-                                  color: '#111827',
-                                  border: '1px solid #D1D5DB',
-                                  padding: '0.25rem 0.7rem',
-                                  borderRadius: '20px',
-                                  fontSize: '0.8rem',
-                                  fontWeight: 700
-                                }}>
-                                  {food.cost || food.estimatedCost}
-                                </span>
-                              </div>
-
-                              <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem', lineHeight: 1.3 }}>
-                                {food.dish}
-                              </h4>
-
-                              <p style={{ color: '#4B5563', fontSize: '0.92rem', marginBottom: '1rem', lineHeight: 1.5, background: '#FFFFFF', padding: '0.75rem', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
-                                <strong style={{ color: '#111827', display: 'block', marginBottom: '0.2rem' }}>
-                                  Quán & Địa chỉ nổi tiếng:
-                                </strong>
-                                <span>{food.places || food.recommendedPlaces}</span>
-                              </p>
-                            </div>
-
-                            <a
-                              href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '0.4rem',
-                                padding: '0.6rem 0.75rem',
-                                borderRadius: '10px',
-                                background: '#F0FDFA',
-                                border: '1px solid #99F6E4',
-                                color: '#00A699',
-                                fontSize: '0.85rem',
-                                fontWeight: 700,
-                                textDecoration: 'none',
-                                marginTop: '0.5rem'
-                              }}
-                            >
-                              <Navigation size={14} />
-                              Chỉ đường đến quán trên Google Maps
-                            </a>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
-
-            {/* TAB CONTENT 4: DỰ TOÁN CHI PHÍ */}
-            {activeTab === 'budget' && (
-              <div>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '0.75rem', color: '#111827' }}>
-                  Bảng Phân Bổ Chi Phí Dự Toán Theo Ngân Sách
-                </h3>
-                <p style={{ color: '#4B5563', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
-                  Tổng ngân sách mục tiêu: <strong>{planResult.budget?.toLocaleString('vi-VN')} VNĐ</strong>. Dưới đây là tỷ lệ phân bổ chi phí khoa học được đề xuất:
-                </p>
-
-                {planResult.budgetBreakdown && (
+                {showDatePicker && (
                   <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '1rem',
-                    marginBottom: '2rem'
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    marginTop: '6px',
+                    background: '#FFFFFF',
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                    border: '1px solid #E2E8F0',
+                    padding: '1rem',
+                    zIndex: 100,
+                    width: '280px'
                   }}>
-                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Lưu trú (Khách sạn)</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
-                        {planResult.budgetBreakdown.accommodation?.toLocaleString('vi-VN')} đ
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '8px', color: 'var(--brand-navy)' }}>
+                      Chọn độ dài chuyến đi:
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                      {[2, 3, 4, 5, 7].map(d => (
+                        <button
+                          key={d}
+                          type="button"
+                          onClick={() => {
+                            handleSendMessage(`Đổi sang lịch trình ${d} ngày ${d > 1 ? d - 1 : 0} đêm`);
+                            setShowDatePicker(false);
+                          }}
+                          style={{
+                            padding: '6px',
+                            borderRadius: '8px',
+                            border: plan.days === d ? '2px solid #0284C7' : '1px solid #E2E8F0',
+                            background: plan.days === d ? '#EFF6FF' : '#F8FAFC',
+                            color: plan.days === d ? '#0284C7' : '#334155',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 600
+                          }}
+                        >
+                          {d} Ngày {d > 1 ? d - 1 : 0} Đêm
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Guests & Rooms button */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowGuestPicker(!showGuestPicker)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: '#FFFFFF',
+                    border: '1px solid #CBD5E1',
+                    borderRadius: '10px',
+                    padding: '0.45rem 0.85rem',
+                    fontSize: '0.88rem',
+                    fontWeight: 600,
+                    color: '#0F172A',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <Users size={15} color="#0284C7" />
+                  <span>{plan.guests || 1} khách • 🛏️ {plan.rooms || 1} phòng</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748B' }}>▾</span>
+                </button>
+
+                {showGuestPicker && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    marginTop: '6px',
+                    background: '#FFFFFF',
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                    border: '1px solid #E2E8F0',
+                    padding: '1rem',
+                    zIndex: 100,
+                    width: '240px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 600 }}>Số khách:</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <button 
+                          type="button" 
+                          onClick={() => updatePlanGuestsOrRooms(Math.max(1, (plan.guests || 1) - 1), plan.rooms)}
+                          style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#F8FAFC', cursor: 'pointer' }}
+                        >-</button>
+                        <span style={{ fontWeight: 700 }}>{plan.guests || 1}</span>
+                        <button 
+                          type="button" 
+                          onClick={() => updatePlanGuestsOrRooms((plan.guests || 1) + 1, plan.rooms)}
+                          style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#F8FAFC', cursor: 'pointer' }}
+                        >+</button>
                       </div>
                     </div>
-
-                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Ăn uống ẩm thực</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
-                        {planResult.budgetBreakdown.food?.toLocaleString('vi-VN')} đ
-                      </div>
-                    </div>
-
-                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Vé tham quan & vui chơi</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
-                        {planResult.budgetBreakdown.sightseeing?.toLocaleString('vi-VN')} đ
-                      </div>
-                    </div>
-
-                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Di chuyển tại chỗ</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
-                        {planResult.budgetBreakdown.transportation?.toLocaleString('vi-VN')} đ
-                      </div>
-                    </div>
-
-                    <div style={{ background: '#F9FAFB', padding: '1.25rem', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
-                      <div style={{ fontSize: '0.85rem', color: '#4B5563', fontWeight: 600 }}>Quỹ dự phòng & mua sắm</div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginTop: '0.4rem' }}>
-                        {planResult.budgetBreakdown.contingency?.toLocaleString('vi-VN')} đ
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 600 }}>Số phòng:</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <button 
+                          type="button" 
+                          onClick={() => updatePlanGuestsOrRooms(plan.guests, Math.max(1, (plan.rooms || 1) - 1))}
+                          style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#F8FAFC', cursor: 'pointer' }}
+                        >-</button>
+                        <span style={{ fontWeight: 700 }}>{plan.rooms || 1}</span>
+                        <button 
+                          type="button" 
+                          onClick={() => updatePlanGuestsOrRooms(plan.guests, (plan.rooms || 1) + 1)}
+                          style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#F8FAFC', cursor: 'pointer' }}
+                        >+</button>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
-            )}
 
-            {/* TAB CONTENT 5: MẸO & CẨM NANG */}
-            {activeTab === 'tips' && (
+            </div>
+
+            {/* Phải: Chi phí dự kiến & Action buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              
+              {/* Chi phí ước tính */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600 }}>Chi phí ước tính:</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#E11D48' }}>
+                  {plan.totalBudget?.toLocaleString('vi-VN')}đ
+                </span>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', background: '#F1F5F9', padding: '2px 8px', borderRadius: '8px', fontWeight: 600 }}>
+                  ({plan.guests || 1} khách • {plan.rooms || 1} phòng)
+                </span>
+                <span title="Dự toán tính động từ vé di chuyển, phòng khách sạn, vé thắng cảnh và ăn uống thực tế" style={{ cursor: 'pointer', color: '#94A3B8' }}>
+                  <Info size={15} />
+                </span>
+              </div>
+
+              {/* Nút reset / Tạo chuyến đi mới */}
+              <button
+                type="button"
+                onClick={handleResetTrip}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: '#F1F5F9',
+                  color: '#334155',
+                  border: '1px solid #CBD5E1',
+                  borderRadius: '10px',
+                  padding: '0.45rem 0.85rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                <RotateCcw size={14} />
+                <span>Tạo chuyến đi mới</span>
+              </button>
+
+              {/* Nút chia sẻ lịch trình */}
+              <button
+                type="button"
+                onClick={() => setShowShareModal(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: '#0284C7',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: '10px',
+                  padding: '0.45rem 0.95rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(2, 132, 199, 0.25)'
+                }}
+              >
+                <Share2 size={14} />
+                <span>Chia sẻ</span>
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* 2. MAIN 2-COLUMN LAYOUT CONTAINER: Cột Trái (Chat) & Cột Phải (Lịch Trình hoặc Gợi Ý) */}
+      <style>{`
+        .planner-grid-2col {
+          display: grid;
+          grid-template-columns: 380px 1fr;
+          gap: 20px;
+        }
+        @media (max-width: 1100px) {
+          .planner-grid-2col {
+            grid-template-columns: 340px 1fr;
+            gap: 16px;
+          }
+        }
+        @media (max-width: 900px) {
+          .planner-grid-2col {
+            grid-template-columns: 1fr;
+          }
+          .planner-chat-sticky {
+            position: relative !important;
+            top: 0 !important;
+            height: 520px !important;
+          }
+        }
+      `}</style>
+
+      <div 
+        className="planner-grid-2col"
+        style={{
+          maxWidth: '1600px',
+          width: '100%',
+          margin: '0 auto',
+          padding: '0 1.25rem',
+          flex: 1,
+          alignItems: 'stretch'
+        }}
+      >
+        
+        {/* CỘT 1: CHAT AI TƯ VẤN (MakeYourTripChat) */}
+        <div 
+          className="planner-chat-sticky" 
+          style={{ 
+            height: plan ? 'calc(100vh - 200px)' : 'calc(100vh - 150px)', 
+            minHeight: '620px', 
+            position: 'sticky', 
+            top: plan ? '180px' : '120px' 
+          }}
+        >
+          <MakeYourTripChat
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            loading={chatLoading}
+            suggestedPrompts={suggestedPrompts}
+            onSelectPrompt={handleSendMessage}
+          />
+        </div>
+
+        {/* CỘT 2: KHU VỰC HIỂN THỊ */}
+        <div style={{
+          background: '#FFFFFF',
+          borderRadius: '20px',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 16px rgba(2, 50, 106, 0.04)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          minHeight: '620px'
+        }}>
+          
+          {/* TRƯỜNG HỢP A: CHƯA CÓ KẾ HOẠCH (plan === null) -> Hiển thị Màn hình Gợi ý & Cảm hứng 63 Tỉnh Thành */}
+          {!plan ? (
+            <div style={{ padding: '1.5rem', overflowY: 'auto' }}>
+              {/* Grid các điểm đến nổi bật */}
               <div>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '1.25rem', color: '#111827' }}>
-                  Lời Khuyên & Cẩm Nang Thực Tế Cho Chuyến Đi
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-                  {planResult.travelTips?.map((tip, idx) => (
-                    <div 
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '8px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.18rem', fontWeight: 800, color: 'var(--brand-navy)' }}>
+                      Gợi Ý Điểm Đến Khám Phá Nổi Bật
+                    </h3>
+                    <p style={{ fontSize: '0.84rem', color: '#64748B', marginTop: '2px' }}>
+                      Chọn một điểm đến bên dưới hoặc trò chuyện với AI bên trái để lên lịch trình
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                  gap: '16px'
+                }}>
+                  {POPULAR_DESTINATIONS.map((dest, idx) => (
+                    <div
                       key={idx}
+                      onClick={() => handleSendMessage(dest.prompt)}
                       style={{
-                        background: '#F0FDFA',
-                        padding: '1.2rem 1.5rem',
-                        borderRadius: '16px',
-                        border: '1px solid #CCFBF1',
-                        borderLeft: '4px solid #00A699',
-                        fontSize: '1rem',
-                        color: '#111827',
-                        lineHeight: 1.5
+                        background: '#FFFFFF',
+                        borderRadius: '14px',
+                        border: '1px solid #E2E8F0',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                        display: 'flex',
+                        flexDirection: 'column'
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.transform = 'translateY(-3px)';
+                        e.currentTarget.style.borderColor = '#0284C7';
+                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(2, 132, 199, 0.12)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.borderColor = '#E2E8F0';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.03)';
                       }}
                     >
-                      <span>{tip}</span>
+                      <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
+                        <img 
+                          src={dest.image} 
+                          alt={dest.name} 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                        <div style={{
+                          position: 'absolute',
+                          top: '10px',
+                          left: '10px',
+                          background: 'rgba(1, 30, 64, 0.85)',
+                          backdropFilter: 'blur(4px)',
+                          color: '#FFFFFF',
+                          padding: '3px 8px',
+                          borderRadius: '8px',
+                          fontSize: '0.72rem',
+                          fontWeight: 700
+                        }}>
+                          {dest.tag}
+                        </div>
+                      </div>
+
+                      <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                          <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', marginBottom: '6px' }}>
+                            {dest.name}
+                          </h4>
+                          <p style={{ fontSize: '0.82rem', color: '#64748B', lineHeight: 1.45, marginBottom: '12px' }}>
+                            {dest.desc}
+                          </p>
+                        </div>
+
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          paddingTop: '8px',
+                          borderTop: '1px solid #F1F5F9',
+                          color: '#0284C7',
+                          fontSize: '0.82rem',
+                          fontWeight: 700
+                        }}>
+                          <span>Tạo lịch trình ngay</span>
+                          <ArrowRight size={14} />
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
 
-          </div>
-        )}
+            </div>
+          ) : (
+            /* TRƯỜNG HỢP B: ĐÃ CÓ KẾ HOẠCH (plan !== null) -> Render Lịch trình chi tiết từng ngày */
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              
+              {/* TABS HEADER: Lịch trình theo ngày | Tổng quan dịch vụ */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0.75rem 1.25rem',
+                borderBottom: '1px solid #F1F5F9',
+                flexWrap: 'wrap',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('daily')}
+                    style={{
+                      border: 'none',
+                      background: 'transparent',
+                      fontSize: '0.95rem',
+                      fontWeight: activeTab === 'daily' ? 800 : 600,
+                      color: activeTab === 'daily' ? '#0284C7' : '#64748B',
+                      cursor: 'pointer',
+                      borderBottom: activeTab === 'daily' ? '2px solid #0284C7' : '2px solid transparent',
+                      paddingBottom: '6px'
+                    }}
+                  >
+                    Lịch trình theo ngày
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('services')}
+                    style={{
+                      border: 'none',
+                      background: 'transparent',
+                      fontSize: '0.95rem',
+                      fontWeight: activeTab === 'services' ? 800 : 600,
+                      color: activeTab === 'services' ? '#0284C7' : '#64748B',
+                      cursor: 'pointer',
+                      borderBottom: activeTab === 'services' ? '2px solid #0284C7' : '2px solid transparent',
+                      paddingBottom: '6px'
+                    }}
+                  >
+                    Tổng quan dịch vụ
+                  </button>
+                </div>
+
+                {/* Nút mở điểm đến trên Google Maps */}
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(plan.destination + ' Việt Nam')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '0.82rem',
+                    fontWeight: 700,
+                    color: '#E11D48',
+                    textDecoration: 'none',
+                    background: '#FFF1F2',
+                    border: '1px solid #FECDD3',
+                    padding: '4px 10px',
+                    borderRadius: '8px'
+                  }}
+                >
+                  <MapPin size={13} />
+                  <span>Mở {plan.destination} trên Google Maps</span>
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+
+              {/* TAB 1: LỊCH TRÌNH THEO TỪNG NGÀY */}
+              {activeTab === 'daily' && (
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+                  
+                  {/* THANH CHỌN NGÀY (Tabs Ngày 1, Ngày 2, Ngày 3, ...) */}
+                  <div style={{
+                    padding: '0.75rem 1.25rem',
+                    background: '#F8FAFC',
+                    borderBottom: '1px solid #E2E8F0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    overflowX: 'auto',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {plan.dailyItinerary?.map((dayObj) => {
+                      const isActive = dayObj.day === activeDay;
+                      return (
+                        <button
+                          key={dayObj.day}
+                          type="button"
+                          onClick={() => setActiveDay(dayObj.day)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            borderRadius: '10px',
+                            border: isActive ? '2px solid #0284C7' : '1px solid #CBD5E1',
+                            background: isActive ? '#EFF6FF' : '#FFFFFF',
+                            color: isActive ? '#0284C7' : '#334155',
+                            fontWeight: isActive ? 800 : 600,
+                            fontSize: '0.88rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            transition: 'all 0.15s'
+                          }}
+                        >
+                          <span>Ngày {dayObj.day}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* HEADER NGÀY ĐANG CHỌN */}
+                  <div style={{
+                    padding: '1rem 1.5rem',
+                    borderBottom: '1px solid #F1F5F9',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '10px',
+                    background: '#FAFBFD'
+                  }}>
+                    <div>
+                      <div style={{ fontSize: '0.82rem', color: '#64748B', fontWeight: 600 }}>
+                        {currentDayData.date}
+                      </div>
+                      <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--brand-navy)', marginTop: '2px' }}>
+                        {currentDayData.title || `Lịch trình ngày ${activeDay}`}
+                      </h3>
+                    </div>
+
+                    <div style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      background: '#ECFDF5',
+                      color: '#059669',
+                      padding: '4px 10px',
+                      borderRadius: '12px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700
+                    }}>
+                      <span>● {currentDayData.activities?.length || 0} hoạt động trong ngày</span>
+                    </div>
+                  </div>
+
+                  {/* TIMELINE CÁC ĐỊA ĐIỂM / HOẠT ĐỘNG TRONG NGÀY */}
+                  <div style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    {currentDayData.activities?.map((act, index) => {
+                      const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${act.name} ${act.address || plan.destination || ''}`)}`;
+
+                      return (
+                        <div
+                          key={index}
+                          style={{
+                            display: 'flex',
+                            gap: '14px',
+                            position: 'relative'
+                          }}
+                        >
+                          {/* Cột trái: Time & Order Badge */}
+                          <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            width: '56px',
+                            flexShrink: 0
+                          }}>
+                            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0F172A', marginBottom: '4px' }}>
+                              {act.time}
+                            </span>
+                            <div style={{
+                              width: '28px',
+                              height: '28px',
+                              borderRadius: '50%',
+                              background: '#E11D48',
+                              color: '#FFFFFF',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '0.8rem',
+                              fontWeight: 800,
+                              zIndex: 2,
+                              boxShadow: '0 2px 6px rgba(225, 29, 72, 0.3)'
+                            }}>
+                              {act.order || (index + 1)}
+                            </div>
+                            {/* Dây nối dọc timeline */}
+                            {index < currentDayData.activities.length - 1 && (
+                              <div style={{
+                                width: '2px',
+                                flex: 1,
+                                background: '#CBD5E1',
+                                marginTop: '4px',
+                                marginBottom: '4px'
+                              }} />
+                            )}
+                          </div>
+
+                          {/* Cột phải: Content Card */}
+                          <div style={{
+                            flex: 1,
+                            background: '#FFFFFF',
+                            borderRadius: '14px',
+                            border: '1px solid #E2E8F0',
+                            padding: '1rem',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                            transition: 'all 0.15s'
+                          }}>
+                            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                              
+                              {/* Thumbnail ảnh thực tế */}
+                              {act.image && (
+                                <img
+                                  src={act.image}
+                                  alt={act.name}
+                                  style={{
+                                    width: '84px',
+                                    height: '84px',
+                                    borderRadius: '10px',
+                                    objectFit: 'cover',
+                                    flexShrink: 0
+                                  }}
+                                />
+                              )}
+
+                              {/* Chi tiết địa điểm */}
+                              <div style={{ flex: 1 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px' }}>
+                                  <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', lineHeight: 1.3 }}>
+                                    {act.name}
+                                  </h4>
+
+                                  {/* NÚT MỞ GOOGLE MAPS NGOÀI */}
+                                  <a
+                                    href={googleMapsUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '5px',
+                                      background: '#F0F9FF',
+                                      color: '#0284C7',
+                                      border: '1px solid #BAE6FD',
+                                      borderRadius: '8px',
+                                      padding: '4px 10px',
+                                      fontSize: '0.78rem',
+                                      fontWeight: 700,
+                                      textDecoration: 'none',
+                                      transition: 'all 0.15s'
+                                    }}
+                                    onMouseEnter={e => {
+                                      e.currentTarget.style.background = '#0284C7';
+                                      e.currentTarget.style.color = '#FFFFFF';
+                                    }}
+                                    onMouseLeave={e => {
+                                      e.currentTarget.style.background = '#F0F9FF';
+                                      e.currentTarget.style.color = '#0284C7';
+                                    }}
+                                  >
+                                    <MapPin size={13} />
+                                    <span>Xem trên Google Maps</span>
+                                    <ExternalLink size={12} />
+                                  </a>
+                                </div>
+
+                                <p style={{ fontSize: '0.82rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px', margin: '6px 0' }}>
+                                  <MapPin size={13} color="#0284C7" />
+                                  <span>{act.address}</span>
+                                </p>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.8rem', color: '#475569', fontWeight: 600 }}>
+                                  <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                    <Clock size={13} /> {act.duration}
+                                  </span>
+                                  {act.costText && (
+                                    <span style={{ color: '#E11D48', fontWeight: 700 }}>
+                                      • {act.costText}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                            </div>
+
+                            {/* Lời khuyên của AI (AI Advice Box) */}
+                            {act.advice && (
+                              <div style={{
+                                marginTop: '10px',
+                                background: '#F8FAFC',
+                                borderRadius: '10px',
+                                padding: '8px 12px',
+                                fontSize: '0.82rem',
+                                color: '#334155',
+                                lineHeight: 1.5,
+                                border: '1px solid #F1F5F9'
+                              }}>
+                                💡 <strong>Mẹo trải nghiệm: </strong>{act.advice}
+                              </div>
+                            )}
+                          </div>
+
+                        </div>
+                      );
+                    })}
+
+                    {/* Transit summary note */}
+                    {currentDayData.transitSummary && (
+                      <div style={{
+                        marginTop: '10px',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        background: '#EFF6FF',
+                        border: '1px solid #BFDBFE',
+                        fontSize: '0.84rem',
+                        color: '#0369A1',
+                        lineHeight: 1.5,
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '10px'
+                      }}>
+                        <Car size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+                        <div>
+                          <strong>Gợi ý di chuyển: </strong>{currentDayData.transitSummary}
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 2: TỔNG QUAN DỊCH VỤ CÓ THỂ ĐẶT TRƯỚC */}
+              {activeTab === 'services' && (
+                <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--brand-navy)' }}>
+                      Tổng Quan Dịch Vụ Chuyến Đi
+                    </h3>
+                    <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '2px' }}>
+                      Các dịch vụ cốt lõi trong chuyến đi khám phá {plan.destination} được thiết kế trọn gói và hỗ trợ giữ chỗ linh hoạt.
+                    </p>
+                  </div>
+
+                  {plan.overviewServices?.map((item, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        background: '#F8FAFC',
+                        borderRadius: '14px',
+                        border: '1px solid #E2E8F0',
+                        padding: '1.15rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        gap: '12px'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '12px',
+                          background: item.type === 'flight' ? '#EFF6FF' : item.type === 'hotel' ? '#F5F3FF' : '#FEF2F2',
+                          color: item.type === 'flight' ? '#0284C7' : item.type === 'hotel' ? '#7C3AED' : '#E11D48',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          {item.type === 'flight' && <Plane size={22} />}
+                          {item.type === 'hotel' && <Hotel size={22} />}
+                          {item.type === 'ticket' && <Ticket size={22} />}
+                          {item.type === 'transit' && <Car size={22} />}
+                        </div>
+
+                        <div>
+                          <div style={{ fontSize: '0.98rem', fontWeight: 800, color: '#0F172A' }}>
+                            {item.category}: {item.provider}
+                          </div>
+                          <div style={{ fontSize: '0.84rem', color: '#64748B', marginTop: '2px' }}>
+                            {item.route || item.nights || item.detail}
+                          </div>
+                          <div style={{ display: 'inline-block', marginTop: '4px', fontSize: '0.75rem', fontWeight: 700, color: '#10B981', background: '#ECFDF5', padding: '2px 8px', borderRadius: '10px' }}>
+                            ✓ {item.status}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#E11D48' }}>
+                          {item.price?.toLocaleString('vi-VN')}đ
+                        </div>
+                        <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>Dự toán trọn gói</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+            </div>
+          )}
+
+        </div>
 
       </div>
+
+      {/* SHARE MODAL DIALOG */}
+      {showShareModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: '20px',
+            width: '100%',
+            maxWidth: '480px',
+            padding: '1.75rem',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+          }}>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--brand-navy)', marginBottom: '8px' }}>
+              Chia Sẻ Lịch Trình Du Lịch
+            </h3>
+            <p style={{ fontSize: '0.88rem', color: '#64748B', marginBottom: '1.25rem' }}>
+              Sao chép liên kết chuyến đi này để gửi cho bạn bè hoặc gia đình cùng xem lịch trình khám phá {plan?.destination}:
+            </p>
+
+            <div style={{
+              display: 'flex',
+              gap: '8px',
+              background: '#F1F5F9',
+              padding: '6px',
+              borderRadius: '12px',
+              marginBottom: '1.25rem'
+            }}>
+              <input
+                type="text"
+                readOnly
+                value={window.location.href}
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  fontSize: '0.85rem',
+                  color: '#334155',
+                  paddingLeft: '8px'
+                }}
+              />
+              <button
+                type="button"
+                onClick={handleCopyShareLink}
+                style={{
+                  background: copiedLink ? '#10B981' : '#0284C7',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 14px',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                {copiedLink ? <Check size={14} /> : <Copy size={14} />}
+                <span>{copiedLink ? 'Đã sao chép' : 'Sao chép'}</span>
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <button
+                type="button"
+                onClick={() => setShowShareModal(false)}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '10px',
+                  border: '1px solid #CBD5E1',
+                  background: '#FFFFFF',
+                  color: '#334155',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

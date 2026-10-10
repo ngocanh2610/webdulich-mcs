@@ -49,7 +49,7 @@ const Navbar = () => {
       width: '100%', 
       zIndex: 1000
     }}>
-      {/* Top Utility Bar (Phong cách Vietravel & Du Lịch Bình Minh) */}
+      {/* Top Utility Bar */}
       <div style={{
         background: '#011E40',
         color: '#E2E8F0',
@@ -77,13 +77,7 @@ const Navbar = () => {
               ● Trực tuyến 24/7 toàn quốc
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Link to="/planner" style={{ color: '#FDE047', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.3rem', textDecoration: 'none' }}>
-              <Sparkles size={13} color="#F59E0B" /> Kế Hoạch Du Lịch
-            </Link>
-            <span style={{ color: '#64748B' }}>|</span>
-            <span style={{ color: '#CBD5E1' }}>Bản đồ {mode} Tỉnh Thành</span>
-          </div>
+
         </div>
       </div>
 
@@ -171,7 +165,7 @@ const Navbar = () => {
             }}
           >
             <Sparkles size={15} color={isActive('/planner') ? '#FFFFFF' : '#E11D48'} />
-            <span>Lập Kế Hoạch</span>
+            <span>Lập Lịch Trình AI</span>
           </Link>
         </div>
 
@@ -742,14 +736,14 @@ const Navbar = () => {
               fontWeight: 700,
               fontSize: '0.95rem',
               color: '#FFFFFF',
-              background: 'linear-gradient(135deg, #00A699 0%, #008489 100%)',
-              boxShadow: '0 4px 14px rgba(0, 166, 153, 0.25)',
+              background: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+              boxShadow: '0 4px 14px rgba(225, 29, 72, 0.25)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between'
             }}
           >
-            <span>Lập Kế Hoạch AI</span>
+            <span>Lập Lịch Trình AI</span>
             <ArrowRight size={16} />
           </Link>
 
