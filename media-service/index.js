@@ -6,13 +6,11 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure uploads dir exists
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Configure multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadsDir);
@@ -25,7 +23,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+  limits: { fileSize: 10 * 1024 * 1024 }
 });
 
 const app = express();
@@ -36,10 +34,8 @@ app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'] }));
 app.use(morgan('combined'));
 app.use(express.json());
 
-// Serve uploaded files statically
 app.use('/api/media/uploads', express.static(uploadsDir));
 
-// Curated Vietnam travel photography from Unsplash (free to use)
 const heroImages = [
   { id: 'halong-hero', url: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=1920&q=90', caption: 'Vịnh Hạ Long hùng vĩ', credit: 'Unsplash' },
   { id: 'hoian-hero', url: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=90', caption: 'Phố cổ Hội An lung linh', credit: 'Unsplash' },
@@ -55,23 +51,19 @@ const bannerImages = {
   highland: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80'
 };
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'media-service', port: PORT, timestamp: new Date().toISOString() });
 });
 
-// GET /api/media/heroes - hero images
 app.get('/api/media/heroes', (req, res) => {
   res.json({ success: true, data: heroImages });
 });
 
-// GET /api/media/banners/:region
 app.get('/api/media/banners/:region', (req, res) => {
   const url = bannerImages[req.params.region] || bannerImages.north;
   res.json({ success: true, url });
 });
 
-// GET /api/media/stats
 app.get('/api/media/stats', (req, res) => {
   res.json({
     success: true,
@@ -83,18 +75,14 @@ app.get('/api/media/stats', (req, res) => {
   });
 });
 
-// POST /api/media/upload
 app.post('/api/media/upload', upload.array('images', 50), (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ success: false, message: 'No files uploaded' });
   }
 
-  // Generate public URLs for the uploaded files
-  const host = req.get('host'); // will be something like localhost:2222 or domain
-  const protocol = req.protocol; // http or https
+  const host = req.get('host');
+  const protocol = req.protocol;
   
-  // Since this sits behind api-gateway on port 2222/80, host might be localhost:2222
-  // But let's construct relative URLs for the frontend to use, or absolute paths
   const urls = req.files.map(file => `/api/media/uploads/${file.filename}`);
 
   res.json({

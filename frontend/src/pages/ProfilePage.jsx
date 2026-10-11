@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
-// Gợi ý danh sách avatar mẫu phong cách du lịch
 const PRESET_AVATARS = [
   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
   'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=80',
@@ -25,11 +24,9 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Active tab: 'profile' hoặc 'users'
   const initialTab = searchParams.get('tab') === 'users' && user?.role === 'admin' ? 'users' : 'profile';
   const [activeTab, setActiveTab] = useState(initialTab);
 
-  // States for Personal Profile
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar || '');
   const [avatarInputUrl, setAvatarInputUrl] = useState('');
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
@@ -38,17 +35,14 @@ const ProfilePage = () => {
   const [avatarPreview, setAvatarPreview] = useState(user?.avatar || '');
   const fileInputRef = useRef(null);
 
-  // Password change state
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-  // Email update state
   const [emailInput, setEmailInput] = useState(user?.email || '');
   const [isUpdatingEmail, setIsUpdatingEmail] = useState(false);
 
-  // Toast alert
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
@@ -57,7 +51,6 @@ const ProfilePage = () => {
     }, 4000);
   };
 
-  // States for Admin User Management
   const [usersList, setUsersList] = useState([]);
   const [usersCounts, setUsersCounts] = useState({ total: 0, activeCount: 0, disabledCount: 0, adminCount: 0, userCount: 0 });
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
@@ -65,15 +58,13 @@ const ProfilePage = () => {
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  // Confirmation Modals for Admin Actions
   const [actionModal, setActionModal] = useState({
     show: false,
-    type: '', // 'disable', 'enable', 'delete'
+    type: '',
     targetUser: null,
     isProcessing: false
   });
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!user) {
       navigate('/auth');
@@ -84,7 +75,6 @@ const ProfilePage = () => {
     }
   }, [user, navigate]);
 
-  // Sync tab with URL query parameter
   useEffect(() => {
     const tabParam = searchParams.get('tab');
     if (tabParam === 'users' && user?.role === 'admin') {
@@ -103,7 +93,6 @@ const ProfilePage = () => {
     }
   };
 
-  // Fetch users list for Admin
   const fetchUsers = async () => {
     if (user?.role !== 'admin') return;
     setIsLoadingUsers(true);
@@ -138,7 +127,6 @@ const ProfilePage = () => {
     }
   }, [activeTab, searchQuery, roleFilter, statusFilter]);
 
-  // Handle avatar file upload
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -180,7 +168,6 @@ const ProfilePage = () => {
     }
   };
 
-  // Save Avatar to profile
   const handleSaveAvatar = async (urlToSave) => {
     const finalUrl = urlToSave !== undefined ? urlToSave : avatarPreview;
     setIsSavingAvatar(true);
@@ -213,7 +200,6 @@ const ProfilePage = () => {
     }
   };
 
-  // Remove avatar
   const handleRemoveAvatar = async () => {
     if (!avatarUrl) return;
     if (window.confirm('Bạn có chắc muốn gỡ ảnh đại diện hiện tại?')) {
@@ -221,7 +207,6 @@ const ProfilePage = () => {
     }
   };
 
-  // Handle Password Change
   const handleChangePassword = async (e) => {
     e.preventDefault();
     if (!currentPassword) {
@@ -266,7 +251,6 @@ const ProfilePage = () => {
     }
   };
 
-  // Admin: Execute Status Update or Deletion
   const handleConfirmAction = async () => {
     const { type, targetUser } = actionModal;
     if (!targetUser) return;
@@ -327,7 +311,6 @@ const ProfilePage = () => {
       paddingTop: '80px',
       paddingBottom: '60px'
     }}>
-      {/* Toast Notification */}
       {toast.show && (
         <div style={{
           position: 'fixed',
@@ -353,7 +336,6 @@ const ProfilePage = () => {
 
       <div style={{ maxWidth: '1140px', margin: '0 auto', padding: '0 1.25rem' }}>
         
-        {/* Cover Hero Banner */}
         <div style={{
           background: 'linear-gradient(135deg, #FF385C 0%, #E0284F 50%, #BD1E59 100%)',
           borderRadius: '24px',
@@ -364,7 +346,6 @@ const ProfilePage = () => {
           boxShadow: '0 12px 30px rgba(255, 56, 92, 0.25)',
           marginBottom: '2rem'
         }}>
-          {/* Decorative circles */}
           <div style={{
             position: 'absolute',
             top: '-50px',
@@ -396,7 +377,6 @@ const ProfilePage = () => {
             zIndex: 1
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-              {/* Large Avatar with camera trigger */}
               <div style={{ position: 'relative' }}>
                 <div 
                   onClick={() => setShowAvatarModal(true)}
@@ -434,7 +414,6 @@ const ProfilePage = () => {
                       {user.username.charAt(0).toUpperCase()}
                     </span>
                   )}
-                  {/* Overlay camera icon on hover */}
                   <div style={{
                     position: 'absolute',
                     inset: 0,
@@ -452,7 +431,6 @@ const ProfilePage = () => {
                   </div>
                 </div>
 
-                {/* Camera Floating Button */}
                 <button
                   type="button"
                   onClick={() => setShowAvatarModal(true)}
@@ -481,7 +459,6 @@ const ProfilePage = () => {
                 </button>
               </div>
 
-              {/* User Bio Information */}
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.35rem' }}>
                   <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
@@ -528,7 +505,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Quick Actions Button */}
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 type="button"
@@ -579,7 +555,6 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Tab Navigation Pill Bar */}
         <div style={{
           display: 'flex',
           gap: '0.75rem',
@@ -653,11 +628,9 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* TAB 1: THÔNG TIN CÁ NHÂN */}
         {activeTab === 'profile' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
             
-            {/* Thẻ 1: Chi tiết tài khoản */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '20px',
@@ -760,7 +733,6 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              {/* Avatar Quick Switch Box */}
               <div style={{
                 marginTop: '1.5rem',
                 paddingTop: '1.25rem',
@@ -811,7 +783,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Thẻ 2: Đổi Mật Khẩu */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '20px',
@@ -939,10 +910,8 @@ const ProfilePage = () => {
           </div>
         )}
 
-        {/* TAB 2: QUẢN LÝ TÀI KHOẢN NGƯỜI DÙNG (DÀNH CHO ADMIN) */}
         {activeTab === 'users' && user.role === 'admin' && (
           <div>
-            {/* Quick Stats Grid */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
@@ -1062,7 +1031,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Filter & Search Bar */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '18px',
@@ -1076,7 +1044,6 @@ const ProfilePage = () => {
               justifyContent: 'space-between',
               gap: '1rem'
             }}>
-              {/* Search input */}
               <div style={{
                 position: 'relative',
                 flex: '1 1 300px',
@@ -1100,7 +1067,6 @@ const ProfilePage = () => {
                 />
               </div>
 
-              {/* Filters */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
                 <select
                   value={roleFilter}
@@ -1165,7 +1131,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Users Data Table */}
             <div style={{
               background: '#FFFFFF',
               borderRadius: '20px',
@@ -1234,7 +1199,6 @@ const ProfilePage = () => {
                               if (!isDisabled) e.currentTarget.style.background = 'transparent';
                             }}
                           >
-                            {/* User Avatar + Username */}
                             <td style={{ padding: '1rem 1.25rem' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                 <div style={{
@@ -1284,12 +1248,10 @@ const ProfilePage = () => {
                               </div>
                             </td>
 
-                            {/* Email */}
                             <td style={{ padding: '1rem 1.25rem', fontSize: '0.9rem', color: '#475569' }}>
                               {u.email}
                             </td>
 
-                            {/* Role */}
                             <td style={{ padding: '1rem 1.25rem' }}>
                               {u.role === 'admin' ? (
                                 <span style={{
@@ -1326,7 +1288,6 @@ const ProfilePage = () => {
                               )}
                             </td>
 
-                            {/* Status */}
                             <td style={{ padding: '1rem 1.25rem' }}>
                               {isDisabled ? (
                                 <span style={{
@@ -1363,15 +1324,12 @@ const ProfilePage = () => {
                               )}
                             </td>
 
-                            {/* Created date */}
                             <td style={{ padding: '1rem 1.25rem', fontSize: '0.85rem', color: '#64748B' }}>
                               {u.created_at ? new Date(u.created_at).toLocaleDateString('vi-VN') : '—'}
                             </td>
 
-                            {/* Actions */}
                             <td style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>
                               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                                {/* Vô hiệu hóa / Mở khóa button */}
                                 {isDisabled ? (
                                   <button
                                     type="button"
@@ -1422,7 +1380,6 @@ const ProfilePage = () => {
                                   </button>
                                 )}
 
-                                {/* Xóa tài khoản button */}
                                 <button
                                   type="button"
                                   onClick={() => setActionModal({ show: true, type: 'delete', targetUser: u, isProcessing: false })}
@@ -1459,7 +1416,6 @@ const ProfilePage = () => {
 
       </div>
 
-      {/* MODAL: ĐỔI ẢNH ĐẠI DIỆN */}
       {showAvatarModal && (
         <div style={{
           position: 'fixed',
@@ -1482,7 +1438,6 @@ const ProfilePage = () => {
             overflow: 'hidden',
             animation: 'fadeIn 0.2s ease-out'
           }}>
-            {/* Header */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -1505,9 +1460,7 @@ const ProfilePage = () => {
               </button>
             </div>
 
-            {/* Body */}
             <div style={{ padding: '1.5rem' }}>
-              {/* Preview Avatar Center */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
                 <div style={{
                   width: '110px',
@@ -1541,7 +1494,6 @@ const ProfilePage = () => {
                 </span>
               </div>
 
-              {/* Tùy chọn 1: Tải ảnh từ máy */}
               <div style={{ marginBottom: '1.25rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.45rem' }}>
                   Cách 1: Chọn ảnh từ máy tính của bạn
@@ -1590,7 +1542,6 @@ const ProfilePage = () => {
                 </button>
               </div>
 
-              {/* Tùy chọn 2: Dán link URL */}
               <div style={{ marginBottom: '1.25rem' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.45rem' }}>
                   Cách 2: Hoặc dán đường dẫn ảnh (URL)
@@ -1633,7 +1584,6 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              {/* Tùy chọn 3: Bộ sưu tập mẫu */}
               <div>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.45rem' }}>
                   Cách 3: Chọn nhanh từ avatar du lịch gợi ý
@@ -1666,7 +1616,6 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Footer Buttons */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -1730,7 +1679,6 @@ const ProfilePage = () => {
         </div>
       )}
 
-      {/* MODAL XÁC NHẬN HÀNH ĐỘNG CỦA ADMIN (VÔ HIỆU HÓA / KÍCH HOẠT / XÓA) */}
       {actionModal.show && actionModal.targetUser && (
         <div style={{
           position: 'fixed',

@@ -1,11 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Search, MapPin, Navigation, Layers, Compass, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 
-/**
- * Interactive Trip Map Component
- * Hiển thị bản đồ hành trình từng ngày với các điểm đánh số 1, 2, 3, 4,
- * tuyến đường polyline kết nối, popup thông tin chi tiết và đồng bộ hai chiều với timeline.
- */
 const TripMap = ({
   activities = [],
   activeDay = 1,
@@ -19,10 +14,9 @@ const TripMap = ({
   const polylineRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('ALL'); // ALL, attraction, food, hotel, transit
+  const [filterType, setFilterType] = useState('ALL');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Lọc các địa điểm theo từ khóa tìm kiếm và loại
   const filteredActivities = activities.filter(act => {
     const matchesSearch = !searchQuery.trim() || 
       (act.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -37,7 +31,6 @@ const TripMap = ({
     return matchesSearch && matchesType;
   });
 
-  // Khởi tạo Leaflet Map
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
@@ -45,7 +38,6 @@ const TripMap = ({
       if (typeof window !== 'undefined' && window.L) {
         if (!mapInstanceRef.current) {
           try {
-            // Tọa độ mặc định trung tâm Đà Nẵng
             const defaultCenter = [16.0544, 108.2022];
             
             const map = window.L.map(mapContainerRef.current, {
@@ -55,13 +47,11 @@ const TripMap = ({
               attributionControl: false
             });
 
-            // Sử dụng CartoDB Voyager tiles (sáng rõ, màu sắc du lịch tương tự Google Maps trong ảnh)
             window.L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
               maxZoom: 19,
               subdomains: 'abcd',
             }).addTo(map);
 
-            // Layer group chứa các markers
             const markersGroup = window.L.featureGroup().addTo(map);
             markersGroupRef.current = markersGroup;
 
@@ -86,13 +76,11 @@ const TripMap = ({
     };
   }, []);
 
-  // Cập nhật Markers và Tuyến đường (Polyline) khi activities hoặc activeDay thay đổi
   useEffect(() => {
     const map = mapInstanceRef.current;
     const L = window.L;
     if (!map || !L || !markersGroupRef.current) return;
 
-    // Xóa markers cũ và polyline cũ
     markersGroupRef.current.clearLayers();
     if (polylineRef.current) {
       polylineRef.current.remove();
@@ -103,7 +91,6 @@ const TripMap = ({
 
     const latLngs = [];
 
-    // Vẽ từng marker đánh số 1, 2, 3, 4
     activities.forEach((act, idx) => {
       const lat = act.lat || 16.0544;
       const lng = act.lng || 108.2022;
@@ -112,13 +99,11 @@ const TripMap = ({
       const isSelected = selectedActivity && selectedActivity.name === act.name;
       const badgeNumber = act.order || (idx + 1);
 
-      // Màu sắc pin: transit (xanh navy), food/attraction (đỏ thắm), hotel (tím/xanh)
-      let pinColor = '#E11D48'; // Đỏ thương hiệu du lịch chuẩn
+      let pinColor = '#E11D48';
       if (act.type === 'transit') pinColor = '#02326A';
       else if (act.type === 'hotel') pinColor = '#7C3AED';
       else if (act.type === 'beach') pinColor = '#0284C7';
 
-      // Custom HTML Marker Icon
       const customIcon = L.divIcon({
         className: 'custom-trip-marker',
         html: `
@@ -165,7 +150,6 @@ const TripMap = ({
 
       const marker = L.marker([lat, lng], { icon: customIcon });
 
-      // Popup hiển thị chi tiết khi click vào marker
       const popupContent = document.createElement('div');
       popupContent.innerHTML = `
         <div style="font-family: inherit; padding: 2px; min-width: 200px; max-width: 250px;">
@@ -195,7 +179,6 @@ const TripMap = ({
       markersGroupRef.current.addLayer(marker);
     });
 
-    // Vẽ Polyline nét đứt hoặc nét liền nối các điểm trong ngày
     if (latLngs.length > 1) {
       polylineRef.current = L.polyline(latLngs, {
         color: '#0284C7',
@@ -207,14 +190,12 @@ const TripMap = ({
       }).addTo(map);
     }
 
-    // Tự động căn chỉnh vừa khung nhìn (fitBounds)
     if (latLngs.length > 0) {
       const bounds = L.latLngBounds(latLngs);
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
     }
   }, [activities, activeDay, selectedActivity]);
 
-  // Khi selectedActivity thay đổi từ timeline, bay camera tới điểm đó
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedActivity) return;
@@ -226,7 +207,6 @@ const TripMap = ({
     }
   }, [selectedActivity]);
 
-  // Hành động zoom & fitBounds
   const handleZoomIn = () => mapInstanceRef.current?.zoomIn();
   const handleZoomOut = () => mapInstanceRef.current?.zoomOut();
   const handleFitRoute = () => {
@@ -262,7 +242,6 @@ const TripMap = ({
       border: '1px solid #CBD5E1'
     }}>
       
-      {/* MAP TOP BAR (Tìm kiếm, Lọc địa điểm, Xem lộ trình) */}
       <div style={{
         position: 'absolute',
         top: '12px',
@@ -275,7 +254,6 @@ const TripMap = ({
         flexWrap: 'wrap',
         pointerEvents: 'none'
       }}>
-        {/* Search input */}
         <div style={{
           pointerEvents: 'auto',
           position: 'relative',
@@ -307,7 +285,6 @@ const TripMap = ({
           />
         </div>
 
-        {/* Category filter */}
         <div style={{ pointerEvents: 'auto' }}>
           <select
             value={filterType}
@@ -334,7 +311,6 @@ const TripMap = ({
           </select>
         </div>
 
-        {/* Button: Xem lộ trình ngày */}
         <button
           type="button"
           onClick={handleFitRoute}
@@ -362,7 +338,6 @@ const TripMap = ({
         </button>
       </div>
 
-      {/* MAP CANVAS CONTAINER */}
       <div 
         ref={mapContainerRef} 
         style={{ 
@@ -373,7 +348,6 @@ const TripMap = ({
         }} 
       />
 
-      {/* MAP CONTROLS OVERLAY (Bottom Right) */}
       <div style={{
         position: 'absolute',
         right: '12px',
@@ -447,7 +421,6 @@ const TripMap = ({
         </button>
       </div>
 
-      {/* MAP BOTTOM STATUS BAR (Giống thanh thông báo trong ảnh của người dùng) */}
       <div style={{
         height: '34px',
         background: '#02326A',

@@ -1,11 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Mic, Sparkles, MessageSquare, RefreshCw, Compass } from 'lucide-react';
 
-/**
- * MakeYourTripChat - Trợ lý AI Tư vấn & Lên Kế Hoạch Du Lịch Thông Minh
- * Hội thoại tự nhiên, hỏi đáp nhu cầu ngày đi, thời gian, ngân sách, link TikTok
- * Đồng bộ hai chiều với Lịch trình & Bản đồ thời gian thực.
- */
 const MakeYourTripChat = ({
   messages = [],
   onSendMessage = () => {},
@@ -32,7 +27,6 @@ const MakeYourTripChat = ({
     setInputText('');
   };
 
-  // Giả lập giọng nói / Speech to text
   const handleToggleVoice = () => {
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
       alert('Trình duyệt của bạn chưa hỗ trợ nhận diện giọng nói trực tiếp. Bạn có thể nhập văn bản!');
@@ -76,7 +70,6 @@ const MakeYourTripChat = ({
       overflow: 'hidden'
     }}>
       
-      {/* CHAT HEADER */}
       <div style={{
         padding: '1rem 1.25rem',
         borderBottom: '1px solid #F1F5F9',
@@ -121,7 +114,6 @@ const MakeYourTripChat = ({
         </div>
       </div>
 
-      {/* MESSAGES THREAD */}
       <div style={{
         flex: 1,
         padding: '1.25rem',
@@ -146,7 +138,6 @@ const MakeYourTripChat = ({
               }}
             >
               {isUser ? (
-                // USER SPEECH BUBBLE (Màu xanh biển nhạt)
                 <div style={{
                   maxWidth: '85%',
                   background: '#E0F2FE',
@@ -162,7 +153,6 @@ const MakeYourTripChat = ({
                   {msg.text}
                 </div>
               ) : (
-                // AI SPEECH CARD (Thẻ trắng viền mảnh xám, bullet points rõ ràng như trong ảnh)
                 <div style={{
                   maxWidth: '92%',
                   background: '#FFFFFF',
@@ -184,7 +174,6 @@ const MakeYourTripChat = ({
           );
         })}
 
-        {/* LOADING TYPING INDICATOR */}
         {loading && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.5rem 0' }}>
             <div style={{
@@ -207,7 +196,6 @@ const MakeYourTripChat = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* QUICK SUGGESTION CHIPS (Gợi ý câu trả lời nhanh) */}
       {suggestedPrompts && suggestedPrompts.length > 0 && (
         <div style={{
           padding: '0.5rem 1rem',
@@ -243,7 +231,6 @@ const MakeYourTripChat = ({
         </div>
       )}
 
-      {/* INPUT BAR */}
       <form onSubmit={handleSubmit} style={{
         padding: '0.75rem 1rem',
         borderTop: '1px solid #E2E8F0',
@@ -271,7 +258,6 @@ const MakeYourTripChat = ({
           }}
         />
 
-        {/* Nút micro */}
         <button
           type="button"
           onClick={handleToggleVoice}
@@ -293,7 +279,6 @@ const MakeYourTripChat = ({
           <Mic size={18} />
         </button>
 
-        {/* Nút gửi */}
         <button
           type="submit"
           disabled={!inputText.trim() || loading}

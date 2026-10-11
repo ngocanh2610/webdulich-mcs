@@ -21,7 +21,6 @@ const ProvinceDetailPage = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch province details
         const provRes = await fetch(`/api/provinces/${slug}?mode=${mode}`);
         const provData = await provRes.json();
         
@@ -33,7 +32,6 @@ const ProvinceDetailPage = () => {
         
         setProvince(provData.data);
         
-        // Fetch locations for this province
         const locRes = await fetch(`/api/locations?province=${provData.data.id}`);
         const locData = await locRes.json();
         
@@ -67,7 +65,6 @@ const ProvinceDetailPage = () => {
 
   return (
     <div style={{ paddingBottom: '5rem' }}>
-      {/* Hero Header */}
       <div style={{ 
         position: 'relative', 
         height: '60vh',
@@ -144,7 +141,6 @@ const ProvinceDetailPage = () => {
         </div>
       </div>
 
-      {/* Content */}
       <div className="container" style={{ marginTop: '2.5rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
           <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
@@ -178,7 +174,6 @@ const ProvinceDetailPage = () => {
           </div>
         </div>
 
-        {/* Locations List */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>

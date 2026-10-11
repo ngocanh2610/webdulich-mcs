@@ -36,7 +36,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
     try {
       let uploadedUrls = [];
       
-      // Step 1: Upload images
       if (files.length > 0) {
         const formDataFiles = new FormData();
         files.forEach(file => {
@@ -57,7 +56,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
         uploadedUrls = uploadData.data;
       }
 
-      // Step 2: Save location data
       const locationData = {
         ...formData,
         images: uploadedUrls,
@@ -79,7 +77,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
         throw new Error(locationResponseData.message || 'Lỗi khi lưu địa điểm');
       }
 
-      // Save author ID to localStorage to allow editing later
       try {
         const myLocations = JSON.parse(localStorage.getItem('my_authored_locations') || '[]');
         if (!myLocations.includes(locationResponseData.data.id)) {
@@ -90,7 +87,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
         console.warn('Could not save to localStorage', e);
       }
 
-      // Success
       setFormData({ name: '', provinceId: '', description: '' });
       setFiles([]);
       if (locationResponseData.data.status === 'pending') {
@@ -129,7 +125,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
         background: 'var(--bg-secondary)',
         padding: '0'
       }}>
-        {/* Header */}
         <div style={{ 
           padding: '1.5rem', 
           borderBottom: '1px solid var(--border-light)',
@@ -157,7 +152,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
           </button>
         </div>
 
-        {/* Body */}
         <div style={{ padding: '1.5rem' }}>
           {error && (
             <div style={{ 
@@ -174,7 +168,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             
-            {/* Input fields */}
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                 Tên địa điểm *
@@ -257,8 +250,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
                 style={{ ...inputStyle, resize: 'vertical' }}
               />
             </div>
-
-
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
               <button type="button" onClick={onClose} className="btn-secondary">

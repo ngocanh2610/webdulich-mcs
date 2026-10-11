@@ -16,7 +16,6 @@ const SearchFilter = ({ searchTerm, setSearchTerm, regionFilter, setRegionFilter
       borderRadius: '16px',
       boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)'
     }}>
-      {/* Search Input */}
       <div style={{ 
         position: 'relative', 
         flex: '1 1 300px'
@@ -45,7 +44,6 @@ const SearchFilter = ({ searchTerm, setSearchTerm, regionFilter, setRegionFilter
         />
       </div>
 
-      {/* Region Filter Buttons */}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
         <button 
           type="button"

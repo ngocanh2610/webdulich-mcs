@@ -17,10 +17,8 @@ const AdminApprovalPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Modal xem chi tiết bài đăng (Preview Modal)
   const [previewLocation, setPreviewLocation] = useState(null);
   
-  // Modal từ chối bài kèm lý do
   const [rejectModalLocation, setRejectModalLocation] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
 
@@ -58,7 +56,6 @@ const AdminApprovalPage = () => {
 
     fetchPendingLocations();
 
-    // Socket realtime lắng nghe khi có bài viết mới
     if (socket) {
       const handleNewNotification = (notif) => {
         if (notif.type === 'pending_approval' || notif.type === 'new_location') {
@@ -70,7 +67,6 @@ const AdminApprovalPage = () => {
     }
   }, [user, socket]);
 
-  // Xử lý duyệt bài
   const handleApprove = async (id, name) => {
     setActionLoadingId(id);
     setErrorMessage('');
@@ -102,7 +98,6 @@ const AdminApprovalPage = () => {
     }
   };
 
-  // Xử lý từ chối bài
   const handleConfirmReject = async () => {
     if (!rejectModalLocation) return;
     const { id, name } = rejectModalLocation;
@@ -145,7 +140,6 @@ const AdminApprovalPage = () => {
   return (
     <div style={{ paddingTop: '120px', paddingBottom: '5rem', minHeight: '100vh', background: 'var(--bg-primary)' }}>
       <div className="container">
-        {/* Header bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <button 
@@ -176,7 +170,6 @@ const AdminApprovalPage = () => {
           </div>
         </div>
 
-        {/* Thông báo kết quả */}
         {successMessage && (
           <div style={{
             background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)',
@@ -199,7 +192,6 @@ const AdminApprovalPage = () => {
           </div>
         )}
 
-        {/* Nội dung danh sách */}
         {loading ? (
           <LoadingSpinner />
         ) : pendingLocations.length === 0 ? (
@@ -236,7 +228,6 @@ const AdminApprovalPage = () => {
                     boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
                   }}
                 >
-                  {/* Thumbnail Image */}
                   <div 
                     onClick={() => setPreviewLocation(loc)}
                     style={{
@@ -264,7 +255,6 @@ const AdminApprovalPage = () => {
                     </div>
                   </div>
 
-                  {/* Info */}
                   <div style={{ flex: 1, minWidth: '260px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                       <span style={{
@@ -317,7 +307,6 @@ const AdminApprovalPage = () => {
                     </p>
                   </div>
 
-                  {/* Actions */}
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexShrink: 0, flexWrap: 'wrap' }}>
                     <button
                       onClick={() => setPreviewLocation(loc)}
@@ -398,7 +387,6 @@ const AdminApprovalPage = () => {
           </div>
         )}
 
-        {/* ─── MODAL XEM CHI TIẾT BÀI ĐĂNG (PREVIEW MODAL) ─── */}
         {previewLocation && (
           <div style={{
             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -412,7 +400,6 @@ const AdminApprovalPage = () => {
               maxHeight: '90vh', overflowY: 'auto', padding: '2rem',
               position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.7)'
             }}>
-              {/* Close button */}
               <button 
                 onClick={() => setPreviewLocation(null)}
                 style={{
@@ -426,7 +413,6 @@ const AdminApprovalPage = () => {
                 <X size={20} />
               </button>
 
-              {/* Status Header in Modal */}
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
                 <span style={{
                   background: 'rgba(234, 179, 8, 0.2)', color: '#eab308',
@@ -455,7 +441,6 @@ const AdminApprovalPage = () => {
                 {previewLocation.name}
               </h2>
 
-              {/* Main Image */}
               <div style={{
                 width: '100%', height: '320px', borderRadius: '14px',
                 overflow: 'hidden', marginBottom: '1.5rem', background: '#000'
@@ -467,7 +452,6 @@ const AdminApprovalPage = () => {
                 />
               </div>
 
-              {/* Gallery images if any */}
               {previewLocation.images && previewLocation.images.length > 1 && (
                 <div style={{ marginBottom: '1.5rem' }}>
                   <h4 style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
@@ -483,7 +467,6 @@ const AdminApprovalPage = () => {
                 </div>
               )}
 
-              {/* Full Description */}
               <div style={{
                 background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
                 borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem'
@@ -499,7 +482,6 @@ const AdminApprovalPage = () => {
                 </p>
               </div>
 
-              {/* Tags if any */}
               {previewLocation.tags && previewLocation.tags.length > 0 && (
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
                   {previewLocation.tags.map((tag, idx) => (
@@ -514,7 +496,6 @@ const AdminApprovalPage = () => {
                 </div>
               )}
 
-              {/* Modal Actions */}
               <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', flexWrap: 'wrap', gap: '1rem'
@@ -564,7 +545,6 @@ const AdminApprovalPage = () => {
           </div>
         )}
 
-        {/* ─── MODAL TỪ CHỐI BÀI KÈM LÝ DO ─── */}
         {rejectModalLocation && (
           <div style={{
             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,

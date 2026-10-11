@@ -8,22 +8,17 @@ const AuthPage = () => {
   const { login } = useAppContext();
   const navigate = useNavigate();
   
-  // 'login' | 'register' | 'forgot'
   const [authMode, setAuthMode] = useState('login');
   
-  // Register flow: 1: Info, 2: OTP
   const [registerStep, setRegisterStep] = useState(1);
   
-  // Forgot flow: 1: Email, 2: OTP & New Password
   const [forgotStep, setForgotStep] = useState(1);
   
-  // Form fields
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
 
-  // Forgot password fields
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotOtp, setForgotOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -41,7 +36,6 @@ const AuthPage = () => {
     setSuccessMsg('');
   };
 
-  // 1. Traditional Login
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -69,7 +63,6 @@ const AuthPage = () => {
     }
   };
 
-  // 2. Register Flow
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -123,7 +116,6 @@ const AuthPage = () => {
     }
   };
 
-  // 3. Forgot Password Flow
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -288,7 +280,6 @@ const AuthPage = () => {
           <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>Về trang chủ</span>
         </button>
 
-        {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem', marginTop: '1rem' }}>
           {authMode === 'forgot' ? (
             <KeyRound size={48} color="var(--accent-primary)" style={{ marginBottom: '1rem' }} />
@@ -307,14 +298,12 @@ const AuthPage = () => {
           </p>
         </div>
 
-        {/* Error message */}
         {error && (
           <div style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid rgba(239,68,68,0.2)' }}>
             {error}
           </div>
         )}
 
-        {/* Success message */}
         {successMsg && (
           <div style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <CheckCircle2 size={18} />
@@ -322,7 +311,6 @@ const AuthPage = () => {
           </div>
         )}
 
-        {/* ─── 1. LOGIN FORM ─── */}
         {authMode === 'login' && (
           <form onSubmit={handleLoginSubmit}>
             <div style={{ marginBottom: '1.25rem' }}>
@@ -400,7 +388,6 @@ const AuthPage = () => {
           </form>
         )}
 
-        {/* ─── 2. REGISTER FORM ─── */}
         {authMode === 'register' && (
           <form onSubmit={handleRegisterSubmit}>
             {registerStep === 2 ? (
@@ -511,7 +498,6 @@ const AuthPage = () => {
           </form>
         )}
 
-        {/* ─── 3. FORGOT PASSWORD FORM ─── */}
         {authMode === 'forgot' && (
           <form onSubmit={handleForgotSubmit}>
             {forgotStep === 1 ? (
@@ -664,7 +650,6 @@ const AuthPage = () => {
           </form>
         )}
 
-        {/* Google Login (Only shown on Login and Register Step 1) */}
         {((authMode === 'login') || (authMode === 'register' && registerStep === 1)) && (
           <>
             <div style={{ display: 'flex', alignItems: 'center', margin: '1.75rem 0' }}>
@@ -686,7 +671,6 @@ const AuthPage = () => {
           </>
         )}
 
-        {/* Footer Navigation */}
         <div style={{ marginTop: '2rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
           {authMode === 'login' && (
             <>

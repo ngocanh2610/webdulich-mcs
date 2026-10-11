@@ -13,7 +13,6 @@ const app = express();
 const PORT = process.env.PORT || 3005;
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key_for_vietnam_tourism';
 
-// MySQL Connection Pool
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'mysql-db',
   user: process.env.DB_USER || 'root',
@@ -24,7 +23,6 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Mail transporter configuration
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -33,10 +31,8 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Google OAuth Client
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// Ensure users table schema has avatar and status columns
 async function initDb() {
   try {
     const [cols] = await pool.query(`SHOW COLUMNS FROM users LIKE 'avatar'`);
@@ -55,7 +51,6 @@ async function initDb() {
 }
 initDb();
 
-// Auth Middlewares
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -93,7 +88,6 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// 1. Traditional Login
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -131,7 +125,6 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// 2. Request OTP for Registration
 app.post('/api/auth/register-otp', async (req, res) => {
   const { username, email, password } = req.body;
   
@@ -145,16 +138,13 @@ app.post('/api/auth/register-otp', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Tên người dùng hoặc Email đã tồn tại' });
     }
 
-    // Generate 6-digit OTP
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = Date.now() + 5 * 60000; // Expires in 5 mins
+    const expiresAt = Date.now() + 5 * 60000;
     
-    // Store pending OTP
     await pool.execute('DELETE FROM otps WHERE email = ?', [email]);
     await pool.execute('INSERT INTO otps (email, username, password, otp_code, expires_at) VALUES (?, ?, ?, ?, ?)', 
       [email, username, password, otpCode, expiresAt]);
 
-    // Send Email
     try {
       if (process.env.SMTP_USER && process.env.SMTP_PASS) {
         await transporter.sendMail({
@@ -180,7 +170,6 @@ app.post('/api/auth/register-otp', async (req, res) => {
   }
 });
 
-// 3. Verify OTP & Create Account
 app.post('/api/auth/verify-otp', async (req, res) => {
   const { email, otpCode } = req.body;
   
@@ -195,7 +184,6 @@ app.post('/api/auth/verify-otp', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Mã OTP đã hết hạn' });
     }
 
-    // OTP valid, create user
     const salt = bcrypt.genSaltSync(10);
     const id = `user-${Date.now()}`;
     const hashedPassword = bcrypt.hashSync(pending.password, salt);
@@ -203,7 +191,6 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     await pool.execute('INSERT INTO users (id, username, email, password, role, status) VALUES (?, ?, ?, ?, ?, ?)', 
       [id, pending.username, pending.email, hashedPassword, 'user', 'active']);
 
-    // Clean up OTP
     await pool.execute('DELETE FROM otps WHERE email = ?', [email]);
 
     res.json({ success: true, message: 'Đăng ký thành công' });
@@ -213,7 +200,6 @@ app.post('/api/auth/verify-otp', async (req, res) => {
   }
 });
 
-// 3.1 Request OTP for Forgot Password
 app.post('/api/auth/forgot-password', async (req, res) => {
   const { email } = req.body;
   if (!email || !email.trim()) {
@@ -230,14 +216,12 @@ app.post('/api/auth/forgot-password', async (req, res) => {
 
     const user = rows[0];
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = Date.now() + 5 * 60000; // 5 minutes
+    const expiresAt = Date.now() + 5 * 60000;
 
-    // Store pending OTP for password reset
     await pool.execute('DELETE FROM otps WHERE email = ?', [cleanEmail]);
     await pool.execute('INSERT INTO otps (email, username, password, otp_code, expires_at) VALUES (?, ?, ?, ?, ?)', 
       [cleanEmail, user.username, 'RESET_PASSWORD', otpCode, expiresAt]);
 
-    // Send email
     try {
       if (process.env.SMTP_USER && process.env.SMTP_PASS) {
         await transporter.sendMail({
@@ -275,7 +259,6 @@ app.post('/api/auth/forgot-password', async (req, res) => {
   }
 });
 
-// 3.2 Verify OTP & Reset Password
 app.post('/api/auth/reset-password', async (req, res) => {
   const { email, otpCode, newPassword } = req.body;
   if (!email || !otpCode || !newPassword) {
@@ -299,14 +282,11 @@ app.post('/api/auth/reset-password', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Mã OTP đã hết hạn, vui lòng yêu cầu mã mới' });
     }
 
-    // Hash new password
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(newPassword, salt);
 
-    // Update user password
     await pool.execute('UPDATE users SET password = ? WHERE LOWER(email) = ?', [hashedPassword, cleanEmail]);
 
-    // Clean up OTP
     await pool.execute('DELETE FROM otps WHERE email = ?', [cleanEmail]);
 
     res.json({ success: true, message: 'Đặt lại mật khẩu thành công! Bạn có thể đăng nhập bằng mật khẩu mới.' });
@@ -316,7 +296,6 @@ app.post('/api/auth/reset-password', async (req, res) => {
   }
 });
 
-// 4. Google Login
 app.post('/api/auth/google', async (req, res) => {
   const { credential } = req.body;
   if (!credential) return res.status(400).json({ success: false, message: 'Missing credential' });
@@ -339,7 +318,6 @@ app.post('/api/auth/google', async (req, res) => {
     let user;
     
     if (rows.length === 0) {
-      // Auto register if user doesn't exist
       const id = `user-${sub || Date.now()}`;
       const username = name.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000);
       const avatar = payload.picture || null;
@@ -381,7 +359,6 @@ app.post('/api/auth/google', async (req, res) => {
   }
 });
 
-// 5. Get Me (Lấy thông tin người dùng hiện tại)
 const handleGetMe = async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT id, username, email, role, avatar, status, created_at FROM users WHERE id = ?', [req.user.id]);
@@ -401,7 +378,6 @@ const handleGetMe = async (req, res) => {
 app.get('/api/auth/me', authenticateToken, handleGetMe);
 app.get('/api/users/me', authenticateToken, handleGetMe);
 
-// 6. Update Profile (Cập nhật thông tin cá nhân / ảnh đại diện)
 const handleUpdateProfile = async (req, res) => {
   const { avatar, email, currentPassword, newPassword } = req.body;
   try {
@@ -414,12 +390,10 @@ const handleUpdateProfile = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Tài khoản đã bị vô hiệu hóa' });
     }
 
-    // Cập nhật avatar nếu có truyền lên (có thể là URL ảnh, base64 hoặc chuỗi rỗng để xóa)
     if (avatar !== undefined) {
       await pool.execute('UPDATE users SET avatar = ? WHERE id = ?', [avatar, req.user.id]);
     }
 
-    // Cập nhật email nếu thay đổi
     if (email && email.trim() && email.trim().toLowerCase() !== user.email.toLowerCase()) {
       const cleanEmail = email.trim().toLowerCase();
       const [emailCheck] = await pool.execute('SELECT id FROM users WHERE LOWER(email) = ? AND id != ?', [cleanEmail, req.user.id]);
@@ -429,7 +403,6 @@ const handleUpdateProfile = async (req, res) => {
       await pool.execute('UPDATE users SET email = ? WHERE id = ?', [cleanEmail, req.user.id]);
     }
 
-    // Cập nhật mật khẩu nếu có
     if (newPassword) {
       if (!currentPassword) {
         return res.status(400).json({ success: false, message: 'Vui lòng cung cấp mật khẩu hiện tại' });
@@ -459,7 +432,6 @@ const handleUpdateProfile = async (req, res) => {
 app.put('/api/auth/profile', authenticateToken, handleUpdateProfile);
 app.put('/api/users/profile', authenticateToken, handleUpdateProfile);
 
-// 7. Admin: Lấy danh sách tất cả người dùng (User Management)
 const handleGetUsers = async (req, res) => {
   const { q, status, role } = req.query;
   try {
@@ -485,7 +457,6 @@ const handleGetUsers = async (req, res) => {
 
     const [users] = await pool.execute(query, params);
 
-    // Thống kê nhanh
     const [countsResult] = await pool.query(`
       SELECT 
         COUNT(*) as total,
@@ -509,7 +480,6 @@ const handleGetUsers = async (req, res) => {
 app.get('/api/users', authenticateToken, requireAdmin, handleGetUsers);
 app.get('/api/auth/users', authenticateToken, requireAdmin, handleGetUsers);
 
-// 8. Admin: Vô hiệu hóa hoặc kích hoạt lại tài khoản người dùng
 const handleUpdateUserStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -526,12 +496,10 @@ const handleUpdateUserStatus = async (req, res) => {
 
     const targetUser = rows[0];
 
-    // Không cho phép tự vô hiệu hóa tài khoản của chính mình
     if (targetUser.id === req.user.id || targetUser.username === req.user.username) {
       return res.status(400).json({ success: false, message: 'Bạn không thể tự vô hiệu hóa tài khoản của chính mình' });
     }
 
-    // Không cho phép vô hiệu hóa admin hệ thống
     if (targetUser.username === 'admin') {
       return res.status(400).json({ success: false, message: 'Không thể vô hiệu hóa tài khoản Quản trị viên hệ thống (admin)' });
     }
@@ -551,7 +519,6 @@ const handleUpdateUserStatus = async (req, res) => {
 app.patch('/api/users/:id/status', authenticateToken, requireAdmin, handleUpdateUserStatus);
 app.patch('/api/auth/users/:id/status', authenticateToken, requireAdmin, handleUpdateUserStatus);
 
-// 9. Admin: Xóa tài khoản người dùng
 const handleDeleteUser = async (req, res) => {
   const { id } = req.params;
 
@@ -563,24 +530,19 @@ const handleDeleteUser = async (req, res) => {
 
     const targetUser = rows[0];
 
-    // Không cho phép tự xóa tài khoản chính mình
     if (targetUser.id === req.user.id || targetUser.username === req.user.username) {
       return res.status(400).json({ success: false, message: 'Bạn không thể tự xóa tài khoản của chính mình' });
     }
 
-    // Không cho phép xóa admin hệ thống
     if (targetUser.username === 'admin') {
       return res.status(400).json({ success: false, message: 'Không thể xóa tài khoản Quản trị viên hệ thống (admin)' });
     }
 
-    // Dọn dẹp tin nhắn hỗ trợ nếu có
     try {
       await pool.execute('DELETE FROM support_messages WHERE sender_username = ? OR receiver_username = ?', [targetUser.username, targetUser.username]);
     } catch (cleanMsgErr) {
-      // Bỏ qua nếu bảng không tồn tại
     }
 
-    // Xóa user (các bảng locations, comments, reactions, notifications có ON DELETE CASCADE sẽ tự động được xóa)
     await pool.execute('DELETE FROM users WHERE id = ?', [id]);
 
     res.json({

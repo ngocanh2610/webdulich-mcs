@@ -10,7 +10,6 @@ const Home = () => {
   const navigate = useNavigate();
   const { mode, provinces, loading } = useAppContext();
 
-  // Featured provinces (take top 6 with most locations or popular tourist spots)
   const featuredProvinces = provinces
     .slice()
     .sort((a, b) => (b.locationCount || 0) - (a.locationCount || 0))
@@ -20,14 +19,12 @@ const Home = () => {
     <div style={{ background: 'var(--bg-secondary)', minHeight: '100vh' }}>
       <HeroSection />
       
-      {/* Mode Selector Section */}
       <section style={{ padding: '0 0 3rem 0', position: 'relative', zIndex: 20 }}>
         <div className="container">
           <ModeSelector />
         </div>
       </section>
 
-      {/* Featured Destinations (Hot Deals / Điểm Đến Nổi Bật) */}
       <section style={{ padding: '3.5rem 0 5rem 0', background: '#FFFFFF', borderTop: '1px solid #E2E8F0', borderBottom: '1px solid #E2E8F0' }}>
         <div className="container">
           <div style={{ 
@@ -90,7 +87,6 @@ const Home = () => {
             </Link>
           </div>
 
-          {/* Cards Grid */}
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
@@ -103,8 +99,6 @@ const Home = () => {
         </div>
       </section>
 
-
-      {/* Why Choose Vietnam Tourism */}
       <section style={{ padding: '5rem 0', background: '#F8FAFC' }}>
         <div className="container" style={{ textAlign: 'center' }}>
           <div style={{ 

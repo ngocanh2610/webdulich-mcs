@@ -13,13 +13,11 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Close menus when location changes
   useEffect(() => {
     setMobileMenuOpen(false);
     setUserMenuOpen(false);
   }, [location.pathname]);
 
-  // Close menus on click outside
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
@@ -49,7 +47,6 @@ const Navbar = () => {
       width: '100%', 
       zIndex: 1000
     }}>
-      {/* Top Utility Bar */}
       <div style={{
         background: '#011E40',
         color: '#E2E8F0',
@@ -82,7 +79,6 @@ const Navbar = () => {
       </div>
 
       <div className="nav-inner-container">
-        {/* Brand Logo */}
         <Link 
           to="/" 
           style={{ 
@@ -118,7 +114,6 @@ const Navbar = () => {
           </span>
         </Link>
         
-        {/* Center Navigation Links (Desktop) */}
         <div className="nav-desktop-center">
           <Link 
             to="/" 
@@ -169,9 +164,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Right Side Actions */}
         <div className="nav-desktop-actions">
-          {/* Mode Switcher Pill */}
           <button 
             type="button"
             onClick={() => setMode(mode === '63' ? '34' : '63')}
@@ -205,7 +198,6 @@ const Navbar = () => {
             <span className="nav-mode-badge-compact"><strong style={{ color: '#111827' }}>{mode} Tỉnh</strong></span>
           </button>
 
-          {/* Admin Approval & Support Chat Buttons */}
           {user && user.role === 'admin' && (
             <>
               <button
@@ -285,11 +277,8 @@ const Navbar = () => {
             </>
           )}
 
-          {/* Notifications Dropdown */}
           <NotificationDropdown />
 
-          {/* User Account / Login */}
-          {/* User Account / Login */}
           {user ? (
             <div ref={userMenuRef} style={{ position: 'relative' }}>
               <div 
@@ -310,7 +299,6 @@ const Navbar = () => {
                 onMouseEnter={e => e.currentTarget.style.borderColor = '#D1D5DB'}
                 onMouseLeave={e => e.currentTarget.style.borderColor = '#E5E7EB'}
               >
-                {/* Avatar with click to profile */}
                 <div 
                   onClick={(e) => {
                     e.stopPropagation();
@@ -349,7 +337,6 @@ const Navbar = () => {
                   )}
                 </div>
 
-                {/* Username & role pill */}
                 <div 
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}
@@ -382,7 +369,6 @@ const Navbar = () => {
                 </div>
               </div>
 
-              {/* Account Dropdown Menu */}
               {userMenuOpen && (
                 <div style={{
                   position: 'absolute',
@@ -397,7 +383,6 @@ const Navbar = () => {
                   zIndex: 1100,
                   animation: 'fadeIn 0.15s ease-out'
                 }}>
-                  {/* User Profile Header in Dropdown */}
                   <div 
                     onClick={() => {
                       navigate('/profile');
@@ -449,7 +434,6 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  {/* Menu Items */}
                   <div style={{ padding: '0.5rem' }}>
                     <button
                       type="button"
@@ -577,7 +561,6 @@ const Navbar = () => {
             </button>
           )}
 
-          {/* Mobile Hamburger Button */}
           <button
             type="button"
             className="nav-mobile-toggle-btn"
@@ -589,7 +572,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Dropdown */}
       {mobileMenuOpen && (
         <div 
           ref={mobileMenuRef}
@@ -606,7 +588,6 @@ const Navbar = () => {
             animation: 'fadeIn 0.2s ease-out'
           }}
         >
-          {/* User Profile Card (Mobile) */}
           {user ? (
             <div 
               onClick={() => {

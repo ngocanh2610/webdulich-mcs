@@ -36,7 +36,6 @@ const EditLocationModal = ({ isOpen, onClose, onSuccess, initialData }) => {
     try {
       let uploadedUrls = [];
       
-      // Step 1: Upload images
       if (files.length > 0) {
         const formDataFiles = new FormData();
         files.forEach(file => {
@@ -57,7 +56,6 @@ const EditLocationModal = ({ isOpen, onClose, onSuccess, initialData }) => {
         uploadedUrls = uploadData.data;
       }
 
-      // Step 2: Save location data
       const locationData = {
         ...formData,
       };
@@ -81,7 +79,6 @@ const EditLocationModal = ({ isOpen, onClose, onSuccess, initialData }) => {
         throw new Error(locationResponseData.message || 'Lỗi khi lưu địa điểm');
       }
 
-      // Success
       onSuccess(locationResponseData.data);
       onClose();
       
@@ -113,7 +110,6 @@ const EditLocationModal = ({ isOpen, onClose, onSuccess, initialData }) => {
         background: 'var(--bg-secondary)',
         padding: '0'
       }}>
-        {/* Header */}
         <div style={{ 
           padding: '1.5rem', 
           borderBottom: '1px solid var(--border-light)',
@@ -141,7 +137,6 @@ const EditLocationModal = ({ isOpen, onClose, onSuccess, initialData }) => {
           </button>
         </div>
 
-        {/* Body */}
         <div style={{ padding: '1.5rem' }}>
           {error && (
             <div style={{ 
@@ -158,7 +153,6 @@ const EditLocationModal = ({ isOpen, onClose, onSuccess, initialData }) => {
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             
-            {/* Input fields */}
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                 Tên địa điểm *
@@ -241,8 +235,6 @@ const EditLocationModal = ({ isOpen, onClose, onSuccess, initialData }) => {
                 style={{ ...inputStyle, resize: 'vertical' }}
               />
             </div>
-
-
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
               <button type="button" onClick={onClose} className="btn-secondary">

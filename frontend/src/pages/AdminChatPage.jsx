@@ -15,16 +15,15 @@ const AdminChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('all'); // 'all' | 'unread'
+  const [filterType, setFilterType] = useState('all');
   const [loadingConv, setLoadingConv] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  const [userTypingMap, setUserTypingMap] = useState({}); // username -> boolean
+  const [userTypingMap, setUserTypingMap] = useState({});
 
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
-  // Quick replies dành cho Admin
   const quickReplies = [
     'Xin chào bạn! Mình có thể hỗ trợ gì cho bạn về các điểm du lịch ạ?',
     'Cảm ơn bạn đã liên hệ, admin đang kiểm tra và sẽ phản hồi ngay nhé!',
@@ -32,14 +31,12 @@ const AdminChatPage = () => {
     'Chúc bạn có chuyến khám phá Việt Nam thật vui vẻ và an toàn!'
   ];
 
-  // Kiểm tra quyền Admin
   useEffect(() => {
     if (user && user.role !== 'admin') {
       navigate('/');
     }
   }, [user, navigate]);
 
-  // Cuộn xuống cuối tin nhắn
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -48,7 +45,6 @@ const AdminChatPage = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Tải danh sách các cuộc trò chuyện
   const fetchConversations = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -63,7 +59,6 @@ const AdminChatPage = () => {
         const convList = data.data || [];
         setConversations(convList);
 
-        // Nếu chưa chọn user nào và có danh sách, tự động chọn user đầu tiên
         if (!selectedUser && convList.length > 0) {
           setSelectedUser(convList[0]);
           fetchMessages(convList[0].username);
@@ -80,7 +75,6 @@ const AdminChatPage = () => {
     fetchConversations();
   }, []);
 
-  // Tải tin nhắn của User được chọn
   const fetchMessages = async (targetUsername) => {
     const token = localStorage.getItem('token');
     if (!token || !targetUsername) return;
@@ -93,11 +87,9 @@ const AdminChatPage = () => {
       const data = await res.json();
       if (data.success) {
         setMessages(data.data || []);
-        // Reset unread count của user này trong danh sách
         setConversations(prev => prev.map(c =>
           c.username === targetUsername ? { ...c, unread_count: 0 } : c
         ));
-        // Đánh dấu đã đọc qua socket
         if (socket) {
           socket.emit('mark_support_read', { conversationId: targetUsername });
         }
@@ -114,12 +106,10 @@ const AdminChatPage = () => {
     fetchMessages(conv.username);
   };
 
-  // Lắng nghe WebSocket
   useEffect(() => {
     if (!socket) return;
 
     const handleNewMessage = (msg) => {
-      // Cập nhật danh sách conversations
       setConversations(prev => {
         const convId = msg.conversation_id;
         const index = prev.findIndex(c => c.username === convId);
@@ -138,7 +128,6 @@ const AdminChatPage = () => {
           const others = prev.filter((_, i) => i !== index);
           return [updatedConv, ...others];
         } else {
-          // Người dùng mới
           const newConv = {
             username: convId,
             last_message: msg.message,
@@ -151,7 +140,6 @@ const AdminChatPage = () => {
         }
       });
 
-      // Nếu đang mở chat với user này, đẩy tin nhắn vào list
       if (selectedUser && selectedUser.username === msg.conversation_id) {
         setMessages(prev => {
           if (prev.some(m => m.id === msg.id)) return prev;
@@ -196,7 +184,6 @@ const AdminChatPage = () => {
     };
   }, [socket, selectedUser]);
 
-  // Gõ phím và báo typing
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
 
@@ -218,7 +205,6 @@ const AdminChatPage = () => {
     }
   };
 
-  // Gửi tin nhắn
   const handleSendMessage = async (textToSend) => {
     const content = (textToSend || inputValue).trim();
     if (!content || !selectedUser || isSending) return;
@@ -287,7 +273,6 @@ const AdminChatPage = () => {
     }
   };
 
-  // Lọc cuộc hội thoại
   const filteredConversations = conversations.filter(conv => {
     const matchesSearch = conv.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (conv.email && conv.email.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -322,7 +307,6 @@ const AdminChatPage = () => {
       flexDirection: 'column',
       overflow: 'hidden'
     }}>
-      {/* Top Header */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -379,7 +363,6 @@ const AdminChatPage = () => {
         </button>
       </div>
 
-      {/* Main Chat Layout Container (Flexbox 2 cột chuẩn) */}
       <div style={{
         flex: 1,
         minHeight: 0,
@@ -390,7 +373,6 @@ const AdminChatPage = () => {
         boxShadow: '0 8px 25px rgba(0,0,0,0.06)',
         overflow: 'hidden'
       }}>
-        {/* Cột 1: Danh Sách Cuộc Hội Thoại (Sidebar Trái) */}
         <div style={{
           width: '320px',
           minWidth: '280px',
@@ -403,9 +385,7 @@ const AdminChatPage = () => {
           height: '100%',
           overflow: 'hidden'
         }}>
-          {/* Header Search & Filter */}
           <div style={{ padding: '12px 14px', borderBottom: '1px solid #E5E7EB', background: '#FFFFFF', flexShrink: 0 }}>
-            {/* Search Input */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -433,7 +413,6 @@ const AdminChatPage = () => {
               />
             </div>
 
-            {/* Filter Buttons */}
             <div style={{ display: 'flex', gap: '6px' }}>
               <button
                 onClick={() => setFilterType('all')}
@@ -472,7 +451,6 @@ const AdminChatPage = () => {
             </div>
           </div>
 
-          {/* Conversations Scroll Area */}
           <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
             {loadingConv ? (
               <div style={{ padding: '24px', textAlign: 'center', color: '#9CA3AF', fontSize: '0.85rem' }}>
@@ -511,7 +489,6 @@ const AdminChatPage = () => {
                       if (!isSelected) e.currentTarget.style.background = '#FFFFFF';
                     }}
                   >
-                    {/* User Avatar with Online Dot */}
                     <div style={{ position: 'relative', flexShrink: 0 }}>
                       <div style={{
                         width: '40px',
@@ -541,7 +518,6 @@ const AdminChatPage = () => {
                       )}
                     </div>
 
-                    {/* Conv Info */}
                     <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
                         <span style={{
@@ -600,7 +576,6 @@ const AdminChatPage = () => {
           </div>
         </div>
 
-        {/* Cột 2: Cửa Sổ Chat (Right Column) */}
         <div style={{
           flex: 1,
           minWidth: 0,
@@ -612,7 +587,6 @@ const AdminChatPage = () => {
         }}>
           {selectedUser ? (
             <>
-              {/* Chat Active Header */}
               <div style={{
                 padding: '12px 20px',
                 borderBottom: '1px solid #E5E7EB',
@@ -690,7 +664,6 @@ const AdminChatPage = () => {
                 </button>
               </div>
 
-              {/* Chat Messages Body */}
               <div style={{
                 flex: 1,
                 minHeight: 0,
@@ -723,7 +696,6 @@ const AdminChatPage = () => {
                           alignItems: isAdmin ? 'flex-end' : 'flex-start'
                         }}
                       >
-                        {/* Sender Label */}
                         <div style={{
                           display: 'flex',
                           alignItems: 'center',
@@ -747,7 +719,6 @@ const AdminChatPage = () => {
                           )}
                         </div>
 
-                        {/* Message Bubble */}
                         <div style={{
                           maxWidth: '75%',
                           padding: '10px 15px',
@@ -772,7 +743,6 @@ const AdminChatPage = () => {
                   })
                 )}
 
-                {/* Typing Indicator */}
                 {userTypingMap[selectedUser.username] && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#6B7280', fontSize: '0.78rem' }}>
                     <div style={{
@@ -793,7 +763,6 @@ const AdminChatPage = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Quick Replies Bar (Co giãn tốt) */}
               <div style={{
                 padding: '7px 16px',
                 background: '#FFFFFF',
@@ -830,7 +799,6 @@ const AdminChatPage = () => {
                 ))}
               </div>
 
-              {/* Chat Input Bar */}
               <div style={{
                 padding: '12px 16px',
                 borderTop: '1px solid #E5E7EB',
@@ -888,7 +856,6 @@ const AdminChatPage = () => {
               </div>
             </>
           ) : (
-            /* Empty State khi chưa chọn conversation */
             <div style={{
               margin: 'auto',
               textAlign: 'center',

@@ -32,7 +32,6 @@ app.use(cors({ origin: '*', methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE']
 app.use(morgan('combined'));
 app.use(express.json());
 
-// MySQL Connection Pool
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'mysql-db',
   user: process.env.DB_USER || 'root',
@@ -43,7 +42,6 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Khởi tạo bảng support_messages nếu chưa tồn tại
 const initChatTable = async () => {
   try {
     await pool.execute(`
@@ -69,8 +67,7 @@ const initChatTable = async () => {
 };
 initChatTable();
 
-// Connected sockets map
-const userSockets = new Map(); // username -> Set of socketIds
+const userSockets = new Map();
 
 io.on('connection', (socket) => {
   const username = socket.handshake.query.username;
@@ -82,15 +79,12 @@ io.on('connection', (socket) => {
     }
     userSockets.get(username).add(socket.id);
 
-    // Join room theo username riêng
     socket.join(`user_${username}`);
 
-    // Nếu là admin, join room 'admins'
     if (role === 'admin' || username === 'admin') {
       socket.join('admins');
     }
 
-    // Thông báo cho tất cả admin trạng thái online
     io.to('admins').emit('user_online_status', { username, online: true });
   }
 
@@ -102,7 +96,6 @@ io.on('connection', (socket) => {
     socket.leave(`location_${locationId}`);
   });
 
-  // Typing event
   socket.on('support_typing', ({ conversationId, isTyping, senderRole }) => {
     if (senderRole === 'admin') {
       io.to(`user_${conversationId}`).emit('admin_typing', { isTyping });
@@ -111,7 +104,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Gửi tin nhắn qua Socket
   socket.on('send_support_message', async (data, callback) => {
     try {
       const { message, targetUser, conversationId } = data;
@@ -137,7 +129,6 @@ io.on('connection', (socket) => {
         receiver_username = target;
         conv_id = target;
       } else {
-        // NGƯỜI DÙNG CHỈ ĐƯỢC PHÉP GỬI CHO ADMIN, KHÔNG THỂ GỬI CHO NGƯỜI DÙNG KHÁC
         receiver_username = 'admin';
         conv_id = username;
       }
@@ -173,7 +164,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Đánh dấu đã đọc qua Socket
   socket.on('mark_support_read', async ({ conversationId }) => {
     try {
       if (!conversationId) return;
@@ -209,13 +199,11 @@ io.on('connection', (socket) => {
 
 const notifyUser = async (username, notification) => {
   try {
-    // Add to database
     await pool.execute(
       'INSERT INTO notifications (id, type, message, location_id, target_user, is_read) VALUES (?, ?, ?, ?, ?, ?)',
       [notification.id, notification.type, notification.message, notification.locationId, notification.target, false]
     );
 
-    // Emit if connected
     if (userSockets.has(username)) {
       const socketIds = userSockets.get(username);
       for (const socketId of socketIds) {
@@ -227,7 +215,6 @@ const notifyUser = async (username, notification) => {
   }
 };
 
-// Middleware to verify user token via jwt trực tiếp hoặc user-service
 const requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
@@ -236,18 +223,15 @@ const requireAuth = async (req, res, next) => {
 
   const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
 
-  // 1. Thử verify JWT trực tiếp (cực nhanh và độc lập)
   if (jwt) {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       req.user = decoded;
       return next();
     } catch (jwtErr) {
-      // nếu token hết hạn hoặc lỗi, fallback qua user service
     }
   }
 
-  // 2. Fallback gọi user-service
   try {
     let userRes;
     try {
@@ -255,7 +239,6 @@ const requireAuth = async (req, res, next) => {
         headers: { 'Authorization': authHeader }
       });
     } catch (netErr) {
-      // Fallback localhost nếu chạy dev ngoài Docker
       userRes = await fetch(`http://localhost:3005/api/auth/me`, {
         headers: { 'Authorization': authHeader }
       });
@@ -266,7 +249,7 @@ const requireAuth = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Token không hợp lệ' });
     }
     
-    req.user = userData.user; // Attach user to request
+    req.user = userData.user;
     next();
   } catch (e) {
     console.error('Error verifying token', e);
@@ -274,7 +257,6 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-// Helper function to format locations
 const formatLocation = async (row) => {
   const [reactionsRows] = await pool.execute('SELECT username, type FROM location_reactions WHERE location_id = ?', [row.id]);
   
@@ -294,7 +276,6 @@ const formatLocation = async (row) => {
   };
 };
 
-// Health check
 app.get('/health', async (req, res) => {
   try {
     await pool.query('SELECT 1');
@@ -311,7 +292,6 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// GET /api/locations?province=ha-noi&type=...&search=...
 app.get('/api/locations', async (req, res) => {
   const { province, type, search, status, author, limit = 50, offset = 0 } = req.query;
 
@@ -324,7 +304,6 @@ app.get('/api/locations', async (req, res) => {
       params.push(status);
     }
   } else {
-    // Mặc định công khai: chỉ lấy bài viết đã được duyệt
     query += " AND status = 'approved'";
   }
 
@@ -350,12 +329,10 @@ app.get('/api/locations', async (req, res) => {
   }
 
   try {
-    // Get total
     const countQuery = query.replace('SELECT *', 'SELECT COUNT(*) as total');
     const [countRows] = await pool.execute(countQuery, params);
     const total = countRows[0].total;
 
-    // Get data
     query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
     params.push(Number(limit), Number(offset));
     
@@ -376,7 +353,6 @@ app.get('/api/locations', async (req, res) => {
   }
 });
 
-// GET /api/locations/recent - Recent contributions
 app.get('/api/locations/recent', async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM locations WHERE status = 'approved' ORDER BY created_at DESC LIMIT 10");
@@ -387,7 +363,6 @@ app.get('/api/locations/recent', async (req, res) => {
   }
 });
 
-// GET /api/locations/notifications - Get user notifications
 app.get('/api/locations/notifications', requireAuth, async (req, res) => {
   try {
     let query = 'SELECT * FROM notifications WHERE target_user = ? ORDER BY created_at DESC LIMIT 100';
@@ -399,7 +374,6 @@ app.get('/api/locations/notifications', requireAuth, async (req, res) => {
     }
     
     const [rows] = await pool.execute(query, params);
-    // map to match frontend
     const data = rows.map(r => ({...r, locationId: r.location_id, read: r.is_read}));
     res.json({ success: true, data });
   } catch (error) {
@@ -407,7 +381,6 @@ app.get('/api/locations/notifications', requireAuth, async (req, res) => {
   }
 });
 
-// DELETE /api/locations/notifications/:id - Mark as read/delete notification
 app.delete('/api/locations/notifications/:id', requireAuth, async (req, res) => {
   try {
     await pool.execute('DELETE FROM notifications WHERE id = ?', [req.params.id]);
@@ -417,7 +390,6 @@ app.delete('/api/locations/notifications/:id', requireAuth, async (req, res) => 
   }
 });
 
-// PUT /api/locations/notifications/:id/read - Mark notification as read
 app.put('/api/locations/notifications/:id/read', requireAuth, async (req, res) => {
   try {
     await pool.execute('UPDATE notifications SET is_read = TRUE WHERE id = ?', [req.params.id]);
@@ -427,7 +399,6 @@ app.put('/api/locations/notifications/:id/read', requireAuth, async (req, res) =
   }
 });
 
-// GET /api/locations/:id
 app.get('/api/locations/:id', async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
@@ -437,7 +408,6 @@ app.get('/api/locations/:id', async (req, res) => {
     
     const location = await formatLocation(rows[0]);
 
-    // Get related locations from same province
     const [relatedRows] = await pool.execute(
       'SELECT * FROM locations WHERE province_id = ? AND id != ? LIMIT 4', 
       [location.province_id, location.id]
@@ -451,7 +421,6 @@ app.get('/api/locations/:id', async (req, res) => {
   }
 });
 
-// GET /api/locations/meta/types - location types
 app.get('/api/locations/meta/types', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT DISTINCT type FROM locations WHERE type IS NOT NULL');
@@ -461,7 +430,6 @@ app.get('/api/locations/meta/types', async (req, res) => {
   }
 });
 
-// GET /api/locations/meta/counts - get location counts per province
 app.get('/api/locations/meta/counts', async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT province_id, COUNT(*) as count FROM locations WHERE status = 'approved' GROUP BY province_id");
@@ -475,7 +443,6 @@ app.get('/api/locations/meta/counts', async (req, res) => {
   }
 });
 
-// GET /api/locations/admin/pending - Get pending approval locations (Admin only)
 app.get('/api/locations/admin/pending', requireAuth, async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Chỉ Admin mới có quyền truy cập trang duyệt bài' });
@@ -491,7 +458,6 @@ app.get('/api/locations/admin/pending', requireAuth, async (req, res) => {
   }
 });
 
-// PUT /api/locations/:id/status - Approve or reject location (Admin only)
 app.put('/api/locations/:id/status', requireAuth, async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Chỉ Admin mới có quyền duyệt hoặc từ chối bài viết' });
@@ -517,7 +483,6 @@ app.put('/api/locations/:id/status', requireAuth, async (req, res) => {
     const [updatedRows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [id]);
     const updatedLoc = await formatLocation(updatedRows[0]);
 
-    // Gửi thông báo đến tác giả của bài viết
     if (loc.author && loc.author !== req.user.username) {
       const isApproved = status === 'approved';
       const msg = isApproved 
@@ -535,7 +500,6 @@ app.put('/api/locations/:id/status', requireAuth, async (req, res) => {
       });
     }
 
-    // Broadcast socket event realtime
     io.emit('location_status_updated', {
       locationId: id,
       status,
@@ -553,7 +517,6 @@ app.put('/api/locations/:id/status', requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/locations - User Generated Content
 app.post('/api/locations', requireAuth, async (req, res) => {
   const { provinceId, name, type, description, tags, images } = req.body;
   
@@ -564,7 +527,6 @@ app.post('/api/locations', requireAuth, async (req, res) => {
   const id = `${provinceId}-${Date.now()}`;
   let mainImage = images && images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80';
   
-  // Admin đăng thì tự động duyệt ngay; user thường thì phải chờ admin duyệt (pending)
   const initialStatus = req.user.role === 'admin' ? 'approved' : 'pending';
 
   try {
@@ -601,7 +563,6 @@ app.post('/api/locations', requireAuth, async (req, res) => {
   }
 });
 
-// PUT /api/locations/:id - Update User Generated Content
 app.put('/api/locations/:id', requireAuth, async (req, res) => {
   const { name, type, description, tags, images } = req.body;
   const id = req.params.id;
@@ -614,7 +575,6 @@ app.put('/api/locations/:id', requireAuth, async (req, res) => {
 
     const loc = rows[0];
 
-    // Check permissions: Must be admin or the author
     if (req.user.role !== 'admin' && req.user.username !== loc.author) {
       return res.status(403).json({ success: false, message: 'Không có quyền sửa bài viết này' });
     }
@@ -636,8 +596,6 @@ app.put('/api/locations/:id', requireAuth, async (req, res) => {
   }
 });
 
-
-// DELETE /api/locations/:id
 app.delete('/api/locations/:id', requireAuth, async (req, res) => {
   const id = req.params.id;
   
@@ -659,7 +617,6 @@ app.delete('/api/locations/:id', requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/locations/:id/comments
 app.get('/api/locations/:id/comments', async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM comments WHERE location_id = ? ORDER BY created_at ASC', [req.params.id]);
@@ -671,7 +628,6 @@ app.get('/api/locations/:id/comments', async (req, res) => {
   }
 });
 
-// POST /api/locations/:id/comments
 app.post('/api/locations/:id/comments', requireAuth, async (req, res) => {
   const { content, parentId } = req.body;
   
@@ -689,7 +645,6 @@ app.post('/api/locations/:id/comments', requireAuth, async (req, res) => {
     const [newCmtRows] = await pool.execute('SELECT * FROM comments WHERE id = ?', [cmtId]);
     const newComment = {...newCmtRows[0], locationId: newCmtRows[0].location_id, parentId: newCmtRows[0].parent_id};
 
-    // Notify target user
     let targetUser = null;
     let message = '';
     
@@ -716,7 +671,6 @@ app.post('/api/locations/:id/comments', requireAuth, async (req, res) => {
       });
     }
 
-    // Broadcast
     io.to(`location_${location.id}`).emit('new_comment', newComment);
 
     res.json({ success: true, data: newComment });
@@ -726,7 +680,6 @@ app.post('/api/locations/:id/comments', requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/locations/:id/react
 app.post('/api/locations/:id/react', requireAuth, async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
@@ -737,14 +690,11 @@ app.post('/api/locations/:id/react', requireAuth, async (req, res) => {
     
     let added = false;
     if (existing.length > 0) {
-      // Toggle off
       await pool.execute('DELETE FROM location_reactions WHERE location_id = ? AND username = ?', [location.id, req.user.username]);
     } else {
-      // Toggle on
       await pool.execute('INSERT INTO location_reactions (location_id, username, type) VALUES (?, ?, ?)', [location.id, req.user.username, 'like']);
       added = true;
 
-      // Notify author
       if (location.author && location.author !== req.user.username) {
         notifyUser(location.author, {
           id: `notif-${Date.now()}`,
@@ -772,11 +722,6 @@ app.post('/api/locations/:id/react', requireAuth, async (req, res) => {
   }
 });
 
-// ==========================================
-// SUPPORT CHAT APIS (Realtime User <-> Admin)
-// ==========================================
-
-// 1. GET /api/support-chat/conversations (Chỉ Admin mới có quyền)
 app.get('/api/support-chat/conversations', requireAuth, async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Chỉ Quản trị viên mới có quyền xem danh sách hội thoại' });
@@ -820,8 +765,6 @@ app.get('/api/support-chat/conversations', requireAuth, async (req, res) => {
   }
 });
 
-// 2. GET /api/support-chat/messages/:conversationId
-// User chỉ được xem tin nhắn của mình; Admin được xem của bất kỳ ai
 app.get('/api/support-chat/messages/:conversationId', requireAuth, async (req, res) => {
   const { conversationId } = req.params;
   const isAdmin = req.user.role === 'admin';
@@ -836,7 +779,6 @@ app.get('/api/support-chat/messages/:conversationId', requireAuth, async (req, r
       [conversationId]
     );
 
-    // Tự động đánh dấu đã đọc
     if (isAdmin) {
       await pool.execute(
         'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
@@ -858,7 +800,6 @@ app.get('/api/support-chat/messages/:conversationId', requireAuth, async (req, r
   }
 });
 
-// 3. POST /api/support-chat/send
 app.post('/api/support-chat/send', requireAuth, async (req, res) => {
   const { message, targetUser, conversationId } = req.body;
   if (!message || !message.trim()) {
@@ -881,7 +822,6 @@ app.post('/api/support-chat/send', requireAuth, async (req, res) => {
     receiver_username = target;
     conv_id = target;
   } else {
-    // NGƯỜI DÙNG CHỈ ĐƯỢC PHÉP GỬI CHO ADMIN, TUYỆT ĐỐI KHÔNG GỬI CHO NGƯỜI KHÁC
     receiver_username = 'admin';
     conv_id = req.user.username;
   }
@@ -903,7 +843,6 @@ app.post('/api/support-chat/send', requireAuth, async (req, res) => {
       created_at: new Date().toISOString()
     };
 
-    // Emit Realtime qua Socket
     if (isAdmin) {
       io.to(`user_${receiver_username}`).emit('new_support_message', newMsg);
       io.to('admins').emit('new_support_message', newMsg);
@@ -919,7 +858,6 @@ app.post('/api/support-chat/send', requireAuth, async (req, res) => {
   }
 });
 
-// 4. PUT /api/support-chat/read/:conversationId
 app.put('/api/support-chat/read/:conversationId', requireAuth, async (req, res) => {
   const { conversationId } = req.params;
   const isAdmin = req.user.role === 'admin';
@@ -946,7 +884,6 @@ app.put('/api/support-chat/read/:conversationId', requireAuth, async (req, res) 
   }
 });
 
-// 5. GET /api/support-chat/unread-count
 app.get('/api/support-chat/unread-count', requireAuth, async (req, res) => {
   const isAdmin = req.user.role === 'admin';
 

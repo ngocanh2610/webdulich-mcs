@@ -28,7 +28,6 @@ const HeroSection = () => {
       overflow: 'hidden',
       backgroundColor: '#011E40'
     }}>
-      {/* Real Background Landscape Photo of Vietnam */}
       <img
         src="https://images.unsplash.com/photo-1528127269322-539801943592?w=1920&q=90"
         alt="Việt Nam"
@@ -43,12 +42,10 @@ const HeroSection = () => {
           zIndex: 0
         }}
         onError={(e) => {
-          // Fallback if unsplash has any network issue
           e.currentTarget.src = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1920&q=90';
         }}
       />
 
-      {/* Dark Balanced Overlay - Keeps the photo clear and ensures 100% white text contrast */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -59,10 +56,8 @@ const HeroSection = () => {
         zIndex: 1
       }} />
 
-      {/* Hero Content */}
       <div className="container animate-fade-in" style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         
-        {/* Top Tagline Badge - Basic & Clean */}
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -82,7 +77,6 @@ const HeroSection = () => {
           <span>KHÁM PHÁ DANH LAM THẮNG CẢNH 63 TỈNH THÀNH VIỆT NAM</span>
         </div>
 
-        {/* Main Headline - Pure White, High Contrast, Basic & Elegant */}
         <h1 style={{ 
           fontSize: 'clamp(2.4rem, 5vw, 4.2rem)', 
           marginBottom: '0.75rem',
@@ -107,7 +101,6 @@ const HeroSection = () => {
           Hành Trình Khám Phá Dọc Miền Đất Nước
         </div>
         
-        {/* Subtitle - Clean White/Ghi */}
         <p style={{ 
           fontSize: 'clamp(1rem, 1.7vw, 1.15rem)', 
           color: 'rgba(255, 255, 255, 0.95)',
@@ -121,7 +114,6 @@ const HeroSection = () => {
           đến những bãi biển miền Trung đầy nắng và sông nước miền Tây hiền hòa.
         </p>
 
-        {/* Commercial Search & Filter Widget */}
         <form 
           onSubmit={handleSearchSubmit}
           style={{
@@ -139,7 +131,6 @@ const HeroSection = () => {
             marginBottom: '2.75rem'
           }}
         >
-          {/* Destination Search Input */}
           <div style={{ flex: '2 1 280px', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 1rem', background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
             <MapPin size={20} color="var(--brand-navy)" style={{ flexShrink: 0 }} />
             <div style={{ textAlign: 'left', width: '100%' }}>
@@ -163,7 +154,6 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Region Selector */}
           <div style={{ flex: '1 1 180px', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 1rem', background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
             <Compass size={20} color="var(--brand-navy)" style={{ flexShrink: 0 }} />
             <div style={{ textAlign: 'left', width: '100%' }}>
@@ -193,7 +183,6 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Search Button (Tím Đậm / Navy) */}
           <button 
             type="submit"
             style={{ 
@@ -221,7 +210,6 @@ const HeroSection = () => {
           </button>
         </form>
 
-        {/* 4 Trust Badges - Basic & Clean (No AI labels) */}
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
