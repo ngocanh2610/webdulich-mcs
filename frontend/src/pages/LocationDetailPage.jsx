@@ -17,16 +17,14 @@ const LocationDetailPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   
-  // States for Image Gallery
   const [selectedImg, setSelectedImg] = useState('');
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAuthor, setIsAuthor] = useState(false);
   
-  // Social States
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [replyingTo, setReplyingTo] = useState(null); // comment id
+  const [replyingTo, setReplyingTo] = useState(null);
   const [isReacting, setIsReacting] = useState(false);
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
@@ -39,9 +37,8 @@ const LocationDetailPage = () => {
         if (data.success) {
           setLocation(data.data);
           setRelatedLocations(data.related || []);
-          setSelectedImg(data.data.image); // Set initial main image
+          setSelectedImg(data.data.image);
           
-          // Check if author
           let authorMatch = false;
           if (user && user.username === data.data.author) {
             authorMatch = true;
@@ -72,7 +69,6 @@ const LocationDetailPage = () => {
     window.scrollTo(0, 0);
   }, [id, user]);
 
-  // Handle Socket Events for Realtime
   useEffect(() => {
     if (!socket || !id) return;
 
@@ -80,7 +76,6 @@ const LocationDetailPage = () => {
 
     const handleNewComment = (newComment) => {
       setComments(prev => {
-        // Prevent duplicate if we just posted it ourselves
         if (prev.find(c => c.id === newComment.id)) return prev;
         return [...prev, newComment];
       });
@@ -119,7 +114,6 @@ const LocationDetailPage = () => {
       });
       const data = await res.json();
       if (data.success) {
-        // We let the socket handle the update!
       }
     } catch (e) {
       console.error(e);
@@ -148,7 +142,6 @@ const LocationDetailPage = () => {
       
       const data = await res.json();
       if (data.success) {
-        // We let the socket handle the update for everyone including us!
         setNewComment('');
         setReplyingTo(null);
       }
@@ -159,7 +152,6 @@ const LocationDetailPage = () => {
     }
   };
 
-  // Lightbox Handlers
   const openLightbox = (index) => setLightboxIndex(index);
   const closeLightbox = () => setLightboxIndex(null);
   
@@ -196,7 +188,6 @@ const LocationDetailPage = () => {
       if (data.success) {
         alert('Đã xoá địa điểm thành công!');
         
-        // Remove from local storage authored locations
         try {
           const myLocations = JSON.parse(localStorage.getItem('my_authored_locations') || '[]');
           const updatedLocations = myLocations.filter(locId => locId !== id);
@@ -205,7 +196,7 @@ const LocationDetailPage = () => {
           console.warn(e);
         }
         
-        navigate('/'); // Go back to home page
+        navigate('/');
       } else {
         alert('Xoá thất bại: ' + data.message);
       }
@@ -247,17 +238,14 @@ const LocationDetailPage = () => {
   
   const hasReacted = location.reactions && user && location.reactions.some(r => r.username === user.username);
   
-  // Organize comments into top-level and replies
   const topLevelComments = comments.filter(c => !c.parentId);
   
-  // Find top level parent for any comment
   const getTopLevelId = (c) => {
     if (!c.parentId) return c.id;
     const parent = comments.find(p => p.id === c.parentId);
-    return parent ? getTopLevelId(parent) : c.parentId; // fallback
+    return parent ? getTopLevelId(parent) : c.parentId;
   };
   
-  // Get all descendants for a top level comment
   const getThreadReplies = (topLevelId) => {
     return comments.filter(c => c.parentId && getTopLevelId(c) === topLevelId)
                    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
@@ -265,7 +253,6 @@ const LocationDetailPage = () => {
 
   return (
     <div style={{ paddingTop: '100px', paddingBottom: '5rem' }}>
-      {/* Lightbox Overlay */}
       {lightboxIndex !== null && (
         <div 
           onClick={closeLightbox}
@@ -276,10 +263,8 @@ const LocationDetailPage = () => {
             backdropFilter: 'blur(10px)'
           }}
         >
-          {/* Close Btn */}
           <button onClick={closeLightbox} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '2rem', cursor: 'pointer' }}>&times;</button>
           
-          {/* Prev Btn */}
           {allImages.length > 1 && (
             <button onClick={prevImage} style={{ position: 'absolute', left: '20px', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'var(--text-primary)', fontSize: '2rem', width: '50px', height: '50px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&#10094;</button>
           )}
@@ -288,10 +273,9 @@ const LocationDetailPage = () => {
             src={allImages[lightboxIndex]} 
             alt="Full size" 
             style={{ maxHeight: '90vh', maxWidth: '90vw', objectFit: 'contain', borderRadius: '8px' }}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking image
+            onClick={(e) => e.stopPropagation()}
           />
 
-          {/* Next Btn */}
           {allImages.length > 1 && (
             <button onClick={nextImage} style={{ position: 'absolute', right: '20px', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'var(--text-primary)', fontSize: '2rem', width: '50px', height: '50px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&#10095;</button>
           )}
@@ -316,7 +300,6 @@ const LocationDetailPage = () => {
           <ArrowLeft size={16} /> Quay lại
         </button>
 
-        {/* Approval Status Banner */}
         {location.status === 'pending' && (
           <div style={{
             background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1))',
@@ -413,7 +396,6 @@ const LocationDetailPage = () => {
         )}
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr lg:1.5fr', gap: '3rem' }}>
-          {/* Images Gallery */}
           <div>
             <div 
               onClick={() => openLightbox(allImages.indexOf(selectedImg) !== -1 ? allImages.indexOf(selectedImg) : 0)}
@@ -450,7 +432,6 @@ const LocationDetailPage = () => {
             )}
           </div>
           
-          {/* Details */}
           <div>
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               {location.status === 'pending' && (
@@ -552,7 +533,6 @@ const LocationDetailPage = () => {
           </div>
         </div>
 
-        {/* Comments Section */}
         <div style={{ marginTop: '4rem', padding: '2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid var(--border-light)' }}>
           <h3 style={{ fontSize: '1.5rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <MessageSquare /> Bình luận
@@ -627,7 +607,6 @@ const LocationDetailPage = () => {
                       </button>
                     </div>
 
-                    {/* Replies */}
                     {getThreadReplies(comment.id).length > 0 && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem', paddingLeft: '1rem', borderLeft: '2px solid rgba(255,255,255,0.1)' }}>
                         {getThreadReplies(comment.id).map(reply => {
@@ -670,7 +649,6 @@ const LocationDetailPage = () => {
           </div>
         </div>
 
-        {/* Related Locations */}
         {relatedLocations.length > 0 && (
           <div style={{ marginTop: '5rem', borderTop: '1px solid var(--border-light)', paddingTop: '4rem' }}>
             <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Địa điểm khác cùng khu vực</h2>
@@ -682,7 +660,6 @@ const LocationDetailPage = () => {
           </div>
         )}
         
-        {/* Edit Modal */}
         {isEditModalOpen && (
           <EditLocationModal
             isOpen={isEditModalOpen}

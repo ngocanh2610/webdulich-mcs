@@ -19,7 +19,6 @@ const ProvinceCard = ({ province }) => {
           transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
         }}
       >
-        {/* Thumbnail Image Container */}
         <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden', background: '#F1F5F9' }}>
           <img 
             src={province.image || 'https://images.unsplash.com/photo-1599708153386-62bf0bd17b43?w=800&q=80'} 
@@ -35,7 +34,6 @@ const ProvinceCard = ({ province }) => {
             onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1599708153386-62bf0bd17b43?w=800&q=80'; }}
           />
 
-          {/* Region Badge (Top Left) */}
           <div style={{
             position: 'absolute',
             top: '0.85rem',
@@ -58,7 +56,6 @@ const ProvinceCard = ({ province }) => {
             {province.region}
           </div>
 
-          {/* Location Count Badge (Top Right) */}
           {province.locationCount !== undefined && (
             <div style={{
               position: 'absolute',
@@ -81,7 +78,6 @@ const ProvinceCard = ({ province }) => {
           )}
         </div>
         
-        {/* Card Body */}
         <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
           <h3 style={{ 
             fontSize: '1.2rem', 
@@ -108,7 +104,6 @@ const ProvinceCard = ({ province }) => {
             {province.description || 'Khám phá các danh lam thắng cảnh, di tích lịch sử và văn hóa độc đáo.'}
           </p>
 
-          {/* Card Footer */}
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 

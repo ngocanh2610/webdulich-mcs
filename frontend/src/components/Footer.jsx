@@ -13,7 +13,6 @@ const Footer = () => {
       fontFamily: 'var(--font-body)'
     }}>
       <div className="container">
-        {/* Main 4-Column Footer Grid */}
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
@@ -21,7 +20,6 @@ const Footer = () => {
           paddingBottom: '3.5rem',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
         }}>
-          {/* Col 1: Brand Info */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
               <div style={{ 
@@ -47,7 +45,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Col 2: Vùng Miền Du Lịch */}
           <div>
             <h4 style={{ color: '#FFFFFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '1.25rem', position: 'relative', paddingBottom: '0.5rem' }}>
               Khám Phá Vùng Miền
@@ -82,7 +79,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Col 3: Tiện Ích Số */}
           <div>
             <h4 style={{ color: '#FFFFFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '1.25rem', position: 'relative', paddingBottom: '0.5rem' }}>
               Tiện Ích & Dịch Vụ
@@ -117,7 +113,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Col 4: Liên Hệ & CSKH */}
           <div>
             <h4 style={{ color: '#FFFFFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '1.25rem', position: 'relative', paddingBottom: '0.5rem' }}>
               Chăm Sóc Khách Hàng
@@ -168,7 +163,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div style={{ 
           paddingTop: '2rem', 
           display: 'flex', 

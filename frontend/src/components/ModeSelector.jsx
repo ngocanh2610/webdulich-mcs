@@ -43,7 +43,6 @@ const ModeSelector = () => {
       </p>
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-        {/* Mode 63 */}
         <div 
           onClick={() => setMode('63')}
           style={{ 
@@ -83,7 +82,6 @@ const ModeSelector = () => {
           </p>
         </div>
 
-        {/* Mode 34 */}
         <div 
           onClick={() => setMode('34')}
           style={{ 

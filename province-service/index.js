@@ -9,13 +9,11 @@ const mysql = require('mysql2/promise');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: '*', methods: ['GET', 'OPTIONS'] }));
 app.use(morgan('combined'));
 app.use(express.json());
 
-// MySQL Connection Pool
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'mysql-db',
   user: process.env.DB_USER || 'root',
@@ -26,15 +24,12 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Load JSON data in memory as reliable fallback
 const provinces63Data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'provinces-63.json'), 'utf8'));
 const provinces34Data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'provinces-34.json'), 'utf8'));
 
-// Sync data on startup
 async function initProvinces() {
   try {
     console.log('Syncing provinces from JSON to MySQL...');
-    // Ensure table structure supports type if needed or drop/recreate constraint
     try {
       await pool.query('ALTER TABLE provinces DROP INDEX slug');
     } catch (e) { }
@@ -49,7 +44,6 @@ async function initProvinces() {
           [p.id || p.slug, p.slug, p.name, type, p.regionCode, p.capital || null, p.image || null, p.area || 0, p.population || 0, p.description || null, p.region || null, p.mergedFrom ? JSON.stringify(p.mergedFrom) : null]
         );
       } catch (e) {
-        // Silently ignore DB insertion error as fallback will serve JSON
       }
     };
 
@@ -76,10 +70,9 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// GET /api/provinces?mode=63|34
 app.get('/api/provinces', async (req, res) => {
   const mode = req.query.mode === '34' ? '34' : '63';
-  const region = req.query.region; // north | central | south | highland
+  const region = req.query.region;
   const search = req.query.search?.toLowerCase();
 
   let rows = [];
@@ -90,7 +83,6 @@ app.get('/api/provinces', async (req, res) => {
     console.warn('DB query error, fallback to JSON:', error.message);
   }
 
-  // Fallback to JSON if DB returned 0 rows for this mode
   if (!rows || rows.length === 0) {
     const sourceJSON = mode === '34' ? provinces34Data : provinces63Data;
     rows = sourceJSON.map(p => ({
@@ -115,7 +107,6 @@ app.get('/api/provinces', async (req, res) => {
     }));
   }
 
-  // Apply filtering
   if (region && region !== 'all') {
     rows = rows.filter(r => (r.region_code || r.regionCode) === region);
   }
@@ -139,7 +130,6 @@ app.get('/api/provinces', async (req, res) => {
   });
 });
 
-// GET /api/provinces/:slug
 app.get('/api/provinces/:slug', async (req, res) => {
   const { slug } = req.params;
   const mode = req.query.mode === '34' ? '34' : (req.query.mode === '63' ? '63' : null);
@@ -166,7 +156,6 @@ app.get('/api/provinces/:slug', async (req, res) => {
     console.warn('DB error on single province query, fallback to JSON:', error.message);
   }
 
-  // Fallback to JSON
   const targetList = mode === '34' ? provinces34Data : (mode === '63' ? provinces63Data : [...provinces34Data, ...provinces63Data]);
   const found = targetList.find(p => p.id === slug || p.slug === slug);
   if (found) {
@@ -183,7 +172,6 @@ app.get('/api/provinces/:slug', async (req, res) => {
   res.status(404).json({ success: false, message: 'Tỉnh thành không tồn tại' });
 });
 
-// GET /api/provinces/region/list - get regions
 app.get('/api/provinces/meta/regions', (req, res) => {
   const regions = [
     { code: 'north', label: 'Miền Bắc', icon: '🏔️' },
@@ -194,12 +182,10 @@ app.get('/api/provinces/meta/regions', (req, res) => {
   res.json({ success: true, data: regions });
 });
 
-// 404
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: 'Internal server error' });

@@ -11,16 +11,14 @@ const ChatWidget = () => {
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('ai'); // 'ai' | 'admin'
+  const [activeTab, setActiveTab] = useState('ai');
 
-  // State cho AI Chat
   const [aiMessages, setAiMessages] = useState([
     { role: 'ai', text: 'Chào bạn! Mình là VietnamTourism AI. Bạn cần gợi ý hay hỏi gì về du lịch Việt Nam không nào?' }
   ]);
   const [aiInput, setAiInput] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
 
-  // State cho Admin Support Chat
   const [adminMessages, setAdminMessages] = useState([]);
   const [adminInput, setAdminInput] = useState('');
   const [adminLoading, setAdminLoading] = useState(false);
@@ -38,7 +36,6 @@ const ChatWidget = () => {
     scrollToBottom();
   }, [aiMessages, adminMessages, activeTab, isAdminTyping]);
 
-  // Tải tin nhắn với Admin khi mở tab admin hoặc khi đăng nhập
   const fetchAdminMessages = async () => {
     const token = localStorage.getItem('token');
     if (!token || !user || user.role === 'admin') return;
@@ -69,19 +66,16 @@ const ChatWidget = () => {
     }
   }, [isOpen, activeTab, user]);
 
-  // Lắng nghe WebSocket cho Support Chat phía User
   useEffect(() => {
     if (!socket || !user || user.role === 'admin') return;
 
     const handleNewMessage = (msg) => {
-      // Tin nhắn gửi đến user này
       if (msg.conversation_id === user.username) {
         setAdminMessages(prev => {
           if (prev.some(m => m.id === msg.id)) return prev;
           return [...prev, msg];
         });
 
-        // Nếu widget đang mở và đang ở tab admin, đánh dấu đã đọc ngay
         if (isOpen && activeTab === 'admin') {
           socket.emit('mark_support_read', { conversationId: user.username });
           setUnreadSupportChat(0);
@@ -108,7 +102,6 @@ const ChatWidget = () => {
     };
   }, [socket, user, isOpen, activeTab, setUnreadSupportChat]);
 
-  // Gửi tin nhắn cho AI
   const handleSendAi = async () => {
     if (!aiInput.trim()) return;
 
@@ -137,7 +130,6 @@ const ChatWidget = () => {
     }
   };
 
-  // Gõ phím tin nhắn gửi Admin
   const handleAdminInputChange = (e) => {
     setAdminInput(e.target.value);
 
@@ -159,7 +151,6 @@ const ChatWidget = () => {
     }
   };
 
-  // Gửi tin nhắn tới Admin
   const handleSendAdmin = async () => {
     const content = adminInput.trim();
     if (!content || !user || isSendingSupport) return;
@@ -313,7 +304,6 @@ const ChatWidget = () => {
 
   return (
     <div style={widgetStyle}>
-      {/* 1. Contact Button: Mail */}
       <a href="mailto:doanngocanh26102005@gmail.com" 
          style={{ ...actionButtonStyle, transform: isOpen ? 'scale(0)' : 'scale(1)' }} 
          className="contact-btn">
@@ -321,7 +311,6 @@ const ChatWidget = () => {
         <Mail size={18} />
       </a>
 
-      {/* 2. Contact Button: Phone */}
       <a href="tel:0816951801" 
          style={{ ...actionButtonStyle, transform: isOpen ? 'scale(0)' : 'scale(1)' }} 
          className="contact-btn">
@@ -329,7 +318,6 @@ const ChatWidget = () => {
         <Phone size={18} />
       </a>
 
-      {/* 3. Nút CHAT VỚI ADMIN RIÊNG BIỆT (Màu đỏ nổi bật) */}
       <div 
          onClick={() => {
            setActiveTab('admin');
@@ -346,7 +334,6 @@ const ChatWidget = () => {
         </span>
         <Headset size={23} />
 
-        {/* Chấm xanh báo Admin Online */}
         <span style={{
           position: 'absolute',
           bottom: '2px',
@@ -359,7 +346,6 @@ const ChatWidget = () => {
           boxShadow: '0 0 6px #10B981'
         }} />
 
-        {/* Badge số tin nhắn chưa đọc từ Admin */}
         {unreadSupportChat > 0 && (
           <span style={{
             position: 'absolute',
@@ -380,9 +366,7 @@ const ChatWidget = () => {
         )}
       </div>
 
-      {/* Main Chat Window */}
       <div style={chatWindowStyle}>
-        {/* Top Header with Tabs */}
         <div style={{
           padding: '12px 16px',
           background: 'rgba(255,255,255,0.06)',
@@ -399,7 +383,6 @@ const ChatWidget = () => {
             />
           </div>
 
-          {/* Tab Selector */}
           <div style={{
             display: 'flex',
             background: 'rgba(0,0,0,0.3)',
@@ -477,7 +460,6 @@ const ChatWidget = () => {
           </div>
         </div>
 
-        {/* TAB 1: AI Chat Assistant */}
         {activeTab === 'ai' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -522,7 +504,6 @@ const ChatWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* AI Input */}
             <div style={{ padding: '12px 14px', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', gap: '8px', background: 'rgba(0,0,0,0.2)' }}>
               <input 
                 type="text" 
@@ -556,11 +537,9 @@ const ChatWidget = () => {
           </div>
         )}
 
-        {/* TAB 2: Live Support Chat with Admin */}
         {activeTab === 'admin' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             {!user ? (
-              /* Case 1: Chưa đăng nhập */
               <div style={{
                 flex: 1,
                 display: 'flex',
@@ -614,7 +593,6 @@ const ChatWidget = () => {
                 </button>
               </div>
             ) : user.role === 'admin' ? (
-              /* Case 2: Đang đăng nhập tài khoản Admin */
               <div style={{
                 flex: 1,
                 display: 'flex',
@@ -668,9 +646,7 @@ const ChatWidget = () => {
                 </button>
               </div>
             ) : (
-              /* Case 3: Người dùng thường đã đăng nhập -> Chat 1-1 với Admin */
               <>
-                {/* Admin Status Sub-header */}
                 <div style={{
                   padding: '8px 16px',
                   background: 'rgba(0,0,0,0.25)',
@@ -695,7 +671,6 @@ const ChatWidget = () => {
                   </span>
                 </div>
 
-                {/* Messages Body */}
                 <div style={{
                   flex: 1,
                   overflowY: 'auto',
@@ -731,7 +706,6 @@ const ChatWidget = () => {
                             alignItems: isMe ? 'flex-end' : 'flex-start'
                           }}
                         >
-                          {/* Sender Info */}
                           <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -751,7 +725,6 @@ const ChatWidget = () => {
                             <span>• {formatMessageTime(msg.created_at)}</span>
                           </div>
 
-                          {/* Message Bubble */}
                           <div style={{
                             maxWidth: '78%',
                             padding: '9px 13px',
@@ -773,7 +746,6 @@ const ChatWidget = () => {
                     })
                   )}
 
-                  {/* Admin is typing indicator */}
                   {isAdminTyping && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#60A5FA', fontSize: '0.78rem' }}>
                       <ShieldCheck size={14} />
@@ -784,7 +756,6 @@ const ChatWidget = () => {
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Support Chat Input */}
                 <div style={{
                   padding: '12px 14px',
                   borderTop: '1px solid rgba(255,255,255,0.08)',
@@ -835,7 +806,6 @@ const ChatWidget = () => {
         )}
       </div>
 
-      {/* 4. Nút Chat AI (Màu xanh dương) */}
       <div 
         style={{ ...chatButtonStyle, transform: isOpen ? 'scale(0)' : 'scale(1)' }}
         onClick={() => {
@@ -851,7 +821,6 @@ const ChatWidget = () => {
         <Bot size={28} />
       </div>
 
-      {/* CSS Styles */}
       <style>{`
         .contact-btn:hover {
           background: rgba(255, 255, 255, 0.22) !important;

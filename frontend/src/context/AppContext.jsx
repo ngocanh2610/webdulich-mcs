@@ -4,7 +4,6 @@ import { io } from 'socket.io-client';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  // Mode: '63' (trước sáp nhập) hoặc '34' (sau sáp nhập 2025)
   const [mode, setMode] = useState('63');
   const [provinces, setProvinces] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +28,6 @@ export const AppProvider = ({ children }) => {
     }
   }, []);
 
-  // Check token on mount
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
@@ -68,17 +66,13 @@ export const AppProvider = ({ children }) => {
     };
   }, []);
 
-  // Lắng nghe socket events cho Chat Support
   useEffect(() => {
     if (!socket || !user) return;
 
     const handleNewMessage = (msg) => {
-      // Nếu là Admin và tin nhắn gửi tới admin
       if (user.role === 'admin' && msg.receiver_username === 'admin') {
-        // Tăng badge unread nếu không đang mở trang chat
         setUnreadSupportChat(prev => prev + 1);
       }
-      // Nếu là User và tin nhắn gửi từ admin tới user này
       else if (user.role !== 'admin' && msg.receiver_username === user.username && msg.sender_role === 'admin') {
         setUnreadSupportChat(prev => prev + 1);
       }

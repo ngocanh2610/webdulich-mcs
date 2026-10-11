@@ -21,7 +21,6 @@ const ProvincesPage = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    // Fetch regions
     fetch('/api/provinces/meta/regions')
       .then(res => res.json())
       .then(data => {
@@ -29,7 +28,6 @@ const ProvincesPage = () => {
       })
       .catch(err => console.error(err));
       
-    // Fetch location counts
     fetch('/api/locations/meta/counts')
       .then(res => res.json())
       .then(data => {

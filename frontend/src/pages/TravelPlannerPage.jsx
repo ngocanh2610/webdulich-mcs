@@ -1,69 +1,76 @@
 import React, { useState } from 'react';
-import { 
-  Calendar, Users, Share2, Info, ChevronLeft, ChevronRight, 
+import {
+  Calendar, Users, Share2, Info, ChevronLeft, ChevronRight,
   MapPin, Clock, DollarSign, MoreVertical, Sparkles,
   Plane, Hotel, Utensils, ExternalLink, Check, Copy,
   Ticket, Car, Compass, ArrowRight, RotateCcw
 } from 'lucide-react';
 import MakeYourTripChat from '../components/MakeYourTripChat';
 
-/**
- * TRAVEL PLANNER PAGE - VIETNAMTOURISM AI
- * 1. Cột trái: Trợ lý AI tư vấn tương tác trực tiếp
- * 2. Cột phải: 
- *    - Khi chưa có kế hoạch: Màn hình gợi ý & truyền cảm hứng 63 tỉnh thành Việt Nam
- *    - Khi đã có kế hoạch: Lịch trình chi tiết từng ngày kèm nút "Xem trên Google Maps"
- */
-
-// Danh sách điểm đến nổi bật gợi ý ban đầu
 const POPULAR_DESTINATIONS = [
+  {
+    name: 'Kỳ Quan Vịnh Hạ Long',
+    province: 'Vịnh Hạ Long',
+    tag: '4 Ngày 3 Đêm • Quảng Ninh',
+    desc: 'Du thuyền ngắm vịnh di sản, hang Sửng Sốt, đảo Titop, kayak hang Luồn & cáp treo Nữ Hoàng.',
+    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lên kế hoạch du lịch Vịnh Hạ Long 4 ngày 3 đêm trọn gói'
+  },
+  {
+    name: 'Quần Đảo Cát Bà & Vịnh Lan Hạ',
+    province: 'Cát Bà',
+    tag: '4 Ngày 3 Đêm • Hải Phòng',
+    desc: 'Vịnh Lan Hạ ngọc bích, kayak hang Sáng Tối, đỉnh Ngự Lâm vườn quốc gia & làng chài Cái Bèo.',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lên lịch trình khám phá đảo Cát Bà 4 ngày 3 đêm'
+  },
+  {
+    name: 'Thiên Đường Săn Mây Tà Xùa',
+    province: 'Tà Xùa',
+    tag: '4 Ngày 3 Đêm • Sơn La',
+    desc: 'Sống lưng khủng long Háng Đồng, mỏm Cá Heo, cây cô đơn, rừng trúc kiếm hiệp & lẩu gà đen.',
+    image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lập kế hoạch phượt săn mây Tà Xùa 4 ngày 3 đêm'
+  },
+  {
+    name: 'Khu Du Lịch Biển Đồ Sơn',
+    province: 'Đồ Sơn',
+    tag: '4 Ngày 3 Đêm • Hải Phòng',
+    desc: 'Bãi biển Đồ Sơn, siêu quần thể Đồi Rồng Dragon Ocean, đảo Hòn Dấu & cua rang me đậm đà.',
+    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&auto=format&fit=crop&q=80',
+    prompt: 'Lên lịch trình nghỉ dưỡng Đồ Sơn 4 ngày 3 đêm'
+  },
   {
     name: 'Đà Lạt Mộng Mơ',
     province: 'Đà Lạt',
-    tag: '3 Ngày 2 Đêm • Tây Nguyên',
-    desc: 'Săn mây Cầu Đất, đồi thông Langbiang, thác Datanla & lẩu gà lá é thơm cay.',
+    tag: '4 Ngày 3 Đêm • Tây Nguyên',
+    desc: 'Săn mây Cầu Đất, đồi thông Langbiang, máng trượt Datanla & lẩu gà lá é thơm cay.',
     image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80',
-    prompt: 'Lên lịch trình du lịch Đà Lạt 3 ngày 2 đêm săn mây và khám phá ẩm thực'
+    prompt: 'Lên lịch trình du lịch Đà Lạt 4 ngày 3 đêm săn mây và ẩm thực'
   },
   {
     name: 'Sa Pa - Nóc Nhà Đông Dương',
     province: 'Sa Pa',
-    tag: '3 Ngày 2 Đêm • Tây Bắc',
-    desc: 'Chinh phục đỉnh Fansipan 3.143m, bản Cát Cát & đèo Ô Quy Hồ lộng gió.',
+    tag: '4 Ngày 3 Đêm • Tây Bắc',
+    desc: 'Chinh phục đỉnh Fansipan 3.143m, bản Cát Cát, Tả Van & đèo Ô Quy Hồ lộng gió.',
     image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=800&auto=format&fit=crop&q=80',
-    prompt: 'Lập kế hoạch du lịch Sa Pa 3 ngày 2 đêm Fansipan và bản Cát Cát'
+    prompt: 'Lập kế hoạch du lịch Sa Pa 4 ngày 3 đêm Fansipan và bản Cát Cát'
   },
   {
     name: 'Hà Giang Hùng Vĩ',
     province: 'Hà Giang',
-    tag: '3 Ngày 2 Đêm • Đông Bắc',
+    tag: '4 Ngày 3 Đêm • Đông Bắc',
     desc: 'Cột cờ Lũng Cú, đèo Mã Pí Lèng, chèo thuyền hẻm Tu Sản sông Nho Quế ngọc bích.',
     image: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=800&auto=format&fit=crop&q=80',
-    prompt: 'Lên lịch trình phượt Hà Giang 3 ngày 2 đêm ngắm hẻm Tu Sản sông Nho Quế'
+    prompt: 'Lên lịch trình phượt Hà Giang 4 ngày 3 đêm ngắm hẻm Tu Sản sông Nho Quế'
   },
   {
     name: 'Đảo Ngọc Phú Quốc',
     province: 'Phú Quốc',
     tag: '4 Ngày 3 Đêm • Kiên Giang',
-    desc: 'Bãi Sao cát trắng mịn, cáp treo Hòn Thơm vượt biển, Grand World & bún quậy.',
+    desc: 'Bãi Sao cát trắng mịn, cáp treo Hòn Thơm vượt biển, Grand World & bún quậy Kiến Xây.',
     image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
     prompt: 'Thiết kế chuyến đi Phú Quốc 4 ngày 3 đêm nghỉ dưỡng biển đảo'
-  },
-  {
-    name: 'Ninh Bình - Tràng An Tam Cốc',
-    province: 'Ninh Bình',
-    tag: '2 Ngày 1 Đêm • Miền Bắc',
-    desc: 'Di sản thế giới kép UNESCO, chèo thuyền Tràng An, đỉnh Hang Múa & chùa Bái Đính.',
-    image: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&auto=format&fit=crop&q=80',
-    prompt: 'Lập lịch trình du lịch Ninh Bình 2 ngày 1 đêm Tràng An và Hang Múa'
-  },
-  {
-    name: 'Kỳ Quan Vịnh Hạ Long',
-    province: 'Quảng Ninh',
-    tag: '2 Ngày 1 Đêm • Miền Bắc',
-    desc: 'Du thuyền ngắm vịnh di sản, hang Sửng Sốt, đảo Titop & bảo tàng Quảng Ninh.',
-    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80',
-    prompt: 'Lên kế hoạch du lịch vịnh Hạ Long 2 ngày 1 đêm trọn gói'
   },
   {
     name: 'Đà Nẵng - Hội An',
@@ -76,72 +83,127 @@ const POPULAR_DESTINATIONS = [
   {
     name: 'Quy Nhơn - Kỳ Co Eo Gió',
     province: 'Quy Nhơn',
-    tag: '3 Ngày 2 Đêm • Bình Định',
+    tag: '4 Ngày 3 Đêm • Bình Định',
     desc: 'Maldives phiên bản Việt, bãi tắm Kỳ Co, Eo Gió hùng vĩ & bánh xèo tôm nhảy.',
     image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
-    prompt: 'Lập lịch trình du lịch Quy Nhơn 3 ngày 2 đêm Kỳ Co Eo Gió'
-  },
-  {
-    name: 'Cần Thơ Sông Nước',
-    province: 'Cần Thơ',
-    tag: '2 Ngày 1 Đêm • Miền Tây',
-    desc: 'Chợ nổi Cái Răng sớm mai, bến Ninh Kiều, nhà cổ Bình Thủy & lẩu mắm đậm đà.',
-    image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&auto=format&fit=crop&q=80',
-    prompt: 'Lên lịch trình Cần Thơ 2 ngày 1 đêm chợ nổi Cái Răng và Bến Ninh Kiều'
+    prompt: 'Lập lịch trình du lịch Quy Nhơn 4 ngày 3 đêm Kỳ Co Eo Gió'
   }
 ];
 
-// Lời chào khởi đầu của AI
 const INITIAL_CHAT = [
   {
     sender: 'ai',
-    text: `Xin chào! Tôi là Trợ lý AI Lập Lịch Trình của VietnamTourism.
-
-Hãy cho tôi biết chuyến đi bạn mong muốn đến bất kỳ tỉnh thành nào trên khắp 63 tỉnh thành Việt Nam:
-• Bạn muốn đi đâu? (Đà Lạt, Sa Pa, Hà Giang, Phú Quốc, Ninh Bình, Hạ Long, Huế, Đà Nẵng, Cần Thơ, Quy Nhơn...)
-• Đi trong bao nhiêu ngày? (2 ngày 1 đêm, 3 ngày 2 đêm, 4 ngày, 7 ngày...)
-• Bạn có sở thích hay yêu cầu đặc biệt nào không?
-
-Ngay sau khi bạn gửi yêu cầu, tôi sẽ thiết kế và hiển thị lịch trình chi tiết từng ngày kèm đường link mở trực tiếp trên Google Maps!`
+    text: `Xin chào! Tôi là Trợ lý AI Lập Lịch Trình của VietnamTourism.`
   }
 ];
 
 const TravelPlannerPage = () => {
-  // Bắt đầu: CHƯA có lịch trình sẵn (plan = null), chờ người dùng yêu cầu mới render
   const [plan, setPlan] = useState(null);
-  const [activeTab, setActiveTab] = useState('daily'); // 'daily', 'services'
+  const [activeTab, setActiveTab] = useState('daily');
   const [activeDay, setActiveDay] = useState(1);
 
-  // Chat AI
   const [messages, setMessages] = useState(INITIAL_CHAT);
   const [chatLoading, setChatLoading] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState([
-    'Lên lịch trình Đà Lạt 3 ngày 2 đêm',
-    'Lập kế hoạch đi Sa Pa 3 ngày 2 đêm',
-    'Lịch trình Phú Quốc 4 ngày 3 đêm',
-    'Phượt Hà Giang 3N2Đ ngắm sông Nho Quế',
-    'Du lịch Ninh Bình 2 ngày 1 đêm'
+    'Lên lịch trình Vịnh Hạ Long 4 ngày 3 đêm',
+    'Khám phá đảo Cát Bà 4 ngày 3 đêm',
+    'Săn mây Tà Xùa 4 ngày 3 đêm',
+    'Nghỉ dưỡng Đồ Sơn 4 ngày 3 đêm',
+    'Lịch trình Đà Lạt 4 ngày 3 đêm'
   ]);
 
-  // Modal chia sẻ & chọn ngày/khách
   const [showShareModal, setShowShareModal] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showGuestPicker, setShowGuestPicker] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Chọn ngày hiện tại đang xem (nếu có plan)
   const currentDayData = plan?.dailyItinerary?.find(d => d.day === activeDay) || plan?.dailyItinerary?.[0] || { activities: [] };
 
-  // Bộ sinh lịch trình dự phòng thông minh ngay tại Client khi máy chủ đang khởi động lại
+  const extractDaysFromText = (text) => {
+    if (!text) return null;
+    const lower = text.toString().trim().toLowerCase();
+
+    const isMetaOrComplaint = /(?:vẫn chỉ (?:có|được)|sao lại chỉ|toàn|auto)\s*(\d+)\s*(?:ngày|ngay)/i.test(lower);
+    const condPrefixMatch = /(?:quá|hơn|trên)\s*(\d+)\s*(?:ngày|ngay)/i.test(lower);
+
+    const insteadOfPrefix = lower.match(/(?:thay vì|thay cho)\s*(\d+)\s*(?:ngày|ngay|n|hôm)?.*?(?:cho (?:t|tôi|mình) đi|đi|làm|thành|sang)?\s*(\d+)\s*(?:ngày|ngay|n|hôm)?/i);
+    if (insteadOfPrefix) {
+      const d = parseInt(insteadOfPrefix[2], 10);
+      if (d >= 1 && d <= 30) return d;
+    }
+
+    const insteadOfSuffix = lower.match(/(\d+)\s*(?:ngày|ngay|n|hôm)?\s*(?:thay vì|thay cho|chứ không phải|thay)\s*(\d+)/i);
+    if (insteadOfSuffix) {
+      const d = parseInt(insteadOfSuffix[1], 10);
+      if (d >= 1 && d <= 30) return d;
+    }
+
+    const fromToMatch = lower.match(/từ\s*(\d+)\s*(?:ngày|ngay|n|hôm)?\s*(?:lên|sang|thành|xuống)\s*(\d+)/i);
+    if (fromToMatch) {
+      const d = parseInt(fromToMatch[2], 10);
+      if (d >= 1 && d <= 30) return d;
+    }
+
+    if (!isMetaOrComplaint && !condPrefixMatch) {
+      const explicitMatch = lower.match(/(?:cho (?:t|tôi|mình) đi|đi|làm|tạo|lên lịch|lịch trình|đổi thành|đổi sang|thành|tăng lên|giảm xuống)?\s*(\d+)\s*(?:ngày|ngay|hôm|n|d)(?:\s*\d+\s*(?:đêm|dem|d))?/i);
+      if (explicitMatch) {
+        const d = parseInt(explicitMatch[1], 10);
+        if (d >= 1 && d <= 30) return d;
+      }
+    }
+
+    if (!isMetaOrComplaint && !condPrefixMatch) {
+      const justNumberMatch = lower.match(/(?:^|\b)(?:đi|làm|cho|thành|lên|đổi|tăng|rút|chọn)?\s*([1-9]|[12][0-9]|30)\s*(?:đi|thôi|nhé|nha|ạ|được không)?(?:\b|$)/i);
+      if (justNumberMatch) {
+        const d = parseInt(justNumberMatch[1], 10);
+        if (d >= 1 && d <= 30) return d;
+      }
+    }
+
+    return null;
+  };
+
   const buildClientFallbackPlan = (userText, currentPlan) => {
-    const lower = (userText || '').toLowerCase();
-    let days = currentPlan?.days || 3;
-    const matchDays = lower.match(/(\d+)\s*(?:ngày|ngay|n)/);
-    if (matchDays) days = parseInt(matchDays[1], 10);
+    const lower = (userText || '').replace(/\s+/g, ' ').trim().toLowerCase();
+
+    const isShuffleQuery = /(xáo lại|xáo lên|xáo trộn|đổi thứ tự|sắp xếp lại|thay đổi thứ tự|đảo lại|khác đi tí|sắp xếp khác|xáo.*khác đi|giữ.*nhưng.*xáo|xáo đi)/i.test(lower);
+    if (isShuffleQuery && currentPlan && currentPlan.dailyItinerary?.length > 0) {
+      const cloned = JSON.parse(JSON.stringify(currentPlan));
+      cloned.dailyItinerary.forEach((d) => {
+        if (d.activities && d.activities.length >= 3) {
+          const morning = { ...d.activities[0] };
+          const afternoon = { ...d.activities[2] };
+          d.activities[0] = {
+            ...afternoon,
+            order: 1,
+            time: '08:30',
+            advice: `Khám phá ${afternoon.name} vào buổi sáng đón bình minh mát mẻ và tận hưởng không khí trong lành.`
+          };
+          d.activities[2] = {
+            ...morning,
+            order: 3,
+            time: '15:00',
+            advice: `Ghé thăm ${morning.name} vào buổi chiều tà lãng mạn, ngắm hoàng hôn thư thái.`
+          };
+        }
+      });
+      cloned.summary = `Lịch trình du lịch ${cloned.destination} đã được sắp xếp lại thứ tự các buổi tham quan một cách khoa học.`;
+      return cloned;
+    }
+
+    let days = currentPlan?.days || 4;
+    const extractedDays = extractDaysFromText(userText);
+    if (extractedDays !== null) {
+      days = extractedDays;
+    }
     days = Math.max(1, Math.min(30, days));
 
-    let dest = 'Tam Đảo';
-    if (lower.includes('tam đảo') || lower.includes('tam dao') || lower.includes('vĩnh phúc')) dest = 'Tam Đảo';
+    let dest = 'Vịnh Hạ Long';
+    if (lower.includes('vịnh hạ long') || lower.includes('vinh ha long') || lower.includes('hạ long') || lower.includes('ha long') || lower.includes('bãi cháy')) dest = 'Vịnh Hạ Long';
+    else if (lower.includes('cát bà') || lower.includes('cat ba') || lower.includes('lan hạ')) dest = 'Cát Bà';
+    else if (lower.includes('đồ sơn') || lower.includes('do son') || lower.includes('đồi rồng')) dest = 'Đồ Sơn';
+    else if (lower.includes('tà xùa') || lower.includes('ta xua') || lower.includes('háng đồng')) dest = 'Tà Xùa';
+    else if (lower.includes('tam đảo') || lower.includes('tam dao') || lower.includes('vĩnh phúc')) dest = 'Tam Đảo';
     else if (lower.includes('hà nam') || lower.includes('ha nam') || lower.includes('tam chúc') || lower.includes('tam chuc') || lower.includes('phủ lý') || lower.includes('vũ đại')) dest = 'Hà Nam';
     else if (lower.includes('đà lạt') || lower.includes('da lat') || lower.includes('lâm đồng')) dest = 'Đà Lạt';
     else if (lower.includes('sa pa') || lower.includes('sapa') || lower.includes('lào cai')) dest = 'Sa Pa';
@@ -150,8 +212,10 @@ const TravelPlannerPage = () => {
     else if (lower.includes('hội an') || lower.includes('hoi an') || lower.includes('quảng nam')) dest = 'Hội An';
     else if (lower.includes('phú quốc') || lower.includes('phu quoc') || lower.includes('kiên giang')) dest = 'Phú Quốc';
     else if (lower.includes('ninh bình') || lower.includes('tràng an') || lower.includes('tam cốc')) dest = 'Ninh Bình';
-    else if (lower.includes('hạ long') || lower.includes('quảng ninh') || lower.includes('vịnh hạ long')) dest = 'Quảng Ninh';
+    else if (lower.includes('quảng ninh') || lower.includes('yên tử') || lower.includes('cô tô') || lower.includes('vân đồn')) dest = 'Quảng Ninh';
+    else if (lower.includes('hải phòng')) dest = 'Hải Phòng';
     else if (lower.includes('huế') || lower.includes('thừa thiên huế')) dest = 'Huế';
+    else if (lower.includes('quảng bình') || lower.includes('phong nha')) dest = 'Quảng Bình';
     else if (lower.includes('nha trang') || lower.includes('khánh hòa')) dest = 'Nha Trang';
     else if (lower.includes('quy nhơn') || lower.includes('bình định')) dest = 'Quy Nhơn';
     else if (lower.includes('phú yên') || lower.includes('tuy hòa')) dest = 'Phú Yên';
@@ -160,15 +224,13 @@ const TravelPlannerPage = () => {
     else if (lower.includes('cần thơ') || lower.includes('ninh kiều')) dest = 'Cần Thơ';
     else if (lower.includes('vũng tàu') || lower.includes('bà rịa')) dest = 'Vũng Tàu';
     else if (lower.includes('tây ninh') || lower.includes('núi bà đen')) dest = 'Tây Ninh';
-    else if (lower.includes('hải phòng') || lower.includes('cát bà') || lower.includes('đồ sơn')) dest = 'Hải Phòng';
+    else if (lower.includes('kon tum') || lower.includes('măng đen')) dest = 'Kon Tum';
+    else if (lower.includes('đắk lắk') || lower.includes('buôn ma thuột')) dest = 'Đắk Lắk';
+    else if (lower.includes('hồ chí minh') || lower.includes('sài gòn') || lower.includes('tphcm')) dest = 'TP. Hồ Chí Minh';
+    else if (lower.includes('an giang') || lower.includes('châu đốc')) dest = 'An Giang';
+    else if (lower.includes('cà mau') || lower.includes('đất mũi')) dest = 'Cà Mau';
     else {
-      const wordMatch = userText.match(/(?:đi|du lịch|lịch trình|khám phá|tới|đến)\s+([A-ZÀ-Ỹa-zà-ỹ\s]{2,20})/i);
-      if (wordMatch && wordMatch[1] && wordMatch[1].trim().length >= 2) {
-        dest = wordMatch[1].trim();
-        dest = dest.charAt(0).toUpperCase() + dest.slice(1);
-      } else {
-        dest = currentPlan?.destination || 'Tam Đảo';
-      }
+      dest = currentPlan?.destination || 'Vịnh Hạ Long';
     }
 
     const PROV_DETAILS = {
@@ -207,11 +269,17 @@ const TravelPlannerPage = () => {
         { name: `Khu danh thắng nổi tiếng tại ${dest}`, address: `Khu du lịch sinh thái, ${dest}`, duration: '2 giờ 30 phút', cost: 50000, costText: 'Dự kiến: 50.000đ/vé', image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80', advice: `Khám phá cảnh quan thiên nhiên đặc sắc tại ${dest}.` },
         { name: `Quảng trường trung tâm & Di tích lịch sử ${dest}`, address: `Trung tâm hành chính, ${dest}`, duration: '2 giờ', cost: 0, costText: 'Tham quan tự do', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80', advice: `Tìm hiểu văn hóa truyền thống địa phương.` },
         { name: `Chùa cổ & Danh thắng tâm linh ${dest}`, address: `Địa phận ${dest}`, duration: '1 giờ 30 phút', cost: 0, costText: 'Miễn phí viếng chùa', image: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&auto=format&fit=crop&q=80', advice: `Không gian tâm linh thanh tịnh, trang phục lịch sự.` },
-        { name: `Chợ đêm & Tuyến phố ẩm thực ${dest}`, address: `Khu phố trung tâm, ${dest}`, duration: '2 giờ', cost: 100000, costText: 'Ăn uống tự do', image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80', advice: `Thưởng thức quà vặt đặc sản đường phố về đêm.` }
+        { name: `Chợ đêm & Tuyến phố ẩm thực ${dest}`, address: `Khu phố trung tâm, ${dest}`, duration: '2 giờ', cost: 100000, costText: 'Ăn uống tự do', image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80', advice: `Thưởng thức quà vặt đặc sản đường phố về đêm.` },
+        { name: `Đồi vọng cảnh & Điểm săn mây ${dest}`, address: `Khu vực ngoại ô, ${dest}`, duration: '2 giờ', cost: 30000, costText: 'Dự kiến: 30.000đ/vé', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80', advice: `Ngắm toàn cảnh thung lũng thơ mộng từ trên cao.` },
+        { name: `Làng nghề truyền thống lâu đời ${dest}`, address: `Khu làng nghề, ${dest}`, duration: '2 giờ 30 phút', cost: 0, costText: 'Tham quan trải nghiệm', image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=800&auto=format&fit=crop&q=80', advice: `Trải nghiệm làm đồ thủ công truyền thống cùng nghệ nhân.` },
+        { name: `Thác nước & Khu sinh thái thiên nhiên ${dest}`, address: `Khu bảo tồn, ${dest}`, duration: '3 giờ', cost: 40000, costText: 'Dự kiến: 40.000đ/vé', image: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&auto=format&fit=crop&q=80', advice: `Tắm suối và hít thở bầu không khí trong lành của núi rừng.` },
+        { name: `Bảo tàng văn hóa & Di sản vùng đất ${dest}`, address: `Khu trung tâm văn hóa, ${dest}`, duration: '2 giờ', cost: 30000, costText: 'Dự kiến: 30.000đ/vé', image: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&auto=format&fit=crop&q=80', advice: `Chiêm ngưỡng các hiện vật lịch sử và dấu ấn di sản văn hóa.` }
       ],
       foods: [
         { name: `Quán đặc sản truyền thống ${dest}`, dish: `Ẩm thực đặc sản ${dest}`, address: `Trung tâm ${dest}`, advice: `Thưởng thức hương vị bản địa thơm ngon.` },
-        { name: `Nhà hàng ẩm thực vùng miền ${dest}`, dish: `Món ngon địa phương`, address: `Đường ẩm thực, ${dest}`, advice: `Không gian ấm cúng, nguyên liệu tươi sạch.` }
+        { name: `Nhà hàng ẩm thực vùng miền ${dest}`, dish: `Món ngon địa phương`, address: `Đường ẩm thực, ${dest}`, advice: `Không gian ấm cúng, nguyên liệu tươi sạch.` },
+        { name: `Quán ăn gia truyền lâu năm ${dest}`, dish: `Món ăn đặc sản gia truyền`, address: `Phố cổ ${dest}`, advice: `Hương vị đậm đà được gìn giữ qua nhiều thế hệ.` },
+        { name: `Quán hải sản / Đặc sản đêm ${dest}`, dish: `Món ngon đặc sản tối`, address: `Bờ sông / Ven biển ${dest}`, advice: `Không gian thoáng mát, thưởng thức ẩm thực về đêm.` }
       ],
       hotel: `Khách sạn nghỉ dưỡng trung tâm ${dest}`
     };
@@ -235,9 +303,32 @@ const TravelPlannerPage = () => {
       curDate.setDate(curDate.getDate() + day - 1);
       const curDateStr = formatDate(curDate);
 
-      const att1 = targetData.attractions[((day - 1) * 2) % targetData.attractions.length];
-      const foodItem = targetData.foods[(day - 1) % targetData.foods.length];
-      const att2 = targetData.attractions[((day - 1) * 2 + 1) % targetData.attractions.length];
+      const cycle = Math.floor((day - 1) / 4);
+      let att1Idx, att2Idx, foodIdx;
+      if (cycle === 0) {
+        att1Idx = ((day - 1) * 2) % targetData.attractions.length;
+        att2Idx = ((day - 1) * 2 + 1) % targetData.attractions.length;
+        foodIdx = (day - 1) % targetData.foods.length;
+      } else {
+        const crossPairs = [
+          [3, 0], [5, 2], [7, 4], [1, 6], [2, 5], [4, 7], [0, 3]
+        ];
+        const pair = crossPairs[(day - 5) % crossPairs.length];
+        att1Idx = pair[0] % targetData.attractions.length;
+        att2Idx = pair[1] % targetData.attractions.length;
+        foodIdx = (day + 1) % targetData.foods.length;
+      }
+
+      const att1 = targetData.attractions[att1Idx];
+      const foodItem = targetData.foods[foodIdx];
+      const att2 = targetData.attractions[att2Idx];
+
+      const mAdvice = day > 4
+        ? `Góc nhìn buổi sáng mới lạ tại ${att1.name}, đón bình minh và tận hưởng không gian yên bình khác biệt.`
+        : (att1.advice || `Khám phá ${att1.name}`);
+      const aAdvice = day > 4
+        ? `Khám phá ${att2.name} vào buổi chiều tà lãng mạn, ngắm hoàng hôn và cảm nhận chiều sâu bản địa.`
+        : (att2.advice || `Tham quan ${att2.name}`);
 
       const activities = [
         {
@@ -249,7 +340,7 @@ const TravelPlannerPage = () => {
           costText: att1.costText || 'Tham quan tự do',
           cost: att1.cost || 0,
           image: att1.image,
-          advice: att1.advice
+          advice: mAdvice
         },
         {
           order: 2,
@@ -271,7 +362,7 @@ const TravelPlannerPage = () => {
           costText: att2.costText || 'Tham quan tự do',
           cost: att2.cost || 0,
           image: att2.image,
-          advice: att2.advice
+          advice: aAdvice
         },
         {
           order: 4,
@@ -368,7 +459,6 @@ const TravelPlannerPage = () => {
     };
   };
 
-  // Xử lý gửi tin nhắn tới AI Backend
   const handleSendMessage = async (text) => {
     const newMsgList = [...messages, { sender: 'user', text }];
     setMessages(newMsgList);
@@ -389,12 +479,15 @@ const TravelPlannerPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        if (data.success && data.plan) {
+        if (data.success) {
           if (data.reply) {
             setMessages(prev => [...prev, { sender: 'ai', text: data.reply }]);
           }
-          setPlan(data.plan);
-          setActiveDay(1);
+          if (data.plan) {
+            setPlan(data.plan);
+            const totalDays = data.plan.days || data.plan.dailyItinerary?.length || 1;
+            setActiveDay(prevDay => (prevDay <= totalDays ? prevDay : 1));
+          }
           if (data.suggestedPrompts) {
             setSuggestedPrompts(data.suggestedPrompts);
           }
@@ -402,7 +495,6 @@ const TravelPlannerPage = () => {
         }
       }
 
-      // Nếu Backend đang tải hoặc chưa sẵn sàng, kích hoạt bộ sinh dự phòng thông minh ngay tại Client
       const fallbackPlan = buildClientFallbackPlan(text, plan);
       setPlan(fallbackPlan);
       setActiveDay(1);
@@ -430,7 +522,6 @@ const TravelPlannerPage = () => {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // Hàm tính toán lại chi phí động tức thì khi đổi số khách hoặc số phòng
   const updatePlanGuestsOrRooms = (newGuests, newRooms) => {
     if (!plan) return;
     const g = Math.max(1, newGuests !== undefined ? newGuests : (plan.guests || 1));
@@ -438,12 +529,10 @@ const TravelPlannerPage = () => {
     const days = plan.days || 3;
     const nights = days > 1 ? days - 1 : 1;
 
-    // Chi phí di chuyển
     const isNear = ['Hà Nội', 'Ninh Bình', 'Quảng Ninh', 'Sa Pa', 'Hải Phòng', 'Hòa Bình', 'Mai Châu', 'Mộc Châu', 'Cao Bằng', 'Hà Giang'].includes(plan.destination) && ['Hà Nội'].includes(plan.startLocation || 'Hà Nội');
     const transitCostPerPerson = isNear ? 450000 : 1650000;
     const transitCostTotal = transitCostPerPerson * g;
 
-    // Chi phí khách sạn theo địa điểm và số đêm
     let hotelPricePerNight = 650000;
     if (['Phú Quốc', 'Nha Trang', 'Đà Nẵng', 'Đà Lạt'].includes(plan.destination)) {
       hotelPricePerNight = 850000;
@@ -452,7 +541,6 @@ const TravelPlannerPage = () => {
     }
     const hotelCostTotal = hotelPricePerNight * nights * r;
 
-    // Chi phí vé tham quan từ các hoạt động thực tế trong lịch trình
     let ticketCostPerPerson = 0;
     plan.dailyItinerary?.forEach(day => {
       day.activities?.forEach(act => {
@@ -461,14 +549,11 @@ const TravelPlannerPage = () => {
     });
     const ticketCostTotal = ticketCostPerPerson * g;
 
-    // Chi phí ăn uống đặc sản 3 bữa
     const foodPerDayPerPerson = 280000;
     const foodCostTotal = foodPerDayPerPerson * days * g;
 
-    // Đi lại nội thành
     const localTransportTotal = 120000 * days;
 
-    // Tổng chi phí ước tính thực tế
     const newTotalBudget = transitCostTotal + hotelCostTotal + ticketCostTotal + foodCostTotal + localTransportTotal;
     const newFixedCost = transitCostTotal + Math.round(hotelCostTotal * 0.3) + ticketCostTotal;
 
@@ -535,14 +620,12 @@ const TravelPlannerPage = () => {
     <div style={{
       minHeight: '100vh',
       background: '#F8FAFC',
-      // Navbar cao ~108px -> paddingTop 120px để tránh hoàn toàn bị thọt/che khuất
       paddingTop: '120px',
       paddingBottom: '40px',
       display: 'flex',
       flexDirection: 'column'
     }}>
-      
-      {/* 1. TOP HEADER CONTROL BAR (Hiển thị thông tin hành trình khi đã có Plan) */}
+
       {plan && (
         <div style={{
           background: '#FFFFFF',
@@ -563,11 +646,9 @@ const TravelPlannerPage = () => {
             flexWrap: 'wrap',
             gap: '12px'
           }}>
-            
-            {/* Trái: Điểm đến, Date picker & Guest picker */}
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              
-              {/* Badge điểm đến */}
+
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -584,7 +665,6 @@ const TravelPlannerPage = () => {
                 <span>{plan.destination} ({plan.days} Ngày)</span>
               </div>
 
-              {/* Date range picker button */}
               <div style={{ position: 'relative' }}>
                 <button
                   type="button"
@@ -626,12 +706,12 @@ const TravelPlannerPage = () => {
                       Chọn độ dài chuyến đi:
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                      {[2, 3, 4, 5, 7].map(d => (
+                      {[1, 2, 3, 4, 5, 6, 7].map(d => (
                         <button
                           key={d}
                           type="button"
                           onClick={() => {
-                            handleSendMessage(`Đổi sang lịch trình ${d} ngày ${d > 1 ? d - 1 : 0} đêm`);
+                            handleSendMessage(d === 1 ? 'Đổi sang lịch trình 1 ngày đi về trong ngày' : `Đổi sang lịch trình ${d} ngày ${d - 1} đêm`);
                             setShowDatePicker(false);
                           }}
                           style={{
@@ -645,7 +725,7 @@ const TravelPlannerPage = () => {
                             fontWeight: 600
                           }}
                         >
-                          {d} Ngày {d > 1 ? d - 1 : 0} Đêm
+                          {d} Ngày {d > 1 ? `${d - 1} Đêm` : '(Trong ngày)'}
                         </button>
                       ))}
                     </div>
@@ -653,7 +733,6 @@ const TravelPlannerPage = () => {
                 )}
               </div>
 
-              {/* Guests & Rooms button */}
               <div style={{ position: 'relative' }}>
                 <button
                   type="button"
@@ -694,14 +773,14 @@ const TravelPlannerPage = () => {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                       <span style={{ fontSize: '13px', fontWeight: 600 }}>Số khách:</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => updatePlanGuestsOrRooms(Math.max(1, (plan.guests || 1) - 1), plan.rooms)}
                           style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#F8FAFC', cursor: 'pointer' }}
                         >-</button>
                         <span style={{ fontWeight: 700 }}>{plan.guests || 1}</span>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => updatePlanGuestsOrRooms((plan.guests || 1) + 1, plan.rooms)}
                           style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#F8FAFC', cursor: 'pointer' }}
                         >+</button>
@@ -710,14 +789,14 @@ const TravelPlannerPage = () => {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '13px', fontWeight: 600 }}>Số phòng:</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => updatePlanGuestsOrRooms(plan.guests, Math.max(1, (plan.rooms || 1) - 1))}
                           style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#F8FAFC', cursor: 'pointer' }}
                         >-</button>
                         <span style={{ fontWeight: 700 }}>{plan.rooms || 1}</span>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => updatePlanGuestsOrRooms(plan.guests, (plan.rooms || 1) + 1)}
                           style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #CBD5E1', background: '#F8FAFC', cursor: 'pointer' }}
                         >+</button>
@@ -729,10 +808,8 @@ const TravelPlannerPage = () => {
 
             </div>
 
-            {/* Phải: Chi phí dự kiến & Action buttons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              
-              {/* Chi phí ước tính */}
+
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600 }}>Chi phí ước tính:</span>
                 <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#E11D48' }}>
@@ -746,7 +823,6 @@ const TravelPlannerPage = () => {
                 </span>
               </div>
 
-              {/* Nút reset / Tạo chuyến đi mới */}
               <button
                 type="button"
                 onClick={handleResetTrip}
@@ -768,7 +844,6 @@ const TravelPlannerPage = () => {
                 <span>Tạo chuyến đi mới</span>
               </button>
 
-              {/* Nút chia sẻ lịch trình */}
               <button
                 type="button"
                 onClick={() => setShowShareModal(true)}
@@ -797,7 +872,6 @@ const TravelPlannerPage = () => {
         </div>
       )}
 
-      {/* 2. MAIN 2-COLUMN LAYOUT CONTAINER: Cột Trái (Chat) & Cột Phải (Lịch Trình hoặc Gợi Ý) */}
       <style>{`
         .planner-grid-2col {
           display: grid;
@@ -822,7 +896,7 @@ const TravelPlannerPage = () => {
         }
       `}</style>
 
-      <div 
+      <div
         className="planner-grid-2col"
         style={{
           maxWidth: '1600px',
@@ -833,15 +907,14 @@ const TravelPlannerPage = () => {
           alignItems: 'stretch'
         }}
       >
-        
-        {/* CỘT 1: CHAT AI TƯ VẤN (MakeYourTripChat) */}
-        <div 
-          className="planner-chat-sticky" 
-          style={{ 
-            height: plan ? 'calc(100vh - 200px)' : 'calc(100vh - 150px)', 
-            minHeight: '620px', 
-            position: 'sticky', 
-            top: plan ? '180px' : '120px' 
+
+        <div
+          className="planner-chat-sticky"
+          style={{
+            height: plan ? 'calc(100vh - 200px)' : 'calc(100vh - 150px)',
+            minHeight: '620px',
+            position: 'sticky',
+            top: plan ? '180px' : '120px'
           }}
         >
           <MakeYourTripChat
@@ -853,7 +926,6 @@ const TravelPlannerPage = () => {
           />
         </div>
 
-        {/* CỘT 2: KHU VỰC HIỂN THỊ */}
         <div style={{
           background: '#FFFFFF',
           borderRadius: '20px',
@@ -864,11 +936,9 @@ const TravelPlannerPage = () => {
           overflow: 'hidden',
           minHeight: '620px'
         }}>
-          
-          {/* TRƯỜNG HỢP A: CHƯA CÓ KẾ HOẠCH (plan === null) -> Hiển thị Màn hình Gợi ý & Cảm hứng 63 Tỉnh Thành */}
+
           {!plan ? (
             <div style={{ padding: '1.5rem', overflowY: 'auto' }}>
-              {/* Grid các điểm đến nổi bật */}
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '8px' }}>
                   <div>
@@ -913,9 +983,9 @@ const TravelPlannerPage = () => {
                       }}
                     >
                       <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
-                        <img 
-                          src={dest.image} 
-                          alt={dest.name} 
+                        <img
+                          src={dest.image}
+                          alt={dest.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                         <div style={{
@@ -965,10 +1035,8 @@ const TravelPlannerPage = () => {
 
             </div>
           ) : (
-            /* TRƯỜNG HỢP B: ĐÃ CÓ KẾ HOẠCH (plan !== null) -> Render Lịch trình chi tiết từng ngày */
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              
-              {/* TABS HEADER: Lịch trình theo ngày | Tổng quan dịch vụ */}
+
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -1014,7 +1082,6 @@ const TravelPlannerPage = () => {
                   </button>
                 </div>
 
-                {/* Nút mở điểm đến trên Google Maps */}
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(plan.destination + ' Việt Nam')}`}
                   target="_blank"
@@ -1039,11 +1106,9 @@ const TravelPlannerPage = () => {
                 </a>
               </div>
 
-              {/* TAB 1: LỊCH TRÌNH THEO TỪNG NGÀY */}
               {activeTab === 'daily' && (
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-                  
-                  {/* THANH CHỌN NGÀY (Tabs Ngày 1, Ngày 2, Ngày 3, ...) */}
+
                   <div style={{
                     padding: '0.75rem 1.25rem',
                     background: '#F8FAFC',
@@ -1082,7 +1147,6 @@ const TravelPlannerPage = () => {
                     })}
                   </div>
 
-                  {/* HEADER NGÀY ĐANG CHỌN */}
                   <div style={{
                     padding: '1rem 1.5rem',
                     borderBottom: '1px solid #F1F5F9',
@@ -1117,7 +1181,6 @@ const TravelPlannerPage = () => {
                     </div>
                   </div>
 
-                  {/* TIMELINE CÁC ĐỊA ĐIỂM / HOẠT ĐỘNG TRONG NGÀY */}
                   <div style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     {currentDayData.activities?.map((act, index) => {
                       const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${act.name} ${act.address || plan.destination || ''}`)}`;
@@ -1131,7 +1194,6 @@ const TravelPlannerPage = () => {
                             position: 'relative'
                           }}
                         >
-                          {/* Cột trái: Time & Order Badge */}
                           <div style={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -1158,7 +1220,6 @@ const TravelPlannerPage = () => {
                             }}>
                               {act.order || (index + 1)}
                             </div>
-                            {/* Dây nối dọc timeline */}
                             {index < currentDayData.activities.length - 1 && (
                               <div style={{
                                 width: '2px',
@@ -1170,7 +1231,6 @@ const TravelPlannerPage = () => {
                             )}
                           </div>
 
-                          {/* Cột phải: Content Card */}
                           <div style={{
                             flex: 1,
                             background: '#FFFFFF',
@@ -1181,8 +1241,7 @@ const TravelPlannerPage = () => {
                             transition: 'all 0.15s'
                           }}>
                             <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                              
-                              {/* Thumbnail ảnh thực tế */}
+
                               {act.image && (
                                 <img
                                   src={act.image}
@@ -1197,14 +1256,12 @@ const TravelPlannerPage = () => {
                                 />
                               )}
 
-                              {/* Chi tiết địa điểm */}
                               <div style={{ flex: 1 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '6px' }}>
                                   <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', lineHeight: 1.3 }}>
                                     {act.name}
                                   </h4>
 
-                                  {/* NÚT MỞ GOOGLE MAPS NGOÀI */}
                                   <a
                                     href={googleMapsUrl}
                                     target="_blank"
@@ -1257,7 +1314,6 @@ const TravelPlannerPage = () => {
 
                             </div>
 
-                            {/* Lời khuyên của AI (AI Advice Box) */}
                             {act.advice && (
                               <div style={{
                                 marginTop: '10px',
@@ -1278,7 +1334,6 @@ const TravelPlannerPage = () => {
                       );
                     })}
 
-                    {/* Transit summary note */}
                     {currentDayData.transitSummary && (
                       <div style={{
                         marginTop: '10px',
@@ -1305,7 +1360,6 @@ const TravelPlannerPage = () => {
                 </div>
               )}
 
-              {/* TAB 2: TỔNG QUAN DỊCH VỤ CÓ THỂ ĐẶT TRƯỚC */}
               {activeTab === 'services' && (
                 <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div>
@@ -1380,7 +1434,6 @@ const TravelPlannerPage = () => {
 
       </div>
 
-      {/* SHARE MODAL DIALOG */}
       {showShareModal && (
         <div style={{
           position: 'fixed',

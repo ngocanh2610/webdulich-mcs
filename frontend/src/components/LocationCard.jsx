@@ -20,7 +20,6 @@ const LocationCard = ({ location }) => {
           transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
         }}
       >
-        {/* Thumbnail Image Container */}
         <div 
           style={{ 
             position: 'relative', 
@@ -46,7 +45,6 @@ const LocationCard = ({ location }) => {
             onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1599708153386-62bf0bd17b43?w=800&q=80'; }}
           />
 
-          {/* Golden Star Rating Badge (Top Right) */}
           <div style={{
             position: 'absolute',
             top: '0.75rem',
@@ -67,7 +65,6 @@ const LocationCard = ({ location }) => {
             <span>{location.rating || '4.8'}</span>
           </div>
 
-          {/* Category / Status Tag (Top Left) */}
           {location.category && (
             <div style={{
               position: 'absolute',
@@ -88,7 +85,6 @@ const LocationCard = ({ location }) => {
           )}
         </div>
 
-        {/* Card Body */}
         <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
           <h3 style={{ 
             fontSize: '1.125rem', 
@@ -115,7 +111,6 @@ const LocationCard = ({ location }) => {
             {location.description}
           </p>
           
-          {/* Address & Explore Footer */}
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
