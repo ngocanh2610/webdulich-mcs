@@ -198,38 +198,10 @@ a:hover {
   border-radius: 2px;
 }
 
-/* AI Planner Link - purple text with sparkles, clean text, no chunky button */
-.nav-link-ai {
-  color: #7E22CE;
-  font-weight: 700;
-  font-size: 0.925rem;
-  text-decoration: none;
-  padding: 0.5rem 0.2rem;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  position: relative;
-  transition: color 0.15s ease;
-}
-
-.nav-link-ai:hover {
-  color: #9333EA;
-}
-
-.nav-link-ai.active {
-  color: #6B21A8;
-}
-
-.nav-link-ai.active::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  right: 0;
-  height: 2.5px;
-  background: #7E22CE;
-  border-radius: 2px;
+/* All nav links share the same clean typography and color */
+.nav-link-item .nav-icon {
+  color: inherit;
+  opacity: 0.75;
 }
 
 .nav-desktop-actions {

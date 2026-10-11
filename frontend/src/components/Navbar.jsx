@@ -140,7 +140,7 @@ const Navbar = () => {
               color: 'var(--brand-navy)',
               whiteSpace: 'nowrap'
             }}>
-              Vietnam<span style={{ color: 'var(--brand-red)' }}>Tourism</span>
+              VietnamTourism
             </span>
           </Link>
 
@@ -157,7 +157,7 @@ const Navbar = () => {
           </form>
         </div>
         
-        {/* Flat navigation links - NO individual rounded borders/pills */}
+        {/* Flat navigation links - all with the same color */}
         <div className="nav-desktop-center">
           <Link 
             to="/" 
@@ -175,11 +175,11 @@ const Navbar = () => {
 
           <Link 
             to="/planner" 
-            className={`nav-link-ai ${isActive('/planner') ? 'active' : ''}`}
+            className={`nav-link-item ${isActive('/planner') ? 'active' : ''}`}
             title="Lập lịch trình du lịch thông minh bằng AI"
           >
             <span>AI Trợ lý du lịch</span>
-            <Sparkles size={16} color="#A855F7" />
+            <Sparkles size={15} color="currentColor" style={{ opacity: 0.75 }} />
           </Link>
         </div>
 
@@ -663,10 +663,10 @@ const Navbar = () => {
               padding: '0.65rem 0.85rem',
               borderRadius: '8px',
               textDecoration: 'none',
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: '0.925rem',
-              color: '#7E22CE',
-              background: isActive('/planner') ? '#F5F3FF' : 'transparent',
+              color: isActive('/planner') ? '#005294' : '#334155',
+              background: isActive('/planner') ? '#F1F5F9' : 'transparent',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between'
@@ -674,7 +674,7 @@ const Navbar = () => {
           >
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
               AI Trợ lý du lịch
-              <Sparkles size={16} color="#A855F7" />
+              <Sparkles size={16} color="currentColor" style={{ opacity: 0.7 }} />
             </span>
             <ArrowRight size={16} opacity={0.4} />
           </Link>

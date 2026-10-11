@@ -33,7 +33,7 @@ const Footer = () => {
                 }} 
               />
               <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.3px' }}>
-                Vietnam<span style={{ color: 'var(--brand-red)' }}>Tourism</span>
+                VietnamTourism
               </span>
             </div>
 
