@@ -22,14 +22,16 @@ const Footer = () => {
         }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
-              <div style={{ 
-                width: '38px', height: '38px', borderRadius: '10px', 
-                background: 'linear-gradient(135deg, #02326A 0%, #005294 100%)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' 
-              }}>
-                <Compass size={22} />
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="VietnamTourism Logo" 
+                style={{ 
+                  width: '38px', 
+                  height: '38px', 
+                  objectFit: 'contain',
+                  flexShrink: 0
+                }} 
+              />
               <span style={{ fontSize: '1.35rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.3px' }}>
                 Vietnam<span style={{ color: 'var(--brand-red)' }}>Tourism</span>
               </span>

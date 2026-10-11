@@ -89,19 +89,17 @@ const Navbar = () => {
             flexShrink: 0
           }}
         >
-          <div style={{ 
-            background: 'linear-gradient(135deg, #02326A 0%, #005294 100%)', 
-            width: '40px',
-            height: '40px',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 3px 10px rgba(2, 50, 106, 0.25)',
-            flexShrink: 0
-          }}>
-            <Compass size={22} color="white" />
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="VietnamTourism Logo" 
+            style={{ 
+              width: '42px', 
+              height: '42px', 
+              objectFit: 'contain',
+              flexShrink: 0,
+              filter: 'drop-shadow(0 2px 6px rgba(13, 124, 117, 0.2))'
+            }} 
+          />
           <span style={{ 
             fontFamily: 'var(--font-heading)', 
             fontWeight: 800, 
