@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Map as MapIcon, Compass, User, LogOut, ShieldCheck, Sparkles, Menu, X, ArrowRight, Headset, ChevronDown, Users } from 'lucide-react';
+import { Map as MapIcon, Compass, User, LogOut, ShieldCheck, Sparkles, Menu, X, ArrowRight, Headset, ChevronDown, Users, Search } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import NotificationDropdown from './NotificationDropdown';
 
@@ -8,10 +8,18 @@ const Navbar = () => {
   const { mode, setMode, user, logout, unreadSupportChat } = useAppContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [navSearch, setNavSearch] = useState('');
   const mobileMenuRef = useRef(null);
   const userMenuRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleNavSearch = (e) => {
+    e.preventDefault();
+    if (navSearch.trim()) {
+      navigate(`/provinces?q=${encodeURIComponent(navSearch.trim())}`);
+    }
+  };
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -75,43 +83,81 @@ const Navbar = () => {
             </span>
           </div>
 
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button
+              type="button"
+              onClick={() => setMode(mode === '63' ? '34' : '63')}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#CBD5E1',
+                fontSize: '0.78rem',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '2px 6px'
+              }}
+              title={`Đang hiển thị ${mode} tỉnh. Bấm để chuyển sang ${mode === '63' ? '34' : '63'} tỉnh`}
+            >
+              <MapIcon size={13} color="#FCD34D" />
+              <span>Chế độ: <strong style={{ color: '#FFFFFF' }}>{mode} Tỉnh</strong></span>
+              <ChevronDown size={12} color="#94A3B8" />
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="nav-inner-container">
-        <Link 
-          to="/" 
-          style={{ 
-            display: 'inline-flex', 
-            alignItems: 'center', 
-            gap: '0.75rem', 
-            textDecoration: 'none',
-            flexShrink: 0
-          }}
-        >
-          <img 
-            src="/logo.png" 
-            alt="VietnamTourism Logo" 
+        {/* Brand Logo & Search Box */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 0 }}>
+          <Link 
+            to="/" 
             style={{ 
-              width: '42px', 
-              height: '42px', 
-              objectFit: 'contain',
-              flexShrink: 0,
-              filter: 'drop-shadow(0 2px 6px rgba(13, 124, 117, 0.2))'
-            }} 
-          />
-          <span style={{ 
-            fontFamily: 'var(--font-heading)', 
-            fontWeight: 800, 
-            fontSize: '1.25rem', 
-            letterSpacing: '-0.3px',
-            color: 'var(--brand-navy)',
-            whiteSpace: 'nowrap'
-          }}>
-            Vietnam<span style={{ color: 'var(--brand-red)' }}>Tourism</span>
-          </span>
-        </Link>
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '0.65rem', 
+              textDecoration: 'none',
+              flexShrink: 0
+            }}
+          >
+            <img 
+              src="/logo.png" 
+              alt="VietnamTourism Logo" 
+              style={{ 
+                width: '38px', 
+                height: '38px', 
+                objectFit: 'contain',
+                flexShrink: 0,
+                filter: 'drop-shadow(0 2px 5px rgba(13, 124, 117, 0.15))'
+              }} 
+            />
+            <span style={{ 
+              fontFamily: 'var(--font-heading)', 
+              fontWeight: 800, 
+              fontSize: '1.25rem', 
+              letterSpacing: '-0.3px',
+              color: 'var(--brand-navy)',
+              whiteSpace: 'nowrap'
+            }}>
+              Vietnam<span style={{ color: 'var(--brand-red)' }}>Tourism</span>
+            </span>
+          </Link>
+
+          {/* Search bar next to logo */}
+          <form onSubmit={handleNavSearch} className="nav-search-box">
+            <Search size={15} color="#94A3B8" style={{ flexShrink: 0 }} />
+            <input 
+              type="text" 
+              className="nav-search-input"
+              placeholder="Tìm kiếm điểm đến..." 
+              value={navSearch}
+              onChange={(e) => setNavSearch(e.target.value)}
+            />
+          </form>
+        </div>
         
+        {/* Flat navigation links - NO individual rounded borders/pills */}
         <div className="nav-desktop-center">
           <Link 
             to="/" 
@@ -124,101 +170,27 @@ const Navbar = () => {
             to="/provinces" 
             className={`nav-link-item ${isActive('/provinces') ? 'active' : ''}`}
           >
-            Khám Phá {mode} Tỉnh
+            Khám Phá Tỉnh Thành
           </Link>
 
           <Link 
             to="/planner" 
-            style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '0.45rem', 
-              background: isActive('/planner') ? '#E11D48' : '#EFF6FF', 
-              color: isActive('/planner') ? '#FFFFFF' : '#02326A', 
-              padding: '0.45rem 1rem', 
-              borderRadius: '20px', 
-              fontWeight: 700, 
-              fontSize: '0.875rem',
-              border: isActive('/planner') ? '1px solid #E11D48' : '1px solid #BFDBFE',
-              boxShadow: isActive('/planner') ? '0 4px 12px rgba(225, 29, 72, 0.25)' : 'none',
-              textDecoration: 'none',
-              whiteSpace: 'nowrap',
-              flexShrink: 0,
-              transition: 'all 0.15s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (!isActive('/planner')) {
-                e.currentTarget.style.background = '#DBEAFE';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive('/planner')) {
-                e.currentTarget.style.background = '#EFF6FF';
-              }
-            }}
+            className={`nav-link-ai ${isActive('/planner') ? 'active' : ''}`}
+            title="Lập lịch trình du lịch thông minh bằng AI"
           >
-            <Sparkles size={15} color={isActive('/planner') ? '#FFFFFF' : '#E11D48'} />
-            <span>Lập Lịch Trình AI</span>
+            <span>AI Trợ lý du lịch</span>
+            <Sparkles size={16} color="#A855F7" />
           </Link>
         </div>
 
+        {/* Right action items */}
         <div className="nav-desktop-actions">
-          <button 
-            type="button"
-            onClick={() => setMode(mode === '63' ? '34' : '63')}
-            title={`Đang hiển thị ${mode} tỉnh. Bấm để chuyển sang ${mode === '63' ? '34' : '63'} tỉnh`}
-            style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '0.45rem', 
-              background: '#F3F4F6', 
-              border: '1px solid #E5E7EB',
-              padding: '0.45rem 0.85rem', 
-              borderRadius: '20px',
-              fontSize: '0.85rem',
-              color: '#374151',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              flexShrink: 0,
-              transition: 'all 0.15s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#E5E7EB';
-              e.currentTarget.style.borderColor = '#D1D5DB';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#F3F4F6';
-              e.currentTarget.style.borderColor = '#E5E7EB';
-            }}
-          >
-            <MapIcon size={15} color="var(--accent-primary)" />
-            <span className="nav-mode-badge-full">Chế độ: <strong style={{ color: '#111827' }}>{mode} Tỉnh Thành</strong></span>
-            <span className="nav-mode-badge-compact"><strong style={{ color: '#111827' }}>{mode} Tỉnh</strong></span>
-          </button>
-
           {user && user.role === 'admin' && (
             <>
               <button
                 type="button"
                 onClick={() => navigate('/admin/approvals')}
-                style={{
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  gap: '0.4rem',
-                  background: '#FEF9C3', 
-                  color: '#854D0E',
-                  border: '1px solid #FDE047',
-                  padding: '0.45rem 0.85rem', 
-                  borderRadius: '20px',
-                  fontWeight: 600, 
-                  fontSize: '0.85rem', 
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                  transition: 'all 0.15s ease'
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = '#FEF08A'}
-                onMouseLeave={e => e.currentTarget.style.background = '#FEF9C3'}
+                className="nav-admin-link"
                 title="Quản lý duyệt bài đăng"
               >
                 <ShieldCheck size={16} color="#CA8A04" />
@@ -228,38 +200,17 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={() => navigate('/admin/chat')}
-                style={{
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  gap: '0.4rem',
-                  background: isActive('/admin/chat') ? '#2563EB' : '#EFF6FF', 
-                  color: isActive('/admin/chat') ? '#FFFFFF' : '#1D4ED8',
-                  border: '1px solid #BFDBFE',
-                  padding: '0.45rem 0.85rem', 
-                  borderRadius: '20px',
-                  fontWeight: 600, 
-                  fontSize: '0.85rem', 
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                  position: 'relative',
-                  transition: 'all 0.15s ease'
-                }}
-                onMouseEnter={e => {
-                  if (!isActive('/admin/chat')) e.currentTarget.style.background = '#DBEAFE';
-                }}
-                onMouseLeave={e => {
-                  if (!isActive('/admin/chat')) e.currentTarget.style.background = '#EFF6FF';
-                }}
+                className="nav-admin-link"
+                style={{ position: 'relative' }}
                 title="Quản lý tin nhắn hỗ trợ khách hàng realtime"
               >
-                <Headset size={16} color={isActive('/admin/chat') ? '#FFFFFF' : '#2563EB'} />
+                <Headset size={16} color="#2563EB" />
                 <span>Chat Hỗ trợ</span>
                 {unreadSupportChat > 0 && (
                   <span style={{
                     position: 'absolute',
-                    top: '-4px',
-                    right: '-4px',
+                    top: '-2px',
+                    right: '-6px',
                     background: '#EF4444',
                     color: '#FFFFFF',
                     borderRadius: '10px',
@@ -527,32 +478,8 @@ const Navbar = () => {
           ) : (
             <button 
               type="button"
+              className="nav-login-btn"
               onClick={() => navigate('/auth')}
-              style={{
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '0.45rem',
-                background: 'var(--accent-gradient)', 
-                color: 'white',
-                border: 'none', 
-                padding: '0.55rem 1.2rem', 
-                borderRadius: '24px',
-                fontWeight: 600, 
-                fontSize: '0.875rem',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(255, 56, 92, 0.25)',
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 56, 92, 0.35)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(255, 56, 92, 0.25)';
-              }}
             >
               <User size={16} />
               <span>Đăng nhập</span>
@@ -586,6 +513,39 @@ const Navbar = () => {
             animation: 'fadeIn 0.2s ease-out'
           }}
         >
+          {/* Mobile search input */}
+          <form 
+            onSubmit={(e) => {
+              handleNavSearch(e);
+              setMobileMenuOpen(false);
+            }} 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: '#F1F5F9',
+              border: '1px solid #E2E8F0',
+              borderRadius: '9999px',
+              padding: '0.5rem 0.85rem'
+            }}
+          >
+            <Search size={16} color="#94A3B8" />
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm điểm đến..."
+              value={navSearch}
+              onChange={(e) => setNavSearch(e.target.value)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                outline: 'none',
+                width: '100%',
+                fontSize: '0.875rem',
+                color: '#1E293B'
+              }}
+            />
+          </form>
+
           {user ? (
             <div 
               onClick={() => {
@@ -597,15 +557,15 @@ const Navbar = () => {
                 alignItems: 'center',
                 gap: '0.85rem',
                 padding: '0.85rem 1rem',
-                background: 'linear-gradient(135deg, #FFF1F2 0%, #EFF6FF 100%)',
-                borderRadius: '14px',
-                border: '1px solid #FECDD3',
+                background: '#F8FAFC',
+                borderRadius: '12px',
+                border: '1px solid #E2E8F0',
                 cursor: 'pointer'
               }}
             >
               <div style={{
-                width: '44px',
-                height: '44px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '50%',
                 background: 'var(--accent-gradient)',
                 display: 'flex',
@@ -613,10 +573,9 @@ const Navbar = () => {
                 justifyContent: 'center',
                 color: '#FFFFFF',
                 fontWeight: 700,
-                fontSize: '1.1rem',
+                fontSize: '1rem',
                 flexShrink: 0,
                 overflow: 'hidden',
-                boxShadow: '0 2px 8px rgba(255, 56, 92, 0.25)',
                 border: '2px solid #FFFFFF'
               }}>
                 {user.avatar ? (
@@ -641,23 +600,15 @@ const Navbar = () => {
           ) : (
             <button
               type="button"
+              className="nav-login-btn"
               onClick={() => {
                 navigate('/auth');
                 setMobileMenuOpen(false);
               }}
               style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '12px',
-                border: 'none',
-                background: 'var(--accent-gradient)',
-                color: '#FFFFFF',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'center',
-                gap: '0.5rem'
+                padding: '0.65rem 1rem',
+                fontSize: '0.925rem'
               }}
             >
               <User size={18} />
@@ -669,61 +620,63 @@ const Navbar = () => {
             to="/" 
             onClick={() => setMobileMenuOpen(false)}
             style={{
-              padding: '0.75rem 1rem',
-              borderRadius: '12px',
+              padding: '0.65rem 0.85rem',
+              borderRadius: '8px',
               textDecoration: 'none',
               fontWeight: 600,
-              fontSize: '0.95rem',
-              color: isActive('/') ? 'var(--accent-primary)' : '#1F2937',
-              background: isActive('/') ? 'rgba(255, 56, 92, 0.08)' : '#F9FAFB',
+              fontSize: '0.925rem',
+              color: isActive('/') ? '#005294' : '#334155',
+              background: isActive('/') ? '#F1F5F9' : 'transparent',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between'
             }}
           >
             <span>Trang Chủ</span>
-            <ArrowRight size={16} opacity={0.5} />
+            <ArrowRight size={16} opacity={0.4} />
           </Link>
 
           <Link 
             to="/provinces" 
             onClick={() => setMobileMenuOpen(false)}
             style={{
-              padding: '0.75rem 1rem',
-              borderRadius: '12px',
+              padding: '0.65rem 0.85rem',
+              borderRadius: '8px',
               textDecoration: 'none',
               fontWeight: 600,
-              fontSize: '0.95rem',
-              color: isActive('/provinces') ? 'var(--accent-primary)' : '#1F2937',
-              background: isActive('/provinces') ? 'rgba(255, 56, 92, 0.08)' : '#F9FAFB',
+              fontSize: '0.925rem',
+              color: isActive('/provinces') ? '#005294' : '#334155',
+              background: isActive('/provinces') ? '#F1F5F9' : 'transparent',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between'
             }}
           >
-            <span>Khám Phá {mode} Tỉnh</span>
-            <ArrowRight size={16} opacity={0.5} />
+            <span>Khám Phá Tỉnh Thành</span>
+            <ArrowRight size={16} opacity={0.4} />
           </Link>
 
           <Link 
             to="/planner" 
             onClick={() => setMobileMenuOpen(false)}
             style={{
-              padding: '0.75rem 1rem',
-              borderRadius: '12px',
+              padding: '0.65rem 0.85rem',
+              borderRadius: '8px',
               textDecoration: 'none',
               fontWeight: 700,
-              fontSize: '0.95rem',
-              color: '#FFFFFF',
-              background: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
-              boxShadow: '0 4px 14px rgba(225, 29, 72, 0.25)',
+              fontSize: '0.925rem',
+              color: '#7E22CE',
+              background: isActive('/planner') ? '#F5F3FF' : 'transparent',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between'
             }}
           >
-            <span>Lập Lịch Trình AI</span>
-            <ArrowRight size={16} />
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+              AI Trợ lý du lịch
+              <Sparkles size={16} color="#A855F7" />
+            </span>
+            <ArrowRight size={16} opacity={0.4} />
           </Link>
 
           <div style={{ 
