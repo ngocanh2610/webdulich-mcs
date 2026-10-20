@@ -9,7 +9,7 @@ echo "🚀 [1/5] Cap nhat Docker containers ve cong 8080..."
 cd ~/webdulich-mcs
 git fetch origin main
 git reset --hard origin/main
-docker compose -f docker-compose.prod.yml up -d
+sudo docker compose -f docker-compose.prod.yml up -d
 
 echo "📦 [2/5] Cai dat Nginx va Certbot tren may chu Ubuntu..."
 sudo apt-get update -y
@@ -58,8 +58,8 @@ echo "🔄 [5/5] Khoi dong lai Nginx va kiem tra..."
 sudo systemctl reload nginx
 
 # Khoi tao database mau neu chua co
-docker exec -i vn-tourism-mysql mysql -uroot -proot1234 vntourism < db/init.sql 2>/dev/null || true
-docker compose -f docker-compose.prod.yml restart location-service 2>/dev/null || true
+sudo docker exec -i vn-tourism-mysql mysql -uroot -proot1234 vntourism < db/init.sql 2>/dev/null || true
+sudo docker compose -f docker-compose.prod.yml restart location-service 2>/dev/null || true
 
 echo "=========================================================="
 echo "🎉 CHUC MUNG! Website cua ban da duoc bao mat voi HTTPS!"
