@@ -401,7 +401,7 @@
     "area": 861.9,
     "population": 863900,
     "description": "Tỉnh nhỏ xinh với Tam Chúc – ngôi chùa lớn nhất thế giới bên hồ Tam Chúc thơ mộng và núi Non Nước huyền bí.",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Henan_floods_July_26%2C_2020.jpg/1280px-Henan_floods_July_26%2C_2020.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "image": "/api/media/uploads/ha-nam-tam-chuc.jpg",
     "locationCount": 2,
     "highlights": [
       "Chùa Tam Chúc",

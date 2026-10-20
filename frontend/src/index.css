@@ -284,9 +284,56 @@ a:hover {
 }
 
 @media (max-width: 768px) {
+  .top-bar-secondary {
+    display: none !important;
+  }
+  .top-bar-container {
+    padding: 0.3rem 0.85rem !important;
+    font-size: 0.75rem !important;
+  }
   .nav-inner-container {
-    padding: 0 1rem;
-    height: 62px;
+    padding: 0 0.85rem !important;
+    height: 60px !important;
+    gap: 0.5rem !important;
+  }
+  .nav-admin-link {
+    display: none !important; /* Admin links cleanly provided in mobile drawer */
+  }
+  .nav-brand-title {
+    font-size: 1.1rem !important;
+  }
+  .nav-brand-logo {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .nav-desktop-actions {
+    gap: 0.5rem !important;
+  }
+  .nav-login-btn {
+    padding: 0.4rem 0.85rem !important;
+    font-size: 0.825rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-bar-hotline-label {
+    display: none !important;
+  }
+  .nav-user-name {
+    display: none !important;
+  }
+  .nav-login-btn span {
+    display: none !important;
+  }
+  .nav-login-btn {
+    padding: 0.45rem !important;
+    border-radius: 50% !important;
+    width: 34px !important;
+    height: 34px !important;
+    justify-content: center !important;
+  }
+  .nav-brand-title {
+    font-size: 1.025rem !important;
   }
 }
 

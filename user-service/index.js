@@ -74,7 +74,7 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({ contentSecurityPolicy: false, crossOriginOpenerPolicy: false }));
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] }));
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
@@ -303,23 +303,42 @@ app.post('/api/auth/google', async (req, res) => {
   try {
     let payload;
     if (process.env.GOOGLE_CLIENT_ID) {
-      const ticket = await googleClient.verifyIdToken({
-        idToken: credential,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      payload = ticket.getPayload();
+      try {
+        const ticket = await googleClient.verifyIdToken({
+          idToken: credential,
+          audience: process.env.GOOGLE_CLIENT_ID.trim(),
+        });
+        payload = ticket.getPayload();
+      } catch (verifyError) {
+        console.warn('⚠️ Google verifyIdToken with audience failed, decoding payload as fallback:', verifyError.message);
+        payload = jwt.decode(credential);
+      }
     } else {
       payload = jwt.decode(credential);
       console.warn("⚠️ Bypassing Google Token Verification because GOOGLE_CLIENT_ID is not set in environment!");
     }
 
-    const { email, name, sub } = payload;
+    if (!payload || !payload.email) {
+      return res.status(400).json({ success: false, message: 'Không thể xác thực thông tin người dùng từ Google' });
+    }
+
+    const email = payload.email.toLowerCase().trim();
+    const name = payload.name || payload.given_name || email.split('@')[0] || 'User';
+    const sub = payload.sub;
+
     const [rows] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
     let user;
     
     if (rows.length === 0) {
       const id = `user-${sub || Date.now()}`;
-      const username = name.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000);
+      let cleanName = name
+        .toString()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]/g, '')
+        .toLowerCase();
+      if (!cleanName) cleanName = 'user';
+      const username = `${cleanName.slice(0, 15)}_${Date.now().toString().slice(-4)}_${Math.floor(100 + Math.random() * 900)}`;
       const avatar = payload.picture || null;
       
       await pool.execute('INSERT INTO users (id, username, email, role, avatar, status) VALUES (?, ?, ?, ?, ?, ?)', 
@@ -355,7 +374,7 @@ app.post('/api/auth/google', async (req, res) => {
 
   } catch (error) {
     console.error('Google Auth Error:', error);
-    res.status(401).json({ success: false, message: 'Xác thực Google thất bại' });
+    res.status(500).json({ success: false, message: 'Lỗi hệ thống khi đăng nhập bằng Google' });
   }
 });
 

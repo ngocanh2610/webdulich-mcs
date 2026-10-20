@@ -61,29 +61,30 @@ const Navbar = () => {
         fontSize: '0.8rem',
         borderBottom: '1px solid rgba(255,255,255,0.08)'
       }}>
-        <div style={{
+        <div className="top-bar-container" style={{
           maxWidth: '1440px',
           margin: '0 auto',
           padding: '0.35rem 1.5rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
           gap: '0.5rem'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-              <Headset size={14} color="#F59E0B" /> Hotline CSKH: <strong style={{ color: '#FCD34D' }}>0816 951 801</strong>
+              <Headset size={14} color="#F59E0B" /> 
+              <span className="top-bar-hotline-label">Hotline CSKH: </span>
+              <strong style={{ color: '#FCD34D' }}>0816 951 801</strong>
             </span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#94A3B8' }}>
+            <span className="top-bar-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#94A3B8' }}>
               ✉️ doanngocanh26102005@gmail.com
             </span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#34D399' }}>
+            <span className="top-bar-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#34D399' }}>
               ● Trực tuyến 24/7 toàn quốc
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
             <button
               type="button"
               onClick={() => setMode(mode === '63' ? '34' : '63')}
@@ -95,8 +96,8 @@ const Navbar = () => {
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.35rem',
-                padding: '2px 6px'
+                gap: '0.3rem',
+                padding: '2px 4px'
               }}
               title={`Đang hiển thị ${mode} tỉnh. Bấm để chuyển sang ${mode === '63' ? '34' : '63'} tỉnh`}
             >
@@ -116,7 +117,7 @@ const Navbar = () => {
             style={{ 
               display: 'inline-flex', 
               alignItems: 'center', 
-              gap: '0.65rem', 
+              gap: '0.55rem', 
               textDecoration: 'none',
               flexShrink: 0
             }}
@@ -124,6 +125,7 @@ const Navbar = () => {
             <img 
               src="/logo.png" 
               alt="VietnamTourism Logo" 
+              className="nav-brand-logo"
               style={{ 
                 width: '38px', 
                 height: '38px', 
@@ -132,14 +134,17 @@ const Navbar = () => {
                 filter: 'drop-shadow(0 2px 5px rgba(13, 124, 117, 0.15))'
               }} 
             />
-            <span style={{ 
-              fontFamily: 'var(--font-heading)', 
-              fontWeight: 800, 
-              fontSize: '1.25rem', 
-              letterSpacing: '-0.3px',
-              color: 'var(--brand-navy)',
-              whiteSpace: 'nowrap'
-            }}>
+            <span 
+              className="nav-brand-title"
+              style={{ 
+                fontFamily: 'var(--font-heading)', 
+                fontWeight: 800, 
+                fontSize: '1.25rem', 
+                letterSpacing: '-0.3px',
+                color: 'var(--brand-navy)',
+                whiteSpace: 'nowrap'
+              }}
+            >
               VietnamTourism
             </span>
           </Link>
@@ -290,15 +295,18 @@ const Navbar = () => {
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}
                 >
-                  <span style={{ 
-                    fontWeight: 600, 
-                    fontSize: '0.875rem',
-                    color: '#1F2937', 
-                    maxWidth: '110px', 
-                    overflow: 'hidden', 
-                    textOverflow: 'ellipsis', 
-                    whiteSpace: 'nowrap' 
-                  }}>
+                  <span 
+                    className="nav-user-name"
+                    style={{ 
+                      fontWeight: 600, 
+                      fontSize: '0.875rem',
+                      color: '#1F2937', 
+                      maxWidth: '110px', 
+                      overflow: 'hidden', 
+                      textOverflow: 'ellipsis', 
+                      whiteSpace: 'nowrap' 
+                    }}
+                  >
                     {user.username}
                   </span>
                   {user.role === 'admin' && (
@@ -497,19 +505,42 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Backdrop overlay for mobile menu */}
+      {mobileMenuOpen && (
+        <div
+          onClick={() => setMobileMenuOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.4)',
+            backdropFilter: 'blur(3px)',
+            WebkitBackdropFilter: 'blur(3px)',
+            zIndex: 998
+          }}
+        />
+      )}
+
       {mobileMenuOpen && (
         <div 
           ref={mobileMenuRef}
           style={{
-            background: 'rgba(255, 255, 255, 0.98)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            borderBottom: '1px solid #E5E7EB',
-            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.08)',
-            padding: '1rem 1.5rem 1.5rem',
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            background: '#FFFFFF',
+            borderBottom: '2px solid #E2E8F0',
+            boxShadow: '0 16px 36px rgba(0, 0, 0, 0.12)',
+            padding: '1rem 1.25rem 1.5rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.75rem',
+            maxHeight: 'calc(100vh - 90px)',
+            overflowY: 'auto',
+            zIndex: 999,
             animation: 'fadeIn 0.2s ease-out'
           }}
         >

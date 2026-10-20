@@ -52,7 +52,7 @@ const AuthPage = () => {
       
       if (data.success) {
         login(data.user, data.token);
-        navigate(-1);
+        navigate('/');
       } else {
         setError(data.message || 'Lỗi đăng nhập');
       }
@@ -222,6 +222,10 @@ const AuthPage = () => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
+      if (!credentialResponse?.credential) {
+        setError('Không nhận được thông tin xác thực từ Google');
+        return;
+      }
       const res = await fetch('/api/auth/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -230,17 +234,19 @@ const AuthPage = () => {
       const data = await res.json();
       if (data.success) {
         login(data.user, data.token);
-        navigate(-1);
+        navigate('/');
       } else {
-        setError(data.message || 'Google Auth Failed');
+        setError(data.message || 'Xác thực Google thất bại');
       }
     } catch (err) {
+      console.error('Lỗi kết nối server khi đăng nhập bằng Google:', err);
       setError('Lỗi kết nối server khi đăng nhập bằng Google');
     }
   };
 
-  const handleGoogleError = () => {
-    setError('Đăng nhập Google thất bại');
+  const handleGoogleError = (err) => {
+    console.error('Google Sign-In error:', err);
+    setError('Đăng nhập Google không thành công. Hãy thử lại hoặc dùng tài khoản thông thường.');
   };
 
   return (
@@ -658,14 +664,14 @@ const AuthPage = () => {
               <div style={{ flex: 1, height: '1px', background: 'var(--border-strong)' }}></div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%', maxWidth: '360px', margin: '0 auto' }}>
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
                 theme="outline"
                 size="large"
                 shape="rectangular"
-                width="100%"
+                width="320"
               />
             </div>
           </>

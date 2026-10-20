@@ -1,5 +1,59 @@
 [
   {
+    "id": "notif-quang-ninh-bao-tang-pending",
+    "type": "pending_approval",
+    "message": "Người dùng 1.đoànngọcanh823 vừa gửi bài đăng \"Bảo Tàng Quảng Ninh - Khối Kim Cương Đen Bên Vịnh\" đang chờ bạn duyệt.",
+    "locationId": "quang-ninh-bao-tang-pending",
+    "target": "admin",
+    "read": false,
+    "createdAt": "2026-10-12T15:06:59.643Z"
+  },
+  {
+    "id": "notif-binh-dinh-ky-co-eo-gio-pending",
+    "type": "pending_approval",
+    "message": "Người dùng ngocanh vừa gửi bài đăng \"Eo Gió & Bãi Biển Kỳ Co Quy Nhơn\" đang chờ bạn duyệt.",
+    "locationId": "binh-dinh-ky-co-eo-gio-pending",
+    "target": "admin",
+    "read": false,
+    "createdAt": "2026-10-12T15:06:59.643Z"
+  },
+  {
+    "id": "notif-can-tho-cho-noi-cai-rang-pending",
+    "type": "pending_approval",
+    "message": "Người dùng viet vừa gửi bài đăng \"Chợ Nổi Cái Răng - Hồn Nước Miền Tây\" đang chờ bạn duyệt.",
+    "locationId": "can-tho-cho-noi-cai-rang-pending",
+    "target": "admin",
+    "read": false,
+    "createdAt": "2026-10-12T15:06:59.643Z"
+  },
+  {
+    "id": "notif-tay-ninh-nui-ba-den-pending",
+    "type": "pending_approval",
+    "message": "Người dùng 1.đoànngọcanh823 vừa gửi bài đăng \"Quần Thể Núi Bà Đen - Nóc Nhà Nam Bộ\" đang chờ bạn duyệt.",
+    "locationId": "tay-ninh-nui-ba-den-pending",
+    "target": "admin",
+    "read": false,
+    "createdAt": "2026-10-12T15:06:59.643Z"
+  },
+  {
+    "id": "notif-lao-cai-ban-cat-cat-pending",
+    "type": "pending_approval",
+    "message": "Người dùng ngocanh vừa gửi bài đăng \"Bản Cát Cát - Bản Cổ Đẹp Mộng Mơ Giữa Núi Rừng Sa Pa\" đang chờ bạn duyệt.",
+    "locationId": "lao-cai-ban-cat-cat-pending",
+    "target": "admin",
+    "read": false,
+    "createdAt": "2026-10-12T15:06:59.643Z"
+  },
+  {
+    "id": "notif-ha-giang-hem-tu-san-pending",
+    "type": "pending_approval",
+    "message": "Người dùng viet vừa gửi bài đăng \"Hẻm Tu Sản & Chèo Thuyền Sông Nho Quế\" đang chờ bạn duyệt.",
+    "locationId": "ha-giang-hem-tu-san-pending",
+    "target": "admin",
+    "read": false,
+    "createdAt": "2026-10-12T15:06:59.642Z"
+  },
+  {
     "id": "notif-1786197052727",
     "type": "comment",
     "message": "viet đã bình luận về địa điểm \"d\" của bạn",
