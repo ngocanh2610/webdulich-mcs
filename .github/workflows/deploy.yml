@@ -47,4 +47,7 @@ jobs:
             echo "🧹 Don dep bo nho dem Docker..."
             docker image prune -f
 
+            # Reload Nginx host neu co
+            sudo systemctl reload nginx 2>/dev/null || true
+
             echo "✅ [CI/CD] Deploy thanh cong len https://ngoccanhh2610.id.vn !"
