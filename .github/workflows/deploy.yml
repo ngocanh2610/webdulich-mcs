@@ -1,0 +1,49 @@
+name: CI/CD Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "🚀 [CI/CD] Bat dau qua trinh cap nhat he thong tren EC2..."
+            
+            # Kiem tra thu muc du an
+            PROJECT_DIR="$HOME/webdulich-mcs"
+            if [ ! -d "$PROJECT_DIR" ]; then
+              echo "⚠️ Thu muc $PROJECT_DIR chua ton tai, tien hanh clone..."
+              git clone https://github.com/ngocanh2610/webdulich-mcs.git "$PROJECT_DIR"
+            fi
+
+            cd "$PROJECT_DIR"
+
+            # Keo code moi nhat ve
+            echo "📥 Dang pull code moi tu branch main..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Khoi chay container voi docker compose prod
+            echo "🐳 Dang build va khoi dong lai container..."
+            docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+
+            # Don dep image khong su dung de giai phong o dia
+            echo "🧹 Don dep bo nho dem Docker..."
+            docker image prune -f
+
+            echo "✅ [CI/CD] Deploy thanh cong len https://ngoccanhh2610.id.vn !"
