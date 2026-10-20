@@ -39,9 +39,9 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            # Khoi chay container voi docker compose prod
+            # Khoi chay container voi docker compose
             echo "🐳 Dang build va khoi dong lai container..."
-            docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+            docker compose up -d --build --remove-orphans
 
             # Don dep image khong su dung de giai phong o dia
             echo "🧹 Don dep bo nho dem Docker..."
