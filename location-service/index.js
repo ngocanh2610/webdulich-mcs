@@ -42,6 +42,103 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+const fs = require('fs');
+
+const initLocationsTable = async () => {
+  try {
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS locations (
+        id VARCHAR(100) PRIMARY KEY,
+        province_id VARCHAR(50) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        type VARCHAR(50) DEFAULT 'discovery',
+        rating INT DEFAULT 5,
+        description TEXT,
+        image TEXT,
+        images_json JSON,
+        tags_json JSON,
+        author VARCHAR(100) NOT NULL,
+        status VARCHAR(20) DEFAULT 'approved',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_province (province_id),
+        INDEX idx_author (author),
+        INDEX idx_status (status)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS notifications (
+        id VARCHAR(100) PRIMARY KEY,
+        type VARCHAR(50) NOT NULL,
+        message TEXT NOT NULL,
+        location_id VARCHAR(100),
+        target_user VARCHAR(100) NOT NULL,
+        is_read BOOLEAN DEFAULT FALSE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_target_user (target_user)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS comments (
+        id VARCHAR(100) PRIMARY KEY,
+        location_id VARCHAR(100) NOT NULL,
+        username VARCHAR(100) NOT NULL,
+        content TEXT NOT NULL,
+        parent_id VARCHAR(100),
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_location (location_id),
+        INDEX idx_username (username)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS location_reactions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        location_id VARCHAR(100) NOT NULL,
+        username VARCHAR(100) NOT NULL,
+        type VARCHAR(50) DEFAULT 'like',
+        UNIQUE KEY uq_loc_user (location_id, username)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // Kiem tra du lieu locations
+    const [rows] = await pool.query('SELECT COUNT(*) as count FROM locations');
+    if (rows[0].count === 0) {
+      console.log('🔄 Đang đồng bộ dữ liệu locations từ locations.json vào MySQL...');
+      const locationsJsonPath = path.join(__dirname, 'data', 'locations.json');
+      if (fs.existsSync(locationsJsonPath)) {
+        const locations = JSON.parse(fs.readFileSync(locationsJsonPath, 'utf8'));
+        for (const loc of locations) {
+          try {
+            await pool.execute(
+              `INSERT IGNORE INTO locations (id, province_id, name, type, rating, description, image, images_json, tags_json, author, status) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              [
+                loc.id,
+                loc.provinceId || loc.province_id || '',
+                loc.name,
+                loc.type || 'discovery',
+                loc.rating || 5,
+                loc.description || '',
+                loc.image || '',
+                JSON.stringify(loc.images || []),
+                JSON.stringify(loc.tags || []),
+                loc.author || 'admin',
+                loc.status || 'approved'
+              ]
+            );
+          } catch (e) { }
+        }
+        console.log(`✅ Đã nạp thành công ${locations.length} địa điểm vào MySQL`);
+      }
+    }
+  } catch (err) {
+    console.error('Lỗi khởi tạo cấu trúc bảng locations:', err.message);
+  }
+};
+setTimeout(initLocationsTable, 2000);
+
 const initChatTable = async () => {
   try {
     await pool.execute(`
@@ -348,8 +445,32 @@ app.get('/api/locations', async (req, res) => {
       data
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false });
+    console.error('Lỗi DB locations, fallback sang locations.json:', error.message);
+    try {
+      const locationsJsonPath = path.join(__dirname, 'data', 'locations.json');
+      let fallback = [];
+      if (fs.existsSync(locationsJsonPath)) {
+        fallback = JSON.parse(fs.readFileSync(locationsJsonPath, 'utf8'));
+      }
+      if (province) {
+        fallback = fallback.filter(l => (l.provinceId || l.province_id) === province);
+      }
+      if (type && type !== 'all') {
+        fallback = fallback.filter(l => l.type === type);
+      }
+      if (search) {
+        fallback = fallback.filter(l => l.name.toLowerCase().includes(search.toLowerCase()));
+      }
+      res.json({
+        success: true,
+        total: fallback.length,
+        limit: Number(limit),
+        offset: Number(offset),
+        data: fallback.slice(Number(offset), Number(offset) + Number(limit))
+      });
+    } catch (e2) {
+      res.status(500).json({ success: false });
+    }
   }
 });
 

@@ -1,8 +1,8 @@
-CREATE DATABASE vntourism DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS vntourism DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE vntourism;
 
 -- Bảng Users
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   id VARCHAR(100) PRIMARY KEY,
   username VARCHAR(100) UNIQUE NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
@@ -13,12 +13,12 @@ CREATE TABLE users (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Thêm user admin mặc định
+-- Thêm user admin mặc định (mật khẩu: admin123)
 INSERT IGNORE INTO users (id, username, email, password, role, avatar, status, created_at) 
 VALUES ('admin', 'admin', 'admin@vietnamtourism.vn', '$2a$10$Dn0PSZeWI4bDWbg9wSdK9e8Prc2hGxJS.oKQFwdbl8udQsVSMEWXq', 'admin', NULL, 'active', NOW()); 
 
 -- Bảng OTPs (Lưu thông tin đăng ký tạm thời)
-CREATE TABLE otps (
+CREATE TABLE IF NOT EXISTS otps (
   id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(100) NOT NULL,
   username VARCHAR(100) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE otps (
 );
 
 -- Bảng Tỉnh Thành
-CREATE TABLE provinces (
+CREATE TABLE IF NOT EXISTS provinces (
   id VARCHAR(50) NOT NULL,
   slug VARCHAR(100) NOT NULL,
   name VARCHAR(100) NOT NULL,
@@ -42,11 +42,12 @@ CREATE TABLE provinces (
   region VARCHAR(100),
   merged_from JSON,
   PRIMARY KEY (id, type),
-  INDEX idx_slug (slug)
+  INDEX idx_slug (slug),
+  INDEX idx_id (id)
 );
 
 -- Bảng Locations (Địa điểm)
-CREATE TABLE locations (
+CREATE TABLE IF NOT EXISTS locations (
   id VARCHAR(100) PRIMARY KEY,
   province_id VARCHAR(50) NOT NULL,
   name VARCHAR(255) NOT NULL,
@@ -59,12 +60,13 @@ CREATE TABLE locations (
   author VARCHAR(100) NOT NULL,
   status VARCHAR(20) DEFAULT 'pending',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (author) REFERENCES users(username) ON DELETE CASCADE,
-  FOREIGN KEY (province_id) REFERENCES provinces(id) ON DELETE CASCADE
+  INDEX idx_province (province_id),
+  INDEX idx_author (author),
+  INDEX idx_status (status)
 );
 
--- Bảng Notifications (Đã liên kết khóa ngoại)
-CREATE TABLE notifications (
+-- Bảng Notifications
+CREATE TABLE IF NOT EXISTS notifications (
   id VARCHAR(100) PRIMARY KEY,
   type VARCHAR(50) NOT NULL,
   message TEXT NOT NULL,
@@ -72,30 +74,28 @@ CREATE TABLE notifications (
   target_user VARCHAR(100) NOT NULL,
   is_read BOOLEAN DEFAULT FALSE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (target_user) REFERENCES users(username) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX idx_target_user (target_user)
 );
 
 -- Bảng Comments
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
   id VARCHAR(100) PRIMARY KEY,
   location_id VARCHAR(100) NOT NULL,
   username VARCHAR(100) NOT NULL,
   content TEXT NOT NULL,
   parent_id VARCHAR(100),
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE,
-  FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+  INDEX idx_location (location_id),
+  INDEX idx_username (username)
 );
 
 -- Bảng Reactions
-CREATE TABLE location_reactions (
+CREATE TABLE IF NOT EXISTS location_reactions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   location_id VARCHAR(100) NOT NULL,
   username VARCHAR(100) NOT NULL,
   type VARCHAR(50) DEFAULT 'like',
-  FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE,
-  FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
-  UNIQUE(location_id, username)
+  UNIQUE KEY uq_loc_user (location_id, username)
 );
 
 -- Bảng Tin nhắn Hỗ trợ Realtime giữa Người dùng và Admin (User <-> Admin)

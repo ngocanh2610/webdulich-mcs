@@ -35,6 +35,40 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 async function initDb() {
   try {
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS users (
+        id VARCHAR(100) PRIMARY KEY,
+        username VARCHAR(100) UNIQUE NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        password VARCHAR(255),
+        role VARCHAR(50) DEFAULT 'user',
+        avatar LONGTEXT NULL,
+        status VARCHAR(20) DEFAULT 'active',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS otps (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(100) NOT NULL,
+        username VARCHAR(100) NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        otp_code VARCHAR(20) NOT NULL,
+        expires_at BIGINT NOT NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // Kiem tra admin mac dinh
+    const [adminRows] = await pool.execute('SELECT * FROM users WHERE username = ?', ['admin']);
+    if (adminRows.length === 0) {
+      await pool.execute(
+        `INSERT IGNORE INTO users (id, username, email, password, role, avatar, status, created_at) 
+         VALUES ('admin', 'admin', 'admin@vietnamtourism.vn', '$2a$10$Dn0PSZeWI4bDWbg9wSdK9e8Prc2hGxJS.oKQFwdbl8udQsVSMEWXq', 'admin', NULL, 'active', NOW())`
+      );
+      console.log('✅ Đã tạo tài khoản admin mặc định: admin / admin123');
+    }
+
     const [cols] = await pool.query(`SHOW COLUMNS FROM users LIKE 'avatar'`);
     if (cols.length === 0) {
       await pool.query(`ALTER TABLE users ADD COLUMN avatar LONGTEXT NULL AFTER role`);
@@ -49,7 +83,7 @@ async function initDb() {
     console.error('Lỗi khởi tạo cấu trúc bảng users:', err.message);
   }
 }
-initDb();
+setTimeout(initDb, 1500);
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
