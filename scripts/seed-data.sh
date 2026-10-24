@@ -14,7 +14,7 @@ echo "🔄 [2/3] Nap 100% du lieu tu XAMPP (Users, Locations, Comments, Tin nhan
 sudo docker exec -i vn-tourism-mysql mysql -uroot -proot1234 vntourism < db/backup_xampp.sql
 
 echo "🔄 [3/3] Khoi dong lai cac service backend..."
-sudo docker compose restart province-service location-service user-service
+sudo docker compose restart province-service location-service user-service api-gateway
 
 echo "=========================================================="
 echo "🎉 CHUC MUNG! TOAN BO DU LIEU CU TREN XAMPP DA DUOC MIGRATION THANH CONG!"
