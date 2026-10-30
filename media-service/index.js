@@ -7,9 +7,25 @@ const path = require('path');
 const fs = require('fs');
 
 const uploadsDir = path.join(__dirname, 'uploads');
+const seedUploadsDir = path.join(__dirname, 'seed-uploads');
+
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
+
+if (fs.existsSync(seedUploadsDir)) {
+  for (const file of fs.readdirSync(seedUploadsDir)) {
+    const dest = path.join(uploadsDir, file);
+    if (!fs.existsSync(dest)) {
+      try {
+        fs.copyFileSync(path.join(seedUploadsDir, file), dest);
+      } catch (e) {}
+    }
+  }
+}
+
+const allowedImageMime = /^image\/(jpeg|jpg|png|gif|webp|avif|svg\+xml|bmp)$/i;
+const allowedImageExt = /\.(jpe?g|png|gif|webp|avif|jfif|bmp)$/i;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,13 +33,21 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+    const safeExt = path.extname(file.originalname || '').toLowerCase() || '.jpg';
+    cb(null, uniqueSuffix + safeExt);
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 }
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: function (req, file, cb) {
+    if (allowedImageMime.test(file.mimetype) || allowedImageExt.test(file.originalname || '')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Chỉ cho phép tải lên định dạng file hình ảnh'));
+    }
+  }
 });
 
 const app = express();
@@ -34,14 +58,17 @@ app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'] }));
 app.use(morgan('combined'));
 app.use(express.json());
 
-app.use('/api/media/uploads', express.static(uploadsDir));
+app.use('/api/media/uploads', express.static(uploadsDir, { maxAge: '7d' }));
+if (fs.existsSync(seedUploadsDir)) {
+  app.use('/api/media/uploads', express.static(seedUploadsDir, { maxAge: '7d' }));
+}
 
 const heroImages = [
   { id: 'halong-hero', url: 'https://images.unsplash.com/photo-1528127269322-539801943592?w=1920&q=90', caption: 'Vịnh Hạ Long hùng vĩ', credit: 'Unsplash' },
   { id: 'hoian-hero', url: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=90', caption: 'Phố cổ Hội An lung linh', credit: 'Unsplash' },
   { id: 'sapa-hero', url: 'https://images.unsplash.com/photo-1557750255-c76072a7aad1?w=1920&q=90', caption: 'Ruộng bậc thang Sa Pa', credit: 'Unsplash' },
   { id: 'hanoi-hero', url: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=1920&q=90', caption: 'Hồ Hoàn Kiếm về đêm', credit: 'Unsplash' },
-  { id: 'hue-hero', url: 'https://images.unsplash.com/photo-1573492534282-c9a32f59cf56?w=1920&q=90', caption: 'Đại Nội Huế cổ kính', credit: 'Unsplash' }
+  { id: 'hue-hero', url: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=1920&q=90', caption: 'Cố đô Huế & Miền Di Sản', credit: 'Unsplash' }
 ];
 
 const bannerImages = {
@@ -75,20 +102,22 @@ app.get('/api/media/stats', (req, res) => {
   });
 });
 
-app.post('/api/media/upload', upload.array('images', 50), (req, res) => {
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ success: false, message: 'No files uploaded' });
-  }
+app.post('/api/media/upload', (req, res) => {
+  upload.array('images', 50)(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: err.message || 'Lỗi tải ảnh lên' });
+    }
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ success: false, message: 'No files uploaded' });
+    }
 
-  const host = req.get('host');
-  const protocol = req.protocol;
-  
-  const urls = req.files.map(file => `/api/media/uploads/${file.filename}`);
+    const urls = req.files.map(file => `/api/media/uploads/${file.filename}`);
 
-  res.json({
-    success: true,
-    message: 'Files uploaded successfully',
-    data: urls
+    res.json({
+      success: true,
+      message: 'Files uploaded successfully',
+      data: urls
+    });
   });
 });
 
