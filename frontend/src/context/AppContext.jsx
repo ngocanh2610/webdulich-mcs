@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
 import { io } from 'socket.io-client';
 
 const AppContext = createContext();
@@ -10,6 +10,27 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [socket, setSocket] = useState(null);
   const [unreadSupportChat, setUnreadSupportChat] = useState(0);
+  const socketRef = useRef(null);
+
+  const connectAuthenticatedSocket = useCallback((userData, token) => {
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current = null;
+    }
+    if (!userData || !token) {
+      setSocket(null);
+      return null;
+    }
+
+    const newSocket = io({
+      path: '/socket.io/',
+      auth: { token },
+      query: { username: userData.username, role: userData.role }
+    });
+    socketRef.current = newSocket;
+    setSocket(newSocket);
+    return newSocket;
+  }, []);
 
   const fetchUnreadChatCount = useCallback(async (token) => {
     const currentToken = token || localStorage.getItem('token');
@@ -19,6 +40,7 @@ export const AppProvider = ({ children }) => {
       const res = await fetch('/api/support-chat/unread-count', {
         headers: { 'Authorization': `Bearer ${currentToken}` }
       });
+      if (!res.ok) return;
       const data = await res.json();
       if (data.success) {
         setUnreadSupportChat(data.unreadCount || 0);
@@ -31,7 +53,13 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      let storedUser = null;
+      try {
+        storedUser = JSON.parse(localStorage.getItem('user'));
+      } catch {
+        storedUser = null;
+      }
+
       if (token && storedUser) {
         try {
           const res = await fetch('/api/auth/me', {
@@ -41,10 +69,7 @@ export const AppProvider = ({ children }) => {
           if (data.success) {
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
-            const newSocket = io({
-              query: { username: data.user.username, role: data.user.role }
-            });
-            setSocket(newSocket);
+            connectAuthenticatedSocket(data.user, token);
             fetchUnreadChatCount(token);
           } else {
             localStorage.removeItem('token');
@@ -62,9 +87,12 @@ export const AppProvider = ({ children }) => {
     checkAuth();
 
     return () => {
-      if (socket) socket.disconnect();
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
-  }, []);
+  }, [connectAuthenticatedSocket, fetchUnreadChatCount]);
 
   useEffect(() => {
     if (!socket || !user) return;
@@ -72,8 +100,7 @@ export const AppProvider = ({ children }) => {
     const handleNewMessage = (msg) => {
       if (user.role === 'admin' && msg.receiver_username === 'admin') {
         setUnreadSupportChat(prev => prev + 1);
-      }
-      else if (user.role !== 'admin' && msg.receiver_username === user.username && msg.sender_role === 'admin') {
+      } else if (user.role !== 'admin' && msg.receiver_username === user.username && msg.sender_role === 'admin') {
         setUnreadSupportChat(prev => prev + 1);
       }
     };
@@ -99,26 +126,34 @@ export const AppProvider = ({ children }) => {
           fetch(`/api/provinces?mode=${mode}`),
           fetch(`/api/locations/meta/counts`)
         ]);
-        
+
         const provData = await provRes.json();
         let counts = {};
-        
+
         if (countRes.ok) {
           const countData = await countRes.json();
           if (countData.success) {
-            counts = countData.data;
+            counts = countData.data || {};
           }
         }
 
         if (provData.success) {
-          const finalProvinces = provData.data.map(p => ({
-            ...p,
-            locationCount: counts[p.id] || counts[p.slug] || 0
-          }));
+          const finalProvinces = provData.data.map(p => {
+            const slugKeys = Array.from(new Set([
+              ...(Array.isArray(p.mergedSlugs) ? p.mergedSlugs : []),
+              p.slug,
+              p.id
+            ].filter(Boolean)));
+            const locationCount = slugKeys.reduce((sum, key) => sum + (counts[key] || 0), 0);
+            return {
+              ...p,
+              locationCount
+            };
+          });
           setProvinces(finalProvinces);
         }
       } catch (error) {
-        console.error("Failed to fetch provinces", error);
+        console.error('Failed to fetch provinces', error);
       } finally {
         setLoading(false);
       }
@@ -131,11 +166,8 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
-    
-    const newSocket = io({
-      query: { username: userData.username, role: userData.role }
-    });
-    setSocket(newSocket);
+
+    connectAuthenticatedSocket(userData, token);
     fetchUnreadChatCount(token);
   };
 
@@ -152,11 +184,12 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem('user');
     setUser(null);
     setUnreadSupportChat(0);
-    
-    if (socket) {
-      socket.disconnect();
-      setSocket(null);
+
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current = null;
     }
+    setSocket(null);
   };
 
   const value = {

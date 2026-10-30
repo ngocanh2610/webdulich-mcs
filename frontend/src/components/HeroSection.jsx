@@ -74,7 +74,7 @@ const HeroSection = () => {
           letterSpacing: '0.5px'
         }}>
           <Compass size={15} color="#FFFFFF" />
-          <span>KHÁM PHÁ DANH LAM THẮNG CẢNH 63 TỈNH THÀNH VIỆT NAM</span>
+          <span>KHÁM PHÁ DANH LAM THẮNG CẢNH {mode} TỈNH THÀNH VIỆT NAM</span>
         </div>
 
         <h1 style={{ 

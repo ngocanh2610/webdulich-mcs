@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
-import { X, Upload, MapPin, User, FileText, Image as ImageIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Upload, MapPin, FileText, Image as ImageIcon } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
-const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
+const AddLocationModal = ({ isOpen, onClose, onSuccess, defaultProvinceId = '' }) => {
   const { provinces } = useAppContext();
-  
+
   const [formData, setFormData] = useState({
     name: '',
-    provinceId: '',
+    provinceId: defaultProvinceId || '',
     description: ''
   });
-  
+
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (isOpen && defaultProvinceId) {
+      setFormData(prev => ({
+        ...prev,
+        provinceId: prev.provinceId || defaultProvinceId
+      }));
+    }
+  }, [isOpen, defaultProvinceId]);
 
   if (!isOpen) return null;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
@@ -35,7 +44,7 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
 
     try {
       let uploadedUrls = [];
-      
+
       if (files.length > 0) {
         const formDataFiles = new FormData();
         files.forEach(file => {
@@ -46,13 +55,13 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
           method: 'POST',
           body: formDataFiles,
         });
-        
+
         const uploadData = await uploadRes.json();
-        
+
         if (!uploadData.success) {
           throw new Error(uploadData.message || 'Lỗi khi tải ảnh lên');
         }
-        
+
         uploadedUrls = uploadData.data;
       }
 
@@ -87,16 +96,15 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
         console.warn('Could not save to localStorage', e);
       }
 
-      setFormData({ name: '', provinceId: '', description: '' });
+      setFormData({ name: '', provinceId: defaultProvinceId || '', description: '' });
       setFiles([]);
       if (locationResponseData.data.status === 'pending') {
-        alert('🎉 Bài viết của bạn đã được gửi thành công và đang chờ Admin duyệt trước khi xuất hiện trên bản đồ!');
+        alert('🎉 Bài viết của bạn đã được gửi thành công và đang chờ Admin duyệt trước khi xuất hiện công khai!');
       } else {
         alert('🎉 Đăng địa điểm thành công!');
       }
       onSuccess(locationResponseData.data);
       onClose();
-      
     } catch (err) {
       setError(err.message);
     } finally {
@@ -108,7 +116,7 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
     <div style={{
       position: 'fixed',
       top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.75)',
+      backgroundColor: 'rgba(15, 23, 42, 0.65)',
       backdropFilter: 'blur(8px)',
       zIndex: 1000,
       display: 'flex',
@@ -122,58 +130,68 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
         maxHeight: '90vh',
         overflowY: 'auto',
         position: 'relative',
-        background: 'var(--bg-secondary)',
-        padding: '0'
+        background: '#FFFFFF',
+        padding: '0',
+        border: '1px solid #E2E8F0',
+        boxShadow: '0 24px 48px rgba(2, 50, 106, 0.16)'
       }}>
-        <div style={{ 
-          padding: '1.5rem', 
+        <div style={{
+          padding: '1.5rem',
           borderBottom: '1px solid var(--border-light)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           position: 'sticky',
           top: 0,
-          background: 'var(--bg-secondary)',
+          background: '#FFFFFF',
           zIndex: 10
         }}>
-          <h2 style={{ fontSize: '1.5rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h2 style={{ fontSize: '1.4rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--brand-navy)' }}>
             <MapPin color="var(--accent-primary)" /> Đóng góp địa điểm mới
           </h2>
-          <button 
+          <button
+            type="button"
             onClick={onClose}
-            style={{ 
-              background: 'transparent', 
-              border: 'none', 
+            style={{
+              background: '#F1F5F9',
+              border: 'none',
               color: 'var(--text-secondary)',
-              cursor: 'pointer' 
+              width: '34px',
+              height: '34px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
             }}
           >
-            <X size={24} />
+            <X size={20} />
           </button>
         </div>
 
         <div style={{ padding: '1.5rem' }}>
           {error && (
-            <div style={{ 
-              background: 'rgba(239, 68, 68, 0.1)', 
-              color: '#ef4444', 
-              padding: '1rem', 
-              borderRadius: '8px',
-              marginBottom: '1.5rem',
-              border: '1px solid rgba(239, 68, 68, 0.2)'
+            <div style={{
+              background: '#FEF2F2',
+              color: '#DC2626',
+              padding: '0.85rem 1rem',
+              borderRadius: '10px',
+              marginBottom: '1.25rem',
+              border: '1px solid #FECACA',
+              fontSize: '0.9rem',
+              fontWeight: 600
             }}>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+              <label style={{ display: 'block', marginBottom: '0.45rem', fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>
                 Tên địa điểm *
               </label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
@@ -184,10 +202,10 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
 
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+              <label style={{ display: 'block', marginBottom: '0.45rem', fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>
                 Thuộc Tỉnh/Thành phố *
               </label>
-              <select 
+              <select
                 name="provinceId"
                 value={formData.provinceId}
                 onChange={handleInputChange}
@@ -202,33 +220,33 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
 
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+              <label style={{ display: 'block', marginBottom: '0.45rem', fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>
                 <ImageIcon size={14} style={{ display: 'inline', marginRight: '4px' }} />
                 Hình ảnh (Chọn nhiều file)
               </label>
-              <div style={{ 
-                border: '1px dashed var(--border-strong)', 
-                padding: '1.5rem',
-                borderRadius: '8px',
+              <div style={{
+                border: '1.5px dashed #CBD5E1',
+                padding: '1.35rem',
+                borderRadius: '12px',
                 textAlign: 'center',
-                background: 'rgba(255,255,255,0.02)'
+                background: '#F8FAFC'
               }}>
-                <input 
-                  type="file" 
-                  multiple 
+                <input
+                  type="file"
+                  multiple
                   accept="image/*"
                   onChange={handleFileChange}
                   style={{ display: 'none' }}
-                  id="file-upload"
+                  id="add-location-file-upload"
                 />
-                <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                  <Upload size={32} color="var(--accent-primary)" />
-                  <span style={{ color: 'var(--text-primary)' }}>Nhấn vào đây để tải ảnh từ máy tính</span>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Hỗ trợ JPG, PNG, WEBP</span>
+                <label htmlFor="add-location-file-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.45rem' }}>
+                  <Upload size={30} color="var(--accent-primary)" />
+                  <span style={{ color: '#0F172A', fontWeight: 600, fontSize: '0.92rem' }}>Nhấn vào đây để tải ảnh từ máy tính</span>
+                  <span style={{ color: '#64748B', fontSize: '0.78rem' }}>Hỗ trợ JPG, PNG, WEBP (tối đa 5 ảnh)</span>
                 </label>
-                
+
                 {files.length > 0 && (
-                  <div style={{ marginTop: '1rem', textAlign: 'left', fontSize: '0.875rem', color: 'var(--accent-secondary)' }}>
+                  <div style={{ marginTop: '0.85rem', textAlign: 'center', fontSize: '0.85rem', fontWeight: 600, color: '#0284C7' }}>
                     Đã chọn {files.length} tập tin.
                   </div>
                 )}
@@ -236,11 +254,11 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
 
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+              <label style={{ display: 'block', marginBottom: '0.45rem', fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>
                 <FileText size={14} style={{ display: 'inline', marginRight: '4px' }} />
                 Mô tả chi tiết *
               </label>
-              <textarea 
+              <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
@@ -251,7 +269,7 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
               />
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.85rem', marginTop: '0.5rem' }}>
               <button type="button" onClick={onClose} className="btn-secondary">
                 Hủy
               </button>
@@ -259,7 +277,6 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
                 {loading ? 'Đang xử lý...' : 'Đăng Bài'}
               </button>
             </div>
-
           </form>
         </div>
       </div>
@@ -269,14 +286,14 @@ const AddLocationModal = ({ isOpen, onClose, onSuccess }) => {
 
 const inputStyle = {
   width: '100%',
-  background: 'rgba(0,0,0,0.2)',
-  border: '1px solid var(--border-strong)',
+  background: '#F8FAFC',
+  border: '1px solid #CBD5E1',
   padding: '0.75rem 1rem',
-  borderRadius: '8px',
-  color: 'var(--text-primary)',
+  borderRadius: '10px',
+  color: '#0F172A',
   outline: 'none',
   fontFamily: 'var(--font-body)',
-  fontSize: '1rem'
+  fontSize: '0.95rem'
 };
 
 export default AddLocationModal;

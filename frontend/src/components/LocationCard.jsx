@@ -1,11 +1,17 @@
 import React from 'react';
 import { MapPin, Star, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getFallbackImage, handleImageError } from '../utils/fallbackImages';
 
 const LocationCard = ({ location }) => {
+  const seed = location.id || location.name;
+  const imgSrc = location.images && location.images.length > 0
+    ? location.images[0]
+    : (location.image || getFallbackImage(seed));
+
   return (
     <Link to={`/locations/${location.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}>
-      <div 
+      <div
         className="card"
         style={{
           cursor: 'pointer',
@@ -20,20 +26,20 @@ const LocationCard = ({ location }) => {
           transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
         }}
       >
-        <div 
-          style={{ 
-            position: 'relative', 
+        <div
+          style={{
+            position: 'relative',
             width: '100%',
             aspectRatio: '16/11',
             overflow: 'hidden',
             background: '#F1F5F9'
           }}
         >
-          <img 
-            src={location.images && location.images.length > 0 
-              ? location.images[0] 
-              : (location.image || 'https://images.unsplash.com/photo-1599708153386-62bf0bd17b43?w=800&q=80')} 
-            alt={location.name} 
+          <img
+            src={imgSrc}
+            alt={location.name}
+            loading="lazy"
+            decoding="async"
             style={{
               width: '100%',
               height: '100%',
@@ -42,7 +48,7 @@ const LocationCard = ({ location }) => {
             }}
             onMouseOver={e => e.currentTarget.style.transform = 'scale(1.08)'}
             onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-            onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1599708153386-62bf0bd17b43?w=800&q=80'; }}
+            onError={(e) => handleImageError(e, seed)}
           />
 
           <div style={{
@@ -86,8 +92,8 @@ const LocationCard = ({ location }) => {
         </div>
 
         <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <h3 style={{ 
-            fontSize: '1.125rem', 
+          <h3 style={{
+            fontSize: '1.125rem',
             fontWeight: 800,
             marginBottom: '0.4rem',
             color: 'var(--brand-navy)',
@@ -95,8 +101,8 @@ const LocationCard = ({ location }) => {
           }}>
             {location.name}
           </h3>
-          
-          <p style={{ 
+
+          <p style={{
             color: '#475569',
             fontSize: '0.85rem',
             fontWeight: 400,
@@ -110,21 +116,21 @@ const LocationCard = ({ location }) => {
           }}>
             {location.description}
           </p>
-          
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
+
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'space-between',
             gap: '0.5rem',
             borderTop: '1px solid #F1F5F9',
             paddingTop: '0.85rem',
             marginTop: 'auto'
           }}>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
               gap: '0.35rem',
-              fontSize: '0.775rem', 
+              fontSize: '0.775rem',
               color: '#64748B',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -136,12 +142,12 @@ const LocationCard = ({ location }) => {
               </span>
             </div>
 
-            <span style={{ 
-              color: 'var(--brand-red)', 
-              fontSize: '0.825rem', 
-              fontWeight: 700, 
-              display: 'inline-flex', 
-              alignItems: 'center', 
+            <span style={{
+              color: 'var(--brand-red)',
+              fontSize: '0.825rem',
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
               gap: '0.2rem',
               flexShrink: 0
             }}>

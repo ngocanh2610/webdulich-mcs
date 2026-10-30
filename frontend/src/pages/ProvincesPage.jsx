@@ -11,7 +11,6 @@ const ProvincesPage = () => {
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [regionFilter, setRegionFilter] = useState(searchParams.get('region') || 'all');
   const [regions, setRegions] = useState([]);
-  const [counts, setCounts] = useState({});
 
   useEffect(() => {
     const q = searchParams.get('q');
@@ -27,34 +26,31 @@ const ProvincesPage = () => {
         if (data.success) setRegions(data.data);
       })
       .catch(err => console.error(err));
-      
-    fetch('/api/locations/meta/counts')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) setCounts(data.data);
-      })
-      .catch(err => console.error(err));
   }, []);
 
   const filteredProvinces = useMemo(() => {
     const normalize = (str) => {
       if (!str) return '';
       return str.normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/đ/g, 'd')
-                .replace(/Đ/g, 'D')
-                .toLowerCase();
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D')
+        .toLowerCase();
     };
-    
+
     const searchNormalized = normalize(searchTerm);
 
     return provinces.filter(p => {
       const matchRegion = regionFilter === 'all' || p.regionCode === regionFilter;
-      const matchSearch = normalize(p.name).includes(searchNormalized) || 
-                          normalize(p.capital).includes(searchNormalized);
+      const matchMerged = Array.isArray(p.mergedFrom)
+        && p.mergedFrom.some(m => normalize(m).includes(searchNormalized));
+      const matchSearch = !searchNormalized
+        || normalize(p.name).includes(searchNormalized)
+        || normalize(p.capital).includes(searchNormalized)
+        || matchMerged;
       return matchRegion && matchSearch;
-    }).sort((a, b) => (counts[b.id] || 0) - (counts[a.id] || 0));
-  }, [provinces, searchTerm, regionFilter, counts]);
+    }).sort((a, b) => (b.locationCount || 0) - (a.locationCount || 0));
+  }, [provinces, searchTerm, regionFilter]);
 
   return (
     <div style={{ paddingTop: '100px', paddingBottom: '5rem', minHeight: '100vh' }}>
@@ -64,16 +60,16 @@ const ProvincesPage = () => {
             Khám Phá <span className="text-gradient">{mode} Tỉnh Thành</span>
           </h1>
           <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-            {mode === '63' 
+            {mode === '63'
               ? 'Khám phá vẻ đẹp đa dạng của 63 tỉnh thành Việt Nam qua lăng kính bản đồ hành chính hiện tại.'
               : 'Trải nghiệm bản đồ mở rộng với 34 tỉnh thành sau đề án quy hoạch không gian phát triển mới năm 2025.'}
           </p>
         </div>
 
-        <SearchFilter 
-          searchTerm={searchTerm} 
-          setSearchTerm={setSearchTerm} 
-          regionFilter={regionFilter} 
+        <SearchFilter
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          regionFilter={regionFilter}
           setRegionFilter={setRegionFilter}
           regions={regions}
         />
@@ -81,10 +77,10 @@ const ProvincesPage = () => {
         {loading ? (
           <LoadingSpinner />
         ) : filteredProvinces.length > 0 ? (
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-            gap: '2rem' 
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: '2rem'
           }}>
             {filteredProvinces.map(province => (
               <ProvinceCard key={province.id} province={province} />

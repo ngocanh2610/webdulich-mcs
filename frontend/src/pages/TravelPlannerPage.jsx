@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Calendar, Users, Share2, Info, ChevronLeft, ChevronRight,
   MapPin, Clock, DollarSign, MoreVertical, Sparkles,
@@ -6,6 +6,7 @@ import {
   Ticket, Car, Compass, ArrowRight, RotateCcw
 } from 'lucide-react';
 import MakeYourTripChat from '../components/MakeYourTripChat';
+import { handleImageError } from '../utils/fallbackImages';
 
 const POPULAR_DESTINATIONS = [
   {
@@ -116,12 +117,16 @@ const TravelPlannerPage = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showGuestPicker, setShowGuestPicker] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const autoLoadedQueryRef = useRef(false);
 
   const currentDayData = plan?.dailyItinerary?.find(d => d.day === activeDay) || plan?.dailyItinerary?.[0] || { activities: [] };
 
   const extractDaysFromText = (text) => {
     if (!text) return null;
-    const lower = text.toString().trim().toLowerCase();
+    const lower = text.toString().trim().toLowerCase()
+      .replace(/https?:\/\/\S+/g, ' ')
+      .replace(/(?:tháng|thang)\s*\d{1,2}(?:\s*[\/\-]\s*\d{2,4})?/gi, ' ')
+      .replace(/(?:ngày|ngay)\s*\d{1,2}\s*[\/\-]\s*\d{1,2}(?:\s*[\/\-]\s*\d{2,4})?/gi, ' ');
 
     const isMetaOrComplaint = /(?:vẫn chỉ (?:có|được)|sao lại chỉ|toàn|auto)\s*(\d+)\s*(?:ngày|ngay)/i.test(lower);
     const condPrefixMatch = /(?:quá|hơn|trên)\s*(\d+)\s*(?:ngày|ngay)/i.test(lower);
@@ -153,7 +158,7 @@ const TravelPlannerPage = () => {
     }
 
     if (!isMetaOrComplaint && !condPrefixMatch) {
-      const justNumberMatch = lower.match(/(?:^|\b)(?:đi|làm|cho|thành|lên|đổi|tăng|rút|chọn)?\s*([1-9]|[12][0-9]|30)\s*(?:đi|thôi|nhé|nha|ạ|được không)?(?:\b|$)/i);
+      const justNumberMatch = lower.match(/^\s*(?:đi|làm|cho|thành|lên|đổi|đổi thành|đổi sang|tăng lên|giảm xuống|rút xuống|chọn)?\s*([1-9]|[12][0-9]|30)\s*(?:ngày|ngay|hôm)?\s*(?:đi|thôi|nhé|nha|ạ|được không)?\s*$/i);
       if (justNumberMatch) {
         const d = parseInt(justNumberMatch[1], 10);
         if (d >= 1 && d <= 30) return d;
@@ -516,8 +521,36 @@ const TravelPlannerPage = () => {
     }
   };
 
+
+  const getShareablePlanUrl = () => {
+    if (typeof window === 'undefined') return '';
+    const base = `${window.location.origin}${window.location.pathname}`;
+    if (!plan?.destination) return base;
+    const params = new URLSearchParams();
+    params.set('dest', plan.destination);
+    if (plan.startLocation) params.set('from', plan.startLocation);
+    if (plan.days) params.set('days', String(plan.days));
+    if (plan.guests) params.set('guests', String(plan.guests));
+    if (plan.rooms) params.set('rooms', String(plan.rooms));
+    return `${base}?${params.toString()}`;
+  };
+
+  useEffect(() => {
+    if (autoLoadedQueryRef.current || typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const dest = params.get('dest');
+    if (!dest) return;
+    autoLoadedQueryRef.current = true;
+    const daysParam = parseInt(params.get('days') || '4', 10);
+    const validDays = daysParam >= 1 && daysParam <= 30 ? daysParam : 4;
+    const fromParam = params.get('from') || 'Hà Nội';
+    const guestsParam = Math.max(1, parseInt(params.get('guests') || '1', 10) || 1);
+    const roomsParam = Math.max(1, parseInt(params.get('rooms') || '1', 10) || 1);
+    handleSendMessage(`Lên lịch trình du lịch ${dest} ${validDays} ngày xuất phát từ ${fromParam} cho ${guestsParam} người ${roomsParam} phòng`);
+  }, []);
+
   const handleCopyShareLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText(getShareablePlanUrl());
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
   };
@@ -1246,6 +1279,7 @@ const TravelPlannerPage = () => {
                                 <img
                                   src={act.image}
                                   alt={act.name}
+                                  onError={(e) => handleImageError(e, act.name)}
                                   style={{
                                     width: '84px',
                                     height: '84px',
@@ -1391,8 +1425,8 @@ const TravelPlannerPage = () => {
                           width: '44px',
                           height: '44px',
                           borderRadius: '12px',
-                          background: item.type === 'flight' ? '#EFF6FF' : item.type === 'hotel' ? '#F5F3FF' : '#FEF2F2',
-                          color: item.type === 'flight' ? '#0284C7' : item.type === 'hotel' ? '#7C3AED' : '#E11D48',
+                          background: item.type === 'flight' ? '#EFF6FF' : item.type === 'hotel' ? '#F5F3FF' : item.type === 'food' ? '#FFFBEB' : '#FEF2F2',
+                          color: item.type === 'flight' ? '#0284C7' : item.type === 'hotel' ? '#7C3AED' : item.type === 'food' ? '#D97706' : '#E11D48',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center'
@@ -1401,6 +1435,7 @@ const TravelPlannerPage = () => {
                           {item.type === 'hotel' && <Hotel size={22} />}
                           {item.type === 'ticket' && <Ticket size={22} />}
                           {item.type === 'transit' && <Car size={22} />}
+                          {item.type === 'food' && <Utensils size={22} />}
                         </div>
 
                         <div>
@@ -1474,7 +1509,7 @@ const TravelPlannerPage = () => {
               <input
                 type="text"
                 readOnly
-                value={window.location.href}
+                value={getShareablePlanUrl()}
                 style={{
                   flex: 1,
                   background: 'transparent',

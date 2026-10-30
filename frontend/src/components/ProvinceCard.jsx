@@ -1,14 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Compass, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight } from 'lucide-react';
+import { getFallbackImage, handleImageError } from '../utils/fallbackImages';
 
 const ProvinceCard = ({ province }) => {
+  const seed = province.slug || province.id || province.name;
+  const imgSrc = province.image || getFallbackImage(seed);
+
   return (
     <Link to={`/provinces/${province.slug}`} style={{ color: 'inherit', display: 'block', textDecoration: 'none' }}>
-      <div 
-        className="card" 
-        style={{ 
-          display: 'flex', 
+      <div
+        className="card"
+        style={{
+          display: 'flex',
           flexDirection: 'column',
           background: '#FFFFFF',
           border: '1px solid #E2E8F0',
@@ -20,18 +24,20 @@ const ProvinceCard = ({ province }) => {
         }}
       >
         <div style={{ position: 'relative', width: '100%', aspectRatio: '16/10', overflow: 'hidden', background: '#F1F5F9' }}>
-          <img 
-            src={province.image || 'https://images.unsplash.com/photo-1599708153386-62bf0bd17b43?w=800&q=80'} 
+          <img
+            src={imgSrc}
             alt={province.name}
-            style={{ 
-              width: '100%', 
-              height: '100%', 
+            loading="lazy"
+            decoding="async"
+            style={{
+              width: '100%',
+              height: '100%',
               objectFit: 'cover',
               transition: 'transform 0.6s ease'
             }}
             onMouseOver={e => e.currentTarget.style.transform = 'scale(1.08)'}
             onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-            onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1599708153386-62bf0bd17b43?w=800&q=80'; }}
+            onError={(e) => handleImageError(e, seed)}
           />
 
           <div style={{
@@ -77,10 +83,10 @@ const ProvinceCard = ({ province }) => {
             </div>
           )}
         </div>
-        
+
         <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <h3 style={{ 
-            fontSize: '1.2rem', 
+          <h3 style={{
+            fontSize: '1.2rem',
             fontWeight: 800,
             color: 'var(--brand-navy)',
             marginBottom: '0.4rem',
@@ -89,9 +95,9 @@ const ProvinceCard = ({ province }) => {
             {province.name}
           </h3>
 
-          <p style={{ 
-            color: '#475569', 
-            fontSize: '0.875rem', 
+          <p style={{
+            color: '#475569',
+            fontSize: '0.875rem',
             lineHeight: 1.55,
             fontWeight: 400,
             display: '-webkit-box',
@@ -104,9 +110,9 @@ const ProvinceCard = ({ province }) => {
             {province.description || 'Khám phá các danh lam thắng cảnh, di tích lịch sử và văn hóa độc đáo.'}
           </p>
 
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'space-between',
             borderTop: '1px solid #F1F5F9',
             paddingTop: '0.85rem',
@@ -115,13 +121,13 @@ const ProvinceCard = ({ province }) => {
             <span style={{ fontSize: '0.775rem', color: '#64748B', fontWeight: 600 }}>
               {province.capital ? `Thủ phủ: ${province.capital}` : 'Việt Nam'}
             </span>
-            <span style={{ 
-              color: 'var(--brand-red)', 
-              fontSize: '0.825rem', 
-              fontWeight: 700, 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '0.25rem' 
+            <span style={{
+              color: 'var(--brand-red)',
+              fontSize: '0.825rem',
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.25rem'
             }}>
               Khám phá <ArrowRight size={14} />
             </span>

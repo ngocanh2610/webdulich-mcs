@@ -231,7 +231,7 @@ const Navbar = () => {
             </>
           )}
 
-          <NotificationDropdown />
+          {user && <NotificationDropdown />}
 
           {user ? (
             <div ref={userMenuRef} style={{ position: 'relative' }}>

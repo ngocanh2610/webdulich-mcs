@@ -115,7 +115,8 @@ const AdminApprovalPage = () => {
         },
         body: JSON.stringify({ 
           status: 'rejected',
-          reason: rejectReason.trim() || undefined
+          reason: rejectReason.trim() || undefined,
+          rejectionReason: rejectReason.trim() || undefined
         })
       });
       const data = await res.json();
