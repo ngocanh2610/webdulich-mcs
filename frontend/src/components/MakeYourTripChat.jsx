@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Sparkles, MessageSquare, RefreshCw, Compass } from 'lucide-react';
+import { Send, Mic, Sparkles, RefreshCw } from 'lucide-react';
+import FormattedText from '../utils/formatMarkdown';
 
 const MakeYourTripChat = ({
   messages = [],
@@ -69,7 +70,7 @@ const MakeYourTripChat = ({
       boxShadow: '0 4px 20px rgba(2, 50, 106, 0.05)',
       overflow: 'hidden'
     }}>
-      
+
       <div style={{
         padding: '1rem 1.25rem',
         borderBottom: '1px solid #F1F5F9',
@@ -123,7 +124,7 @@ const MakeYourTripChat = ({
         gap: '1rem',
         background: '#FAFBFD'
       }}>
-        
+
         {messages.map((msg, index) => {
           const isUser = msg.sender === 'user';
 
@@ -165,9 +166,7 @@ const MakeYourTripChat = ({
                   boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
                   wordBreak: 'break-word'
                 }}>
-                  <div style={{ whiteSpace: 'pre-line' }}>
-                    {msg.text}
-                  </div>
+                  <FormattedText text={msg.text} />
                 </div>
               )}
             </div>

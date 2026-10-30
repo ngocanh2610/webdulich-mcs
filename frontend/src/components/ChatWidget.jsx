@@ -5,6 +5,7 @@ import {
   ShieldCheck, Headset, LogIn, ExternalLink, Sparkles 
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import FormattedText from '../utils/formatMarkdown';
 
 const ChatWidget = () => {
   const { user, socket, unreadSupportChat, setUnreadSupportChat } = useAppContext();
@@ -114,7 +115,7 @@ const ChatWidget = () => {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage.text })
+        body: JSON.stringify({ message: userMessage.text, conversationHistory: [...aiMessages.slice(-8), userMessage] })
       });
       const data = await response.json();
       
@@ -487,7 +488,7 @@ const ChatWidget = () => {
                     maxWidth: '75%',
                     wordWrap: 'break-word'
                   }}>
-                    {msg.text}
+                    {msg.role === 'ai' ? <FormattedText text={msg.text} /> : msg.text}
                   </div>
                 </div>
               ))}

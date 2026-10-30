@@ -1,7 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Bell, CheckCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+
+const formatNotificationDate = (notif) => {
+  const raw = notif?.createdAt || notif?.created_at;
+  if (!raw) return 'Vừa xong';
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return 'Vừa xong';
+  return d.toLocaleString('vi-VN');
+};
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState([]);
@@ -10,31 +18,42 @@ const NotificationDropdown = () => {
   const [isBouncing, setIsBouncing] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const { socket } = useAppContext();
+  const { socket, user } = useAppContext();
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
+    const token = localStorage.getItem('token');
+    if (!user || !token) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
     try {
-      const token = localStorage.getItem('token');
       const res = await fetch('/api/locations/notifications', {
         headers: {
-          'Authorization': token ? `Bearer ${token}` : ''
+          'Authorization': `Bearer ${token}`
         }
       });
+      if (!res.ok) return;
       const data = await res.json();
-      if (data.success) {
+      if (data.success && Array.isArray(data.data)) {
         setNotifications(data.data);
         setUnreadCount(data.data.filter(n => !n.read).length);
       }
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
+    if (!user) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 15000);
     return () => clearInterval(interval);
-  }, []);
+  }, [user, fetchNotifications]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -51,29 +70,33 @@ const NotificationDropdown = () => {
   }, [isOpen]);
 
   useEffect(() => {
-    if (socket) {
+    if (socket && user) {
       const handleNewNotification = (notif) => {
-        setNotifications(prev => [notif, ...prev]);
+        setNotifications(prev => {
+          if (notif?.id && prev.some(existing => existing.id === notif.id)) return prev;
+          return [notif, ...prev];
+        });
         setUnreadCount(prev => prev + 1);
         setIsBouncing(true);
         setTimeout(() => setIsBouncing(false), 1000);
       };
-      
+
       socket.on('new_notification', handleNewNotification);
       return () => {
         socket.off('new_notification', handleNewNotification);
       };
     }
-  }, [socket]);
+  }, [socket, user]);
 
   const handleRead = async (id, e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     try {
       const token = localStorage.getItem('token');
-      await fetch(`/api/locations/notifications/${id}/read`, { 
+      if (!token) return;
+      await fetch(`/api/locations/notifications/${id}/read`, {
         method: 'PUT',
         headers: {
-          'Authorization': token ? `Bearer ${token}` : ''
+          'Authorization': `Bearer ${token}`
         }
       });
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
@@ -83,9 +106,31 @@ const NotificationDropdown = () => {
     }
   };
 
+  const handleReadAll = async (e) => {
+    e.stopPropagation();
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch('/api/locations/notifications/read-all', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+        setUnreadCount(0);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (!user) return null;
+
   return (
     <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
-      <button 
+      <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Thông báo"
@@ -148,8 +193,8 @@ const NotificationDropdown = () => {
           position: 'absolute',
           top: 'calc(100% + 10px)',
           right: 0,
-          width: '320px',
-          maxHeight: '420px',
+          width: '340px',
+          maxHeight: '430px',
           overflowY: 'auto',
           background: '#FFFFFF',
           border: '1px solid #E5E7EB',
@@ -165,15 +210,33 @@ const NotificationDropdown = () => {
             justifyContent: 'space-between',
             marginBottom: '0.75rem',
             paddingBottom: '0.5rem',
-            borderBottom: '1px solid #F3F4F6'
+            borderBottom: '1px solid #F3F4F6',
+            gap: '0.5rem'
           }}>
             <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#111827' }}>
               Thông báo mới
             </h3>
             {unreadCount > 0 && (
-              <span style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600 }}>
-                {unreadCount} chưa đọc
-              </span>
+              <button
+                type="button"
+                onClick={handleReadAll}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  fontSize: '0.75rem',
+                  color: '#0284C7',
+                  fontWeight: 600,
+                  background: '#EFF6FF',
+                  border: '1px solid #BAE6FD',
+                  borderRadius: '8px',
+                  padding: '2px 8px',
+                  cursor: 'pointer'
+                }}
+              >
+                <CheckCheck size={13} />
+                <span>Đọc tất cả ({unreadCount})</span>
+              </button>
             )}
           </div>
 
@@ -183,43 +246,46 @@ const NotificationDropdown = () => {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {notifications.map(n => (
-                <div 
-                  key={n.id} 
-                  onClick={(e) => {
-                    if (n.locationId) {
-                      navigate(`/locations/${n.locationId}`);
-                      setIsOpen(false);
-                    }
-                    if (!n.read) {
-                      handleRead(n.id, e);
-                    }
-                  }}
-                  style={{
-                    padding: '0.75rem',
-                    background: n.read ? '#F9FAFB' : '#FEF2F2',
-                    border: `1px solid ${n.read ? '#F3F4F6' : '#FEE2E2'}`,
-                    borderRadius: '10px',
-                    position: 'relative',
-                    cursor: n.locationId ? 'pointer' : 'default',
-                    transition: 'all 0.15s ease'
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 56, 92, 0.3)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = n.read ? '#F3F4F6' : '#FEE2E2'; }}
-                >
-                  <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.85rem', lineHeight: 1.4, color: '#1F2937', fontWeight: n.read ? 400 : 600 }}>
-                    {n.message}
-                  </p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.725rem', color: '#9CA3AF' }}>
-                      {new Date(n.createdAt).toLocaleString('vi-VN')}
-                    </span>
-                    {!n.read && (
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444' }} />
-                    )}
+              {notifications.map(n => {
+                const targetLocationId = n.locationId || n.location_id;
+                return (
+                  <div
+                    key={n.id}
+                    onClick={(e) => {
+                      if (!n.read) {
+                        handleRead(n.id, e);
+                      }
+                      if (targetLocationId) {
+                        navigate(`/locations/${targetLocationId}`);
+                        setIsOpen(false);
+                      }
+                    }}
+                    style={{
+                      padding: '0.75rem',
+                      background: n.read ? '#F9FAFB' : '#FEF2F2',
+                      border: `1px solid ${n.read ? '#F3F4F6' : '#FEE2E2'}`,
+                      borderRadius: '10px',
+                      position: 'relative',
+                      cursor: targetLocationId ? 'pointer' : 'default',
+                      transition: 'all 0.15s ease'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 56, 92, 0.3)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = n.read ? '#F3F4F6' : '#FEE2E2'; }}
+                  >
+                    <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.85rem', lineHeight: 1.4, color: '#1F2937', fontWeight: n.read ? 400 : 600 }}>
+                      {n.message}
+                    </p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.725rem', color: '#9CA3AF' }}>
+                        {formatNotificationDate(n)}
+                      </span>
+                      {!n.read && (
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444' }} />
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

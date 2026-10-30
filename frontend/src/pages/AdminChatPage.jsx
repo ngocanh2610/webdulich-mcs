@@ -7,7 +7,7 @@ import {
 import { useAppContext } from '../context/AppContext';
 
 const AdminChatPage = () => {
-  const { user, socket, setUnreadSupportChat } = useAppContext();
+  const { user, socket, setUnreadSupportChat, fetchUnreadChatCount } = useAppContext();
   const navigate = useNavigate();
 
   const [conversations, setConversations] = useState([]);
@@ -75,6 +75,15 @@ const AdminChatPage = () => {
     fetchConversations();
   }, []);
 
+  useEffect(() => {
+    if (loadingConv) return;
+    const totalUnread = conversations.reduce((sum, c) => sum + (Number(c.unread_count) || 0), 0);
+    setUnreadSupportChat(totalUnread);
+  }, [conversations, loadingConv, setUnreadSupportChat]);
+
+  useEffect(() => {
+  }, []);
+
   const fetchMessages = async (targetUsername) => {
     const token = localStorage.getItem('token');
     if (!token || !targetUsername) return;
@@ -92,6 +101,9 @@ const AdminChatPage = () => {
         ));
         if (socket) {
           socket.emit('mark_support_read', { conversationId: targetUsername });
+        }
+        fetchUnreadChatCount();
+        if (false) {
         }
       }
     } catch (err) {
@@ -285,6 +297,7 @@ const AdminChatPage = () => {
   const formatTime = (isoString) => {
     if (!isoString) return '';
     const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return '';
     const now = new Date();
     const isToday = date.toDateString() === now.toDateString();
 
