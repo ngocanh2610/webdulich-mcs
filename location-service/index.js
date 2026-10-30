@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
 const http = require('http');
 const { Server } = require('socket.io');
 const mysql = require('mysql2/promise');
@@ -28,7 +29,7 @@ const io = new Server(server, {
 });
 
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({ origin: '*', methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'] }));
+app.use(cors({ origin: '*', methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] }));
 app.use(morgan('combined'));
 app.use(express.json());
 
@@ -42,7 +43,43 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-const fs = require('fs');
+const verifyAuthToken = async (rawToken) => {
+  if (!rawToken || typeof rawToken !== 'string') return null;
+  const authHeader = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`;
+  const cleanToken = rawToken.startsWith('Bearer ') ? rawToken.slice(7).trim() : rawToken.trim();
+  if (!cleanToken) return null;
+
+  if (jwt) {
+    try {
+      const decoded = jwt.verify(cleanToken, JWT_SECRET);
+      if (decoded && decoded.username) {
+        return decoded;
+      }
+    } catch (jwtErr) {
+      // Fallback to user-service verification below
+    }
+  }
+
+  try {
+    let userRes;
+    try {
+      userRes = await fetch(`${USER_SERVICE_URL}/api/auth/me`, {
+        headers: { Authorization: authHeader }
+      });
+    } catch (netErr) {
+      userRes = await fetch('http://localhost:3005/api/auth/me', {
+        headers: { Authorization: authHeader }
+      });
+    }
+    const userData = await userRes.json();
+    if (userData && userData.success && userData.user) {
+      return userData.user;
+    }
+  } catch (e) {
+    // Ignore network verification failure
+  }
+  return null;
+};
 
 const initLocationsTable = async () => {
   try {
@@ -102,39 +139,54 @@ const initLocationsTable = async () => {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
+    const locationsJsonPath = path.join(__dirname, 'data', 'locations.json');
+    const seedLocations = fs.existsSync(locationsJsonPath)
+      ? JSON.parse(fs.readFileSync(locationsJsonPath, 'utf8'))
+      : [];
+
     // Kiem tra du lieu locations
     const [rows] = await pool.query('SELECT COUNT(*) as count FROM locations');
-    if (rows[0].count === 0) {
+    if (rows[0].count === 0 && seedLocations.length > 0) {
       console.log('🔄 Đang đồng bộ dữ liệu locations từ locations.json vào MySQL...');
-      const locationsJsonPath = path.join(__dirname, 'data', 'locations.json');
-      if (fs.existsSync(locationsJsonPath)) {
-        const locations = JSON.parse(fs.readFileSync(locationsJsonPath, 'utf8'));
-        for (const loc of locations) {
-          try {
-            await pool.execute(
-              `INSERT IGNORE INTO locations (id, province_id, name, type, rating, description, image, images_json, tags_json, author, status) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-              [
-                loc.id,
-                loc.provinceId || loc.province_id || '',
-                loc.name,
-                loc.type || 'discovery',
-                loc.rating || 5,
-                loc.description || '',
-                loc.image || '',
-                JSON.stringify(loc.images || []),
-                JSON.stringify(loc.tags || []),
-                loc.author || 'admin',
-                loc.status || 'approved'
-              ]
-            );
-          } catch (e) { }
-        }
-        console.log(`✅ Đã nạp thành công ${locations.length} địa điểm vào MySQL`);
+      for (const loc of seedLocations) {
+        try {
+          await pool.execute(
+            `INSERT IGNORE INTO locations (id, province_id, name, type, rating, description, image, images_json, tags_json, author, status) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              loc.id,
+              loc.provinceId || loc.province_id || '',
+              loc.name,
+              loc.type || 'discovery',
+              loc.rating || 5,
+              loc.description || '',
+              loc.image || '',
+              JSON.stringify(loc.images || []),
+              JSON.stringify(loc.tags || []),
+              loc.author || 'admin',
+              loc.status || 'approved'
+            ]
+          );
+        } catch (e) { }
+      }
+      console.log(`✅ Đã nạp thành công ${seedLocations.length} địa điểm vào MySQL`);
+    } else if (seedLocations.length > 0) {
+      // Auto-heal old broken / rate-limited Wikimedia & dead Unsplash URLs in existing seeded rows
+      for (const loc of seedLocations) {
+        if (!loc.image || !loc.image.startsWith('https://images.unsplash.com/')) continue;
+        try {
+          await pool.execute(
+            `UPDATE locations
+             SET image = ?, images_json = ?
+             WHERE id = ? AND (image LIKE '%wikimedia.org%' OR image LIKE '%1573492534282%' OR image LIKE '%1599708153386%')`,
+            [loc.image, JSON.stringify(loc.images && loc.images.length > 0 ? loc.images : [loc.image]), loc.id]
+          );
+        } catch (e) { }
       }
     }
   } catch (err) {
     console.error('Lỗi khởi tạo cấu trúc bảng locations:', err.message);
+    setTimeout(initLocationsTable, 3000);
   }
 };
 setTimeout(initLocationsTable, 2000);
@@ -160,15 +212,40 @@ const initChatTable = async () => {
     console.log('✅ Bảng support_messages đã sẵn sàng');
   } catch (err) {
     console.error('Lỗi khởi tạo bảng support_messages:', err.message);
+    setTimeout(initChatTable, 3000);
   }
 };
 initChatTable();
 
 const userSockets = new Map();
 
+io.use(async (socket, next) => {
+  try {
+    const rawToken =
+      socket.handshake.auth?.token ||
+      socket.handshake.headers?.authorization ||
+      socket.handshake.query?.token;
+
+    if (rawToken) {
+      const verified = await verifyAuthToken(rawToken);
+      socket.user = verified
+        ? { id: verified.id, username: verified.username, role: verified.role || 'user' }
+        : null;
+    } else {
+      socket.user = null;
+    }
+    return next();
+  } catch (err) {
+    socket.user = null;
+    return next();
+  }
+});
+
 io.on('connection', (socket) => {
-  const username = socket.handshake.query.username;
-  const role = socket.handshake.query.role;
+  const verifiedUser = socket.user;
+  const username = verifiedUser?.username || null;
+  const role = verifiedUser?.role || null;
+  const isAdmin = role === 'admin';
 
   if (username) {
     if (!userSockets.has(username)) {
@@ -178,7 +255,7 @@ io.on('connection', (socket) => {
 
     socket.join(`user_${username}`);
 
-    if (role === 'admin' || username === 'admin') {
+    if (isAdmin) {
       socket.join('admins');
     }
 
@@ -186,34 +263,50 @@ io.on('connection', (socket) => {
   }
 
   socket.on('join_location', (locationId) => {
-    socket.join(`location_${locationId}`);
+    if (locationId) {
+      socket.join(`location_${locationId}`);
+    }
   });
 
   socket.on('leave_location', (locationId) => {
-    socket.leave(`location_${locationId}`);
+    if (locationId) {
+      socket.leave(`location_${locationId}`);
+    }
   });
 
-  socket.on('support_typing', ({ conversationId, isTyping, senderRole }) => {
-    if (senderRole === 'admin') {
-      io.to(`user_${conversationId}`).emit('admin_typing', { isTyping });
+  socket.on('support_typing', ({ conversationId, isTyping }) => {
+    if (!username) return;
+    if (isAdmin) {
+      if (conversationId) {
+        io.to(`user_${conversationId}`).emit('admin_typing', { isTyping: Boolean(isTyping) });
+      }
     } else {
-      io.to('admins').emit('user_typing', { conversationId, isTyping, username });
+      io.to('admins').emit('user_typing', {
+        conversationId: username,
+        isTyping: Boolean(isTyping),
+        username
+      });
     }
   });
 
   socket.on('send_support_message', async (data, callback) => {
     try {
-      const { message, targetUser, conversationId } = data;
-      if (!username || !message || !message.trim()) {
+      if (!username) {
+        if (callback) callback({ success: false, message: 'Vui lòng đăng nhập để gửi tin nhắn hỗ trợ' });
+        return;
+      }
+
+      const { message, targetUser, conversationId } = data || {};
+      if (!message || !String(message).trim()) {
         if (callback) callback({ success: false, message: 'Nội dung tin nhắn không hợp lệ' });
         return;
       }
 
+      const cleanMessage = String(message).trim();
       const msgId = `msg-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-      const isAdmin = role === 'admin' || username === 'admin';
 
-      let sender_username = username;
-      let sender_role = isAdmin ? 'admin' : 'user';
+      const sender_username = username;
+      const sender_role = isAdmin ? 'admin' : 'user';
       let receiver_username = '';
       let conv_id = '';
 
@@ -232,7 +325,7 @@ io.on('connection', (socket) => {
 
       await pool.execute(
         'INSERT INTO support_messages (id, sender_username, sender_role, receiver_username, conversation_id, message, is_read) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [msgId, sender_username, sender_role, receiver_username, conv_id, message.trim(), false]
+        [msgId, sender_username, sender_role, receiver_username, conv_id, cleanMessage, false]
       );
 
       const newMsg = {
@@ -241,7 +334,7 @@ io.on('connection', (socket) => {
         sender_role,
         receiver_username,
         conversation_id: conv_id,
-        message: message.trim(),
+        message: cleanMessage,
         is_read: false,
         created_at: new Date().toISOString()
       };
@@ -261,22 +354,24 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('mark_support_read', async ({ conversationId }) => {
+  socket.on('mark_support_read', async ({ conversationId } = {}) => {
     try {
-      if (!conversationId) return;
-      const isAdmin = role === 'admin' || username === 'admin';
+      if (!username) return;
       if (isAdmin) {
+        if (!conversationId) return;
         await pool.execute(
           'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
           [conversationId, 'admin']
         );
         io.to(`user_${conversationId}`).emit('messages_marked_read', { conversationId });
+        io.to('admins').emit('messages_marked_read', { conversationId });
       } else {
         await pool.execute(
           'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
           [username, username]
         );
         io.to('admins').emit('messages_marked_read', { conversationId: username });
+        io.to(`user_${username}`).emit('messages_marked_read', { conversationId: username });
       }
     } catch (err) {
       console.error('Lỗi socket mark_support_read:', err);
@@ -296,15 +391,23 @@ io.on('connection', (socket) => {
 
 const notifyUser = async (username, notification) => {
   try {
+    const payload = {
+      ...notification,
+      read: Boolean(notification.read),
+      createdAt: notification.createdAt || new Date().toISOString()
+    };
+
     await pool.execute(
       'INSERT INTO notifications (id, type, message, location_id, target_user, is_read) VALUES (?, ?, ?, ?, ?, ?)',
-      [notification.id, notification.type, notification.message, notification.locationId, notification.target, false]
+      [payload.id, payload.type, payload.message, payload.locationId, payload.target, false]
     );
 
-    if (userSockets.has(username)) {
+    if (username === 'admin') {
+      io.to('admins').emit('new_notification', payload);
+    } else if (userSockets.has(username)) {
       const socketIds = userSockets.get(username);
       for (const socketId of socketIds) {
-        io.to(socketId).emit('new_notification', notification);
+        io.to(socketId).emit('new_notification', payload);
       }
     }
   } catch (error) {
@@ -318,59 +421,82 @@ const requireAuth = async (req, res, next) => {
     return res.status(401).json({ success: false, message: 'Yêu cầu đăng nhập' });
   }
 
-  const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
-
-  if (jwt) {
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      req.user = decoded;
-      return next();
-    } catch (jwtErr) {
-    }
+  const verified = await verifyAuthToken(authHeader);
+  if (!verified) {
+    return res.status(401).json({ success: false, message: 'Token không hợp lệ hoặc đã hết hạn' });
   }
 
-  try {
-    let userRes;
-    try {
-      userRes = await fetch(`${USER_SERVICE_URL}/api/auth/me`, {
-        headers: { 'Authorization': authHeader }
-      });
-    } catch (netErr) {
-      userRes = await fetch(`http://localhost:3005/api/auth/me`, {
-        headers: { 'Authorization': authHeader }
-      });
-    }
-    const userData = await userRes.json();
-    
-    if (!userData.success) {
-      return res.status(401).json({ success: false, message: 'Token không hợp lệ' });
-    }
-    
-    req.user = userData.user;
-    next();
-  } catch (e) {
-    console.error('Error verifying token', e);
-    return res.status(500).json({ success: false, message: 'Lỗi xác thực' });
-  }
+  req.user = verified;
+  next();
 };
 
 const formatLocation = async (row) => {
   const [reactionsRows] = await pool.execute('SELECT username, type FROM location_reactions WHERE location_id = ?', [row.id]);
-  
+
   let parsedImages = [];
-  try { parsedImages = typeof row.images_json === 'string' ? JSON.parse(row.images_json) : (row.images_json || []); } catch(e){}
-  
+  try { parsedImages = typeof row.images_json === 'string' ? JSON.parse(row.images_json) : (row.images_json || []); } catch (e) { }
+
   let parsedTags = [];
-  try { parsedTags = typeof row.tags_json === 'string' ? JSON.parse(row.tags_json) : (row.tags_json || []); } catch(e){}
+  try { parsedTags = typeof row.tags_json === 'string' ? JSON.parse(row.tags_json) : (row.tags_json || []); } catch (e) { }
 
   return {
     ...row,
     provinceId: row.province_id,
     status: row.status || 'approved',
+    createdAt: row.created_at,
     images: parsedImages,
     tags: parsedTags,
     reactions: reactionsRows
   };
+};
+
+const formatComment = (r) => ({
+  ...r,
+  locationId: r.location_id,
+  parentId: r.parent_id,
+  createdAt: r.created_at
+});
+
+const resolveProvinceFilterSlugs = async (provinceParam, modeParam) => {
+  if (!provinceParam) return [];
+  const rawSlugs = String(provinceParam)
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  if (rawSlugs.length === 0) return [];
+  const slugSet = new Set(rawSlugs);
+
+  if (slugSet.has('hue')) {
+    slugSet.add('thua-thien-hue');
+  }
+
+  if (rawSlugs.length === 1 && (modeParam === '34' || rawSlugs[0] === 'hue')) {
+    try {
+      const [p34Rows] = await pool.execute(
+        "SELECT merged_from FROM provinces WHERE (id = ? OR slug = ?) AND type = '34' LIMIT 1",
+        [rawSlugs[0], rawSlugs[0]]
+      );
+      if (p34Rows.length > 0 && p34Rows[0].merged_from) {
+        const mergedNames = typeof p34Rows[0].merged_from === 'string'
+          ? JSON.parse(p34Rows[0].merged_from)
+          : p34Rows[0].merged_from;
+
+        if (Array.isArray(mergedNames) && mergedNames.length > 0) {
+          const [p63Rows] = await pool.query("SELECT slug, name FROM provinces WHERE type = '63'");
+          const nameMap = new Map(p63Rows.map(r => [String(r.name).trim().toLowerCase(), r.slug]));
+          for (const n of mergedNames) {
+            const mapped = nameMap.get(String(n).trim().toLowerCase());
+            if (mapped) slugSet.add(mapped);
+          }
+        }
+      }
+    } catch (e) {
+      // Ignore province table lookup errors
+    }
+  }
+
+  return Array.from(slugSet);
 };
 
 app.get('/health', async (req, res) => {
@@ -390,7 +516,7 @@ app.get('/health', async (req, res) => {
 });
 
 app.get('/api/locations', async (req, res) => {
-  const { province, type, search, status, author, limit = 50, offset = 0 } = req.query;
+  const { province, mode, type, search, status, author, limit = 50, offset = 0 } = req.query;
 
   let query = 'SELECT * FROM locations WHERE 1=1';
   const params = [];
@@ -409,9 +535,16 @@ app.get('/api/locations', async (req, res) => {
     params.push(author);
   }
 
+  let provinceSlugs = [];
   if (province) {
-    query += ' AND province_id = ?';
-    params.push(province);
+    provinceSlugs = await resolveProvinceFilterSlugs(province, mode);
+    if (provinceSlugs.length === 1) {
+      query += ' AND province_id = ?';
+      params.push(provinceSlugs[0]);
+    } else if (provinceSlugs.length > 1) {
+      query += ` AND province_id IN (${provinceSlugs.map(() => '?').join(',')})`;
+      params.push(...provinceSlugs);
+    }
   }
 
   if (type && type !== 'all') {
@@ -432,9 +565,8 @@ app.get('/api/locations', async (req, res) => {
 
     query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
     params.push(Number(limit), Number(offset));
-    
+
     const [rows] = await pool.query(query, params);
-    
     const data = await Promise.all(rows.map(row => formatLocation(row)));
 
     res.json({
@@ -452,8 +584,13 @@ app.get('/api/locations', async (req, res) => {
       if (fs.existsSync(locationsJsonPath)) {
         fallback = JSON.parse(fs.readFileSync(locationsJsonPath, 'utf8'));
       }
-      if (province) {
-        fallback = fallback.filter(l => (l.provinceId || l.province_id) === province);
+      if (!status || status === 'approved') {
+        fallback = fallback.filter(l => (l.status || 'approved') === 'approved');
+      } else if (status !== 'all') {
+        fallback = fallback.filter(l => (l.status || 'approved') === status);
+      }
+      if (provinceSlugs.length > 0) {
+        fallback = fallback.filter(l => provinceSlugs.includes(l.provinceId || l.province_id));
       }
       if (type && type !== 'all') {
         fallback = fallback.filter(l => l.type === type);
@@ -487,16 +624,40 @@ app.get('/api/locations/recent', async (req, res) => {
 app.get('/api/locations/notifications', requireAuth, async (req, res) => {
   try {
     let query = 'SELECT * FROM notifications WHERE target_user = ? ORDER BY created_at DESC LIMIT 100';
-    let params = [req.user.username];
-    
+    const params = [req.user.username];
+
     if (req.user.role === 'admin') {
       query = 'SELECT * FROM notifications WHERE target_user = ? OR target_user = ? ORDER BY created_at DESC LIMIT 100';
       params.push('admin');
     }
-    
+
     const [rows] = await pool.execute(query, params);
-    const data = rows.map(r => ({...r, locationId: r.location_id, read: r.is_read}));
+    const data = rows.map(r => ({
+      ...r,
+      locationId: r.location_id,
+      read: Boolean(r.is_read),
+      createdAt: r.created_at
+    }));
     res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false });
+  }
+});
+
+app.put('/api/locations/notifications/read-all', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role === 'admin') {
+      await pool.execute(
+        'UPDATE notifications SET is_read = TRUE WHERE target_user = ? OR target_user = ?',
+        [req.user.username, 'admin']
+      );
+    } else {
+      await pool.execute(
+        'UPDATE notifications SET is_read = TRUE WHERE target_user = ?',
+        [req.user.username]
+      );
+    }
+    res.json({ success: true });
   } catch (error) {
     res.status(500).json({ success: false });
   }
@@ -504,7 +665,21 @@ app.get('/api/locations/notifications', requireAuth, async (req, res) => {
 
 app.delete('/api/locations/notifications/:id', requireAuth, async (req, res) => {
   try {
-    await pool.execute('DELETE FROM notifications WHERE id = ?', [req.params.id]);
+    let result;
+    if (req.user.role === 'admin') {
+      [result] = await pool.execute(
+        'DELETE FROM notifications WHERE id = ? AND (target_user = ? OR target_user = ?)',
+        [req.params.id, req.user.username, 'admin']
+      );
+    } else {
+      [result] = await pool.execute(
+        'DELETE FROM notifications WHERE id = ? AND target_user = ?',
+        [req.params.id, req.user.username]
+      );
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Thông báo không tồn tại hoặc không thuộc quyền sở hữu' });
+    }
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ success: false });
@@ -513,31 +688,23 @@ app.delete('/api/locations/notifications/:id', requireAuth, async (req, res) => 
 
 app.put('/api/locations/notifications/:id/read', requireAuth, async (req, res) => {
   try {
-    await pool.execute('UPDATE notifications SET is_read = TRUE WHERE id = ?', [req.params.id]);
+    let result;
+    if (req.user.role === 'admin') {
+      [result] = await pool.execute(
+        'UPDATE notifications SET is_read = TRUE WHERE id = ? AND (target_user = ? OR target_user = ?)',
+        [req.params.id, req.user.username, 'admin']
+      );
+    } else {
+      [result] = await pool.execute(
+        'UPDATE notifications SET is_read = TRUE WHERE id = ? AND target_user = ?',
+        [req.params.id, req.user.username]
+      );
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Thông báo không tồn tại hoặc không thuộc quyền sở hữu' });
+    }
     res.json({ success: true });
   } catch (error) {
-    res.status(500).json({ success: false });
-  }
-});
-
-app.get('/api/locations/:id', async (req, res) => {
-  try {
-    const [rows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
-    if (rows.length === 0) {
-      return res.status(404).json({ success: false, message: 'Địa điểm không tồn tại' });
-    }
-    
-    const location = await formatLocation(rows[0]);
-
-    const [relatedRows] = await pool.execute(
-      'SELECT * FROM locations WHERE province_id = ? AND id != ? LIMIT 4', 
-      [location.province_id, location.id]
-    );
-    const related = await Promise.all(relatedRows.map(row => formatLocation(row)));
-
-    res.json({ success: true, data: location, related });
-  } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false });
   }
 });
@@ -579,12 +746,36 @@ app.get('/api/locations/admin/pending', requireAuth, async (req, res) => {
   }
 });
 
+app.get('/api/locations/:id', async (req, res) => {
+  try {
+    const [rows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Địa điểm không tồn tại' });
+    }
+
+    const location = await formatLocation(rows[0]);
+
+    const [relatedRows] = await pool.execute(
+      "SELECT * FROM locations WHERE province_id = ? AND id != ? AND status = 'approved' LIMIT 4",
+      [location.province_id, location.id]
+    );
+    const related = await Promise.all(relatedRows.map(row => formatLocation(row)));
+
+    res.json({ success: true, data: location, related });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false });
+  }
+});
+
 app.put('/api/locations/:id/status', requireAuth, async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Chỉ Admin mới có quyền duyệt hoặc từ chối bài viết' });
   }
 
-  const { status, reason } = req.body;
+  const { status, reason, rejectionReason } = req.body;
+  const finalReason = (reason ?? rejectionReason ?? '').toString().trim();
+
   if (!['approved', 'rejected', 'pending'].includes(status)) {
     return res.status(400).json({ success: false, message: 'Trạng thái không hợp lệ' });
   }
@@ -606,10 +797,10 @@ app.put('/api/locations/:id/status', requireAuth, async (req, res) => {
 
     if (loc.author && loc.author !== req.user.username) {
       const isApproved = status === 'approved';
-      const msg = isApproved 
+      const msg = isApproved
         ? `Chúc mừng! Bài viết "${loc.name}" của bạn đã được Admin duyệt và đăng tải công khai.`
-        : `Bài viết "${loc.name}" của bạn đã bị từ chối duyệt.${reason ? ' Lý do: ' + reason : ''}`;
-      
+        : `Bài viết "${loc.name}" của bạn đã bị từ chối duyệt.${finalReason ? ' Lý do: ' + finalReason : ''}`;
+
       notifyUser(loc.author, {
         id: `notif-${Date.now()}`,
         type: isApproved ? 'location_approved' : 'location_rejected',
@@ -627,10 +818,10 @@ app.put('/api/locations/:id/status', requireAuth, async (req, res) => {
       name: loc.name
     });
 
-    res.json({ 
-      success: true, 
-      data: updatedLoc, 
-      message: status === 'approved' ? 'Đã duyệt bài viết thành công!' : 'Đã từ chối bài viết!' 
+    res.json({
+      success: true,
+      data: updatedLoc,
+      message: status === 'approved' ? 'Đã duyệt bài viết thành công!' : 'Đã từ chối bài viết!'
     });
   } catch (error) {
     console.error(error);
@@ -640,20 +831,21 @@ app.put('/api/locations/:id/status', requireAuth, async (req, res) => {
 
 app.post('/api/locations', requireAuth, async (req, res) => {
   const { provinceId, name, type, description, tags, images } = req.body;
-  
+
   if (!provinceId || !name || !description) {
     return res.status(400).json({ success: false, message: 'Thiếu thông tin bắt buộc (provinceId, name, description)' });
   }
 
   const id = `${provinceId}-${Date.now()}`;
-  let mainImage = images && images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80';
-  
+  const safeImages = Array.isArray(images) ? images.filter(Boolean) : [];
+  const mainImage = safeImages.length > 0 ? safeImages[0] : 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80';
+
   const initialStatus = req.user.role === 'admin' ? 'approved' : 'pending';
 
   try {
     await pool.execute(
       'INSERT INTO locations (id, province_id, name, type, rating, description, image, images_json, tags_json, author, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [id, provinceId, name, type || 'discovery', 5, description, mainImage, JSON.stringify(images || []), JSON.stringify(tags || []), req.user.username, initialStatus]
+      [id, provinceId, String(name).trim(), type || 'discovery', 5, String(description).trim(), mainImage, JSON.stringify(safeImages), JSON.stringify(Array.isArray(tags) ? tags : []), req.user.username, initialStatus]
     );
 
     const [rows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [id]);
@@ -671,8 +863,8 @@ app.post('/api/locations', requireAuth, async (req, res) => {
       });
     }
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       data: newLocation,
       message: initialStatus === 'pending'
         ? 'Bài viết của bạn đã được gửi và đang chờ Admin duyệt trước khi đăng tải công khai!'
@@ -685,9 +877,9 @@ app.post('/api/locations', requireAuth, async (req, res) => {
 });
 
 app.put('/api/locations/:id', requireAuth, async (req, res) => {
-  const { name, type, description, tags, images } = req.body;
+  const { name, provinceId, province_id, type, description, tags, images } = req.body;
   const id = req.params.id;
-  
+
   try {
     const [rows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [id]);
     if (rows.length === 0) {
@@ -700,16 +892,31 @@ app.put('/api/locations/:id', requireAuth, async (req, res) => {
       return res.status(403).json({ success: false, message: 'Không có quyền sửa bài viết này' });
     }
 
-    let mainImage = images && images.length > 0 ? images[0] : loc.image;
+    const nextName = name !== undefined && String(name).trim() ? String(name).trim() : loc.name;
+    const incomingProv = provinceId !== undefined ? provinceId : province_id;
+    const nextProvinceId = incomingProv !== undefined && String(incomingProv).trim() ? String(incomingProv).trim() : loc.province_id;
+    const nextType = type !== undefined && String(type).trim() ? String(type).trim() : (loc.type || 'discovery');
+    const nextDescription = description !== undefined ? String(description) : (loc.description || '');
+
+    const existingTagsJson = typeof loc.tags_json === 'string' ? loc.tags_json : JSON.stringify(loc.tags_json || []);
+    const nextTagsJson = Array.isArray(tags) ? JSON.stringify(tags) : existingTagsJson;
+
+    const existingImagesJson = typeof loc.images_json === 'string' ? loc.images_json : JSON.stringify(loc.images_json || []);
+    const hasNewImages = Array.isArray(images);
+    const cleanNewImages = hasNewImages ? images.filter(Boolean) : [];
+    const nextMainImage = hasNewImages
+      ? (cleanNewImages[0] || loc.image || 'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80')
+      : loc.image;
+    const nextImagesJson = hasNewImages ? JSON.stringify(cleanNewImages) : existingImagesJson;
 
     await pool.execute(
-      'UPDATE locations SET name = COALESCE(?, name), type = COALESCE(?, type), description = COALESCE(?, description), tags_json = COALESCE(?, tags_json), image = COALESCE(?, image), images_json = COALESCE(?, images_json) WHERE id = ?',
-      [name, type, description, tags ? JSON.stringify(tags) : null, mainImage, images ? JSON.stringify(images) : null, id]
+      'UPDATE locations SET name = ?, province_id = ?, type = ?, description = ?, tags_json = ?, image = ?, images_json = ? WHERE id = ?',
+      [nextName, nextProvinceId, nextType, nextDescription, nextTagsJson, nextMainImage, nextImagesJson, id]
     );
 
     const [updatedRows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [id]);
     const updatedLoc = await formatLocation(updatedRows[0]);
-    
+
     res.json({ success: true, data: updatedLoc });
   } catch (error) {
     console.error(error);
@@ -719,7 +926,7 @@ app.put('/api/locations/:id', requireAuth, async (req, res) => {
 
 app.delete('/api/locations/:id', requireAuth, async (req, res) => {
   const id = req.params.id;
-  
+
   try {
     const [rows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [id]);
     if (rows.length === 0) {
@@ -741,7 +948,7 @@ app.delete('/api/locations/:id', requireAuth, async (req, res) => {
 app.get('/api/locations/:id/comments', async (req, res) => {
   try {
     const [rows] = await pool.execute('SELECT * FROM comments WHERE location_id = ? ORDER BY created_at ASC', [req.params.id]);
-    const data = rows.map(r => ({...r, locationId: r.location_id, parentId: r.parent_id}));
+    const data = rows.map(formatComment);
     res.json({ success: true, data });
   } catch (error) {
     console.error(error);
@@ -751,24 +958,27 @@ app.get('/api/locations/:id/comments', async (req, res) => {
 
 app.post('/api/locations/:id/comments', requireAuth, async (req, res) => {
   const { content, parentId } = req.body;
-  
+  if (!content || !String(content).trim()) {
+    return res.status(400).json({ success: false, message: 'Nội dung bình luận không được để trống' });
+  }
+
   try {
     const [rows] = await pool.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
     if (rows.length === 0) return res.status(404).json({ success: false, message: 'Not found' });
     const location = rows[0];
 
-    const cmtId = `cmt-${Date.now()}`;
+    const cmtId = `cmt-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     await pool.execute(
       'INSERT INTO comments (id, location_id, username, content, parent_id) VALUES (?, ?, ?, ?, ?)',
-      [cmtId, location.id, req.user.username, content, parentId || null]
+      [cmtId, location.id, req.user.username, String(content).trim(), parentId || null]
     );
 
     const [newCmtRows] = await pool.execute('SELECT * FROM comments WHERE id = ?', [cmtId]);
-    const newComment = {...newCmtRows[0], locationId: newCmtRows[0].location_id, parentId: newCmtRows[0].parent_id};
+    const newComment = formatComment(newCmtRows[0]);
 
     let targetUser = null;
     let message = '';
-    
+
     if (parentId) {
       const [parentRows] = await pool.execute('SELECT * FROM comments WHERE id = ?', [parentId]);
       if (parentRows.length > 0 && parentRows[0].username !== req.user.username) {
@@ -808,7 +1018,7 @@ app.post('/api/locations/:id/react', requireAuth, async (req, res) => {
     const location = rows[0];
 
     const [existing] = await pool.execute('SELECT * FROM location_reactions WHERE location_id = ? AND username = ?', [location.id, req.user.username]);
-    
+
     let added = false;
     if (existing.length > 0) {
       await pool.execute('DELETE FROM location_reactions WHERE location_id = ? AND username = ?', [location.id, req.user.username]);
@@ -850,34 +1060,42 @@ app.get('/api/support-chat/conversations', requireAuth, async (req, res) => {
 
   try {
     const [rows] = await pool.query(`
-      SELECT 
-        latest.conversation_id as username,
+      SELECT
+        m.conversation_id as username,
+        m.id as msg_id,
         u.email,
         u.role,
         m.message as last_message,
         m.sender_role as last_sender_role,
         m.created_at as last_message_time,
         COALESCE(unread.unread_count, 0) as unread_count
-      FROM (
+      FROM support_messages m
+      INNER JOIN (
         SELECT conversation_id, MAX(created_at) as max_time
         FROM support_messages
         GROUP BY conversation_id
-      ) latest
-      JOIN support_messages m ON m.conversation_id = latest.conversation_id AND m.created_at = latest.max_time
-      LEFT JOIN users u ON u.username = latest.conversation_id
+      ) latest ON m.conversation_id = latest.conversation_id AND m.created_at = latest.max_time
+      LEFT JOIN users u ON u.username = m.conversation_id
       LEFT JOIN (
         SELECT conversation_id, COUNT(*) as unread_count
         FROM support_messages
         WHERE receiver_username = 'admin' AND is_read = FALSE
         GROUP BY conversation_id
-      ) unread ON unread.conversation_id = latest.conversation_id
-      ORDER BY m.created_at DESC
+      ) unread ON unread.conversation_id = m.conversation_id
+      ORDER BY m.created_at DESC, m.id DESC
     `);
 
-    const conversations = rows.map(r => ({
-      ...r,
-      is_online: userSockets.has(r.username)
-    }));
+    const seen = new Set();
+    const conversations = [];
+    for (const r of rows) {
+      if (!r.username || seen.has(r.username)) continue;
+      seen.add(r.username);
+      const { msg_id, ...rest } = r;
+      conversations.push({
+        ...rest,
+        is_online: userSockets.has(r.username)
+      });
+    }
 
     res.json({ success: true, data: conversations });
   } catch (error) {
@@ -906,12 +1124,14 @@ app.get('/api/support-chat/messages/:conversationId', requireAuth, async (req, r
         [conversationId, 'admin']
       );
       io.to(`user_${conversationId}`).emit('messages_marked_read', { conversationId });
+      io.to('admins').emit('messages_marked_read', { conversationId });
     } else {
       await pool.execute(
         'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
         [req.user.username, req.user.username]
       );
       io.to('admins').emit('messages_marked_read', { conversationId: req.user.username });
+      io.to(`user_${req.user.username}`).emit('messages_marked_read', { conversationId: req.user.username });
     }
 
     res.json({ success: true, data: messages });
@@ -923,15 +1143,16 @@ app.get('/api/support-chat/messages/:conversationId', requireAuth, async (req, r
 
 app.post('/api/support-chat/send', requireAuth, async (req, res) => {
   const { message, targetUser, conversationId } = req.body;
-  if (!message || !message.trim()) {
+  if (!message || !String(message).trim()) {
     return res.status(400).json({ success: false, message: 'Vui lòng nhập nội dung tin nhắn' });
   }
 
+  const cleanMessage = String(message).trim();
   const isAdmin = req.user.role === 'admin';
   const msgId = `msg-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-  let sender_username = req.user.username;
-  let sender_role = isAdmin ? 'admin' : 'user';
+  const sender_username = req.user.username;
+  const sender_role = isAdmin ? 'admin' : 'user';
   let receiver_username = '';
   let conv_id = '';
 
@@ -950,7 +1171,7 @@ app.post('/api/support-chat/send', requireAuth, async (req, res) => {
   try {
     await pool.execute(
       'INSERT INTO support_messages (id, sender_username, sender_role, receiver_username, conversation_id, message, is_read) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [msgId, sender_username, sender_role, receiver_username, conv_id, message.trim(), false]
+      [msgId, sender_username, sender_role, receiver_username, conv_id, cleanMessage, false]
     );
 
     const newMsg = {
@@ -959,7 +1180,7 @@ app.post('/api/support-chat/send', requireAuth, async (req, res) => {
       sender_role,
       receiver_username,
       conversation_id: conv_id,
-      message: message.trim(),
+      message: cleanMessage,
       is_read: false,
       created_at: new Date().toISOString()
     };
@@ -990,12 +1211,14 @@ app.put('/api/support-chat/read/:conversationId', requireAuth, async (req, res) 
         [conversationId, 'admin']
       );
       io.to(`user_${conversationId}`).emit('messages_marked_read', { conversationId });
+      io.to('admins').emit('messages_marked_read', { conversationId });
     } else {
       await pool.execute(
         'UPDATE support_messages SET is_read = TRUE WHERE conversation_id = ? AND receiver_username = ?',
         [req.user.username, req.user.username]
       );
       io.to('admins').emit('messages_marked_read', { conversationId: req.user.username });
+      io.to(`user_${req.user.username}`).emit('messages_marked_read', { conversationId: req.user.username });
     }
 
     res.json({ success: true, message: 'Đã đánh dấu đã đọc' });
