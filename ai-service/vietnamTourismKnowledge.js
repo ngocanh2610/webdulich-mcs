@@ -1085,10 +1085,23 @@ const PROVINCE_ALIASES = {
   'cà mau': 'Cà Mau', 'ca mau': 'Cà Mau', 'đất mũi': 'Cà Mau', 'u minh': 'Cà Mau'
 };
 
+function normalizeViSearch(str = '') {
+  return str
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
 function detectDestinationProvince(text = '') {
   if (!text || typeof text !== 'string') return null;
   const cleanText = text.replace(/\s+/g, ' ').trim();
-  const lower = cleanText.toLowerCase();
+  const lower = cleanText.replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').toLowerCase();
+  const norm = normalizeViSearch(cleanText);
 
   const sortedAliases = Object.keys(PROVINCE_ALIASES).sort((a, b) => b.length - a.length);
   for (const key of sortedAliases) {
@@ -1104,6 +1117,18 @@ function detectDestinationProvince(text = '') {
     }
   }
 
+  for (const provName of sortedProvinces) {
+    const normProv = normalizeViSearch(provName);
+    if (normProv && norm.includes(normProv)) {
+      return provName;
+    }
+  }
+  for (const key of sortedAliases) {
+    const normKey = normalizeViSearch(key);
+    if (normKey.length >= 4 && norm.includes(normKey)) {
+      return PROVINCE_ALIASES[key];
+    }
+  }
   return null;
 }
 
@@ -1112,6 +1137,14 @@ function extractTripRoute(text = '') {
   let destination = null;
 
   const cleanText = (text || '').replace(/\s+/g, ' ').trim();
+  const departFromMatch = cleanText.match(/(?:xuất phát|khởi hành)\s+từ\s+([^\.,;?!]+?)(?=\s+(?:cho\s+\d|đi\s+\d|trong\s+\d|\d+\s*(?:ngày|người|khách|phòng))|[\.,;?!]|$)/i);
+  if (departFromMatch) {
+    const detectedStart = detectDestinationProvince(departFromMatch[1].trim());
+    if (detectedStart) startLocation = detectedStart;
+    const withoutDepart = cleanText.replace(departFromMatch[0], ' ');
+    const detectedDest = detectDestinationProvince(withoutDepart);
+    if (detectedDest) return { startLocation, destination: detectedDest };
+  }
   const routeMatch = cleanText.match(/từ\s+([^➔\->vàođến]+)\s*(?:➔|->|vào|đến|đi)\s*([^\.,;?!]+)/i);
   if (routeMatch) {
     const rawStart = routeMatch[1].trim();
@@ -1130,6 +1163,13 @@ function extractTripRoute(text = '') {
 
 function getOrCreateProvinceData(provinceName) {
   if (VIETNAM_PROVINCES_DATA[provinceName]) {
+    return VIETNAM_PROVINCES_DATA[provinceName];
+  }
+  const resolvedName = detectDestinationProvince(provinceName);
+  if (resolvedName && VIETNAM_PROVINCES_DATA[resolvedName]) {
+    return VIETNAM_PROVINCES_DATA[resolvedName];
+  }
+  if (false) {
     return VIETNAM_PROVINCES_DATA[provinceName];
   }
 

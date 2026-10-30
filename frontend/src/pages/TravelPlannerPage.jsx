@@ -546,7 +546,9 @@ const TravelPlannerPage = () => {
     const fromParam = params.get('from') || 'Hà Nội';
     const guestsParam = Math.max(1, parseInt(params.get('guests') || '1', 10) || 1);
     const roomsParam = Math.max(1, parseInt(params.get('rooms') || '1', 10) || 1);
-    handleSendMessage(`Lên lịch trình du lịch ${dest} ${validDays} ngày xuất phát từ ${fromParam} cho ${guestsParam} người ${roomsParam} phòng`);
+    window.scrollTo(0, 0);
+    const cleanDestQuery = dest.replace(/[-_]+/g, ' ').trim();
+    handleSendMessage(`Lên lịch trình du lịch ${cleanDestQuery} ${validDays} ngày xuất phát từ ${fromParam} cho ${guestsParam} người ${roomsParam} phòng`);
   }, []);
 
   const handleCopyShareLink = () => {
