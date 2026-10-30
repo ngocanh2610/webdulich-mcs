@@ -81,6 +81,7 @@ async function initDb() {
     }
   } catch (err) {
     console.error('Lỗi khởi tạo cấu trúc bảng users:', err.message);
+    setTimeout(initDb, 3000);
   }
 }
 setTimeout(initDb, 1500);
@@ -124,6 +125,9 @@ app.get('/health', async (req, res) => {
 
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: 'Vui lòng nhập tên đăng nhập và mật khẩu' });
+  }
   try {
     const [rows] = await pool.execute('SELECT * FROM users WHERE username = ? OR email = ?', [username, username]);
     if (rows.length === 0) {
@@ -166,8 +170,10 @@ app.post('/api/auth/register-otp', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Thiếu thông tin' });
   }
 
+  const cleanEmail = email.trim().toLowerCase();
+
   try {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE username = ? OR email = ?', [username, email]);
+    const [rows] = await pool.execute('SELECT * FROM users WHERE username = ? OR LOWER(email) = ?', [username.trim(), cleanEmail]);
     if (rows.length > 0) {
       return res.status(400).json({ success: false, message: 'Tên người dùng hoặc Email đã tồn tại' });
     }
@@ -175,26 +181,25 @@ app.post('/api/auth/register-otp', async (req, res) => {
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 5 * 60000;
     
-    await pool.execute('DELETE FROM otps WHERE email = ?', [email]);
+    await pool.execute('DELETE FROM otps WHERE email = ?', [cleanEmail]);
     await pool.execute('INSERT INTO otps (email, username, password, otp_code, expires_at) VALUES (?, ?, ?, ?, ?)', 
-      [email, username, password, otpCode, expiresAt]);
+      [cleanEmail, username.trim(), password, otpCode, expiresAt]);
 
     try {
       if (process.env.SMTP_USER && process.env.SMTP_PASS) {
         await transporter.sendMail({
           from: `"Vietnam Tourism" <${process.env.SMTP_USER}>`,
-          to: email,
+          to: cleanEmail,
           subject: 'Mã xác nhận đăng ký tài khoản',
           text: `Mã OTP của bạn là: ${otpCode}. Mã này sẽ hết hạn trong 5 phút.`,
           html: `<h3>Chào bạn,</h3><p>Mã OTP xác nhận đăng ký tài khoản của bạn là: <strong>${otpCode}</strong></p><p>Mã sẽ hết hạn trong 5 phút.</p>`
         });
-        console.log(`Sent OTP to ${email}: ${otpCode}`);
+        console.log(`Sent registration OTP to ${cleanEmail}`);
       } else {
-        console.log(`[MOCK EMAIL] OTP for ${email} is ${otpCode}`);
+        console.log(`[DEV MOCK EMAIL] Registration OTP sent for ${cleanEmail}`);
       }
     } catch (mailError) {
       console.error('Lỗi khi gửi email qua SMTP:', mailError.message);
-      console.log(`[MOCK EMAIL FALLBACK] OTP for ${email} is ${otpCode}`);
     }
     
     res.json({ success: true, message: 'Đã gửi mã OTP tới email của bạn' });
@@ -206,9 +211,13 @@ app.post('/api/auth/register-otp', async (req, res) => {
 
 app.post('/api/auth/verify-otp', async (req, res) => {
   const { email, otpCode } = req.body;
+  if (!email || !otpCode) {
+    return res.status(400).json({ success: false, message: 'Thiếu email hoặc mã OTP' });
+  }
+  const cleanEmail = email.trim().toLowerCase();
   
   try {
-    const [rows] = await pool.execute('SELECT * FROM otps WHERE email = ? AND otp_code = ?', [email, otpCode]);
+    const [rows] = await pool.execute('SELECT * FROM otps WHERE email = ? AND otp_code = ? AND password != ?', [cleanEmail, otpCode.trim(), 'RESET_PASSWORD']);
     if (rows.length === 0) {
       return res.status(400).json({ success: false, message: 'Mã OTP không hợp lệ' });
     }
@@ -225,7 +234,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     await pool.execute('INSERT INTO users (id, username, email, password, role, status) VALUES (?, ?, ?, ?, ?, ?)', 
       [id, pending.username, pending.email, hashedPassword, 'user', 'active']);
 
-    await pool.execute('DELETE FROM otps WHERE email = ?', [email]);
+    await pool.execute('DELETE FROM otps WHERE email = ?', [cleanEmail]);
 
     res.json({ success: true, message: 'Đăng ký thành công' });
   } catch (error) {
@@ -277,13 +286,12 @@ app.post('/api/auth/forgot-password', async (req, res) => {
             </div>
           `
         });
-        console.log(`[FORGOT-PW] Sent OTP to ${cleanEmail}: ${otpCode}`);
+        console.log(`[FORGOT-PW] Sent OTP to ${cleanEmail}`);
       } else {
-        console.log(`[MOCK EMAIL / FORGOT-PW] OTP for ${cleanEmail} is ${otpCode}`);
+        console.log(`[DEV MOCK EMAIL / FORGOT-PW] OTP generated for ${cleanEmail}`);
       }
     } catch (mailError) {
       console.error('Lỗi khi gửi email qua SMTP:', mailError.message);
-      console.log(`[MOCK EMAIL FALLBACK / FORGOT-PW] OTP for ${cleanEmail} is ${otpCode}`);
     }
 
     res.json({ success: true, message: 'Mã xác nhận OTP đã được gửi về email của bạn' });
@@ -306,7 +314,7 @@ app.post('/api/auth/reset-password', async (req, res) => {
   const cleanEmail = email.trim().toLowerCase();
 
   try {
-    const [rows] = await pool.execute('SELECT * FROM otps WHERE email = ? AND otp_code = ?', [cleanEmail, otpCode.trim()]);
+    const [rows] = await pool.execute('SELECT * FROM otps WHERE email = ? AND otp_code = ? AND password = ?', [cleanEmail, otpCode.trim(), 'RESET_PASSWORD']);
     if (rows.length === 0) {
       return res.status(400).json({ success: false, message: 'Mã OTP không chính xác' });
     }
@@ -335,24 +343,28 @@ app.post('/api/auth/google', async (req, res) => {
   if (!credential) return res.status(400).json({ success: false, message: 'Missing credential' });
 
   try {
+    const allowedAudiences = [
+      process.env.GOOGLE_CLIENT_ID?.trim(),
+      process.env.VITE_GOOGLE_CLIENT_ID?.trim(),
+      '290652647677-hm7715ipm0ufh8c5lck7vc59qjq80jna.apps.googleusercontent.com'
+    ].filter(Boolean);
+
     let payload;
-    if (process.env.GOOGLE_CLIENT_ID) {
-      try {
-        const ticket = await googleClient.verifyIdToken({
-          idToken: credential,
-          audience: process.env.GOOGLE_CLIENT_ID.trim(),
-        });
-        payload = ticket.getPayload();
-      } catch (verifyError) {
-        console.warn('⚠️ Google verifyIdToken with audience failed, decoding payload as fallback:', verifyError.message);
-        payload = jwt.decode(credential);
-      }
-    } else {
-      payload = jwt.decode(credential);
-      console.warn("⚠️ Bypassing Google Token Verification because GOOGLE_CLIENT_ID is not set in environment!");
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: allowedAudiences
+      });
+      payload = ticket.getPayload();
+    } catch (verifyError) {
+      console.error('❌ Google verifyIdToken failed:', verifyError.message);
+      return res.status(401).json({
+        success: false,
+        message: 'Xác thực chữ ký Google không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.'
+      });
     }
 
-    if (!payload || !payload.email) {
+    if (!payload || !payload.email || payload.email_verified === false) {
       return res.status(400).json({ success: false, message: 'Không thể xác thực thông tin người dùng từ Google' });
     }
 
@@ -360,7 +372,7 @@ app.post('/api/auth/google', async (req, res) => {
     const name = payload.name || payload.given_name || email.split('@')[0] || 'User';
     const sub = payload.sub;
 
-    const [rows] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await pool.execute('SELECT * FROM users WHERE LOWER(email) = ?', [email]);
     let user;
     
     if (rows.length === 0) {
@@ -378,7 +390,7 @@ app.post('/api/auth/google', async (req, res) => {
       await pool.execute('INSERT INTO users (id, username, email, role, avatar, status) VALUES (?, ?, ?, ?, ?, ?)', 
         [id, username, email, 'user', avatar, 'active']);
       
-      const [newRows] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
+      const [newRows] = await pool.execute('SELECT * FROM users WHERE LOWER(email) = ?', [email]);
       user = newRows[0];
     } else {
       user = rows[0];
@@ -457,11 +469,13 @@ const handleUpdateProfile = async (req, res) => {
     }
 
     if (newPassword) {
-      if (!currentPassword) {
-        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp mật khẩu hiện tại' });
-      }
-      if (!user.password || !bcrypt.compareSync(currentPassword, user.password)) {
-        return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác' });
+      if (user.password) {
+        if (!currentPassword) {
+          return res.status(400).json({ success: false, message: 'Vui lòng cung cấp mật khẩu hiện tại' });
+        }
+        if (!bcrypt.compareSync(currentPassword, user.password)) {
+          return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác' });
+        }
       }
       if (newPassword.length < 6) {
         return res.status(400).json({ success: false, message: 'Mật khẩu mới phải có tối thiểu 6 ký tự' });
