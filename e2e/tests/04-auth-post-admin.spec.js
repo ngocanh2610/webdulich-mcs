@@ -95,7 +95,11 @@ test.describe('04. Kiểm thử Xác thực, Phân quyền & Luồng Đăng bài
       adminToken = await adminPage.evaluate(() => localStorage.getItem('token'));
       expect(adminToken).toBeTruthy();
 
-      await adminPage.goto('/admin/approvals');
+      // Bấm nút "Duyệt bài" dành riêng cho Admin trên thanh Navbar để chuyển trang SPA
+      const adminNavApproveBtn = adminPage.getByRole('navigation').getByRole('button', { name: 'Duyệt bài' });
+      await expect(adminNavApproveBtn).toBeVisible();
+      await adminNavApproveBtn.click();
+      await expect(adminPage).toHaveURL(/\/admin\/approvals/);
       await expect(adminPage.locator('h1')).toContainText('Duyệt Bài Đăng');
       const cardHeading = adminPage.locator('h3', { hasText: uniqueName });
       await expect(cardHeading).toBeVisible();

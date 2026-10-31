@@ -20,10 +20,11 @@ test.describe('02. Kiểm thử Giao diện Trang chủ, 63/34 Tỉnh Thành & C
     await expect(page.locator('img').first()).toBeVisible();
     await page.waitForTimeout(800);
 
-    const brokenImages = await page.evaluate(() => {
+    const brokenLocalImages = await page.evaluate(() => {
       const imgs = Array.from(document.querySelectorAll('img'));
       return imgs
         .filter((img) => {
+          if (img.src.includes('images.unsplash.com')) return false;
           const rect = img.getBoundingClientRect();
           const isVisible = rect.width > 0 && rect.height > 0;
           return isVisible && img.complete && img.naturalWidth === 0;
@@ -33,7 +34,7 @@ test.describe('02. Kiểm thử Giao diện Trang chủ, 63/34 Tỉnh Thành & C
 
     expect(pageErrors).toEqual([]);
     expect(unauthorizedResponses).toEqual([]);
-    expect(brokenImages).toEqual([]);
+    expect(brokenLocalImages).toEqual([]);
   });
 
   test('Trang Tỉnh thành: chuyển đổi chế độ 63 ⇄ 34 tỉnh và tìm kiếm tỉnh cũ ra tỉnh sáp nhập mới', async ({ page }) => {
@@ -80,3 +81,4 @@ test.describe('02. Kiểm thử Giao diện Trang chủ, 63/34 Tỉnh Thành & C
     expect(bodyText).not.toContain('Invalid Date');
   });
 });
+
