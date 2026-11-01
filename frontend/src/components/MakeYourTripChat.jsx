@@ -66,7 +66,7 @@ const MakeYourTripChat = ({
       height: '100%',
       minHeight: '620px',
       background: '#FFFFFF',
-      borderRadius: '20px',
+      borderRadius: '12px',
       border: '1px solid #E2E8F0',
       boxShadow: '0 4px 20px rgba(2, 50, 106, 0.05)',
       overflow: 'hidden'
@@ -145,7 +145,7 @@ const MakeYourTripChat = ({
                   background: '#E0F2FE',
                   color: '#0369A1',
                   padding: '0.85rem 1.15rem',
-                  borderRadius: '18px 18px 4px 18px',
+                  borderRadius: '10px 10px 2px 10px',
                   fontSize: '0.92rem',
                   fontWeight: 500,
                   lineHeight: 1.5,
@@ -160,7 +160,7 @@ const MakeYourTripChat = ({
                   background: '#FFFFFF',
                   color: '#1E293B',
                   padding: '1rem 1.15rem',
-                  borderRadius: '4px 18px 18px 18px',
+                  borderRadius: '2px 10px 10px 10px',
                   fontSize: '0.9rem',
                   lineHeight: 1.6,
                   border: '1px solid #E2E8F0',
@@ -180,7 +180,7 @@ const MakeYourTripChat = ({
               background: '#FFFFFF',
               border: '1px solid #E2E8F0',
               padding: '0.75rem 1rem',
-              borderRadius: '16px',
+              borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -213,7 +213,7 @@ const MakeYourTripChat = ({
               onClick={() => onSelectPrompt(prompt)}
               style={{
                 padding: '0.35rem 0.75rem',
-                borderRadius: '14px',
+                borderRadius: '6px',
                 border: '1px solid #BFDBFE',
                 background: '#EFF6FF',
                 color: '#0284C7',
@@ -248,7 +248,7 @@ const MakeYourTripChat = ({
           style={{
             flex: 1,
             padding: '0.75rem 1rem',
-            borderRadius: '24px',
+            borderRadius: '8px',
             border: '1px solid #D1D5DB',
             outline: 'none',
             fontSize: '0.88rem',

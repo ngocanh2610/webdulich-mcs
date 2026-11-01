@@ -963,7 +963,7 @@ const TravelPlannerPage = () => {
 
         <div style={{
           background: '#FFFFFF',
-          borderRadius: '20px',
+          borderRadius: '12px',
           border: '1px solid #E2E8F0',
           boxShadow: '0 4px 16px rgba(2, 50, 106, 0.04)',
           display: 'flex',
@@ -997,7 +997,7 @@ const TravelPlannerPage = () => {
                       onClick={() => handleSendMessage(dest.prompt)}
                       style={{
                         background: '#FFFFFF',
-                        borderRadius: '14px',
+                        borderRadius: '10px',
                         border: '1px solid #E2E8F0',
                         overflow: 'hidden',
                         cursor: 'pointer',
@@ -1269,7 +1269,7 @@ const TravelPlannerPage = () => {
                           <div style={{
                             flex: 1,
                             background: '#FFFFFF',
-                            borderRadius: '14px',
+                            borderRadius: '10px',
                             border: '1px solid #E2E8F0',
                             padding: '1rem',
                             boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
@@ -1412,7 +1412,7 @@ const TravelPlannerPage = () => {
                       key={idx}
                       style={{
                         background: '#F8FAFC',
-                        borderRadius: '14px',
+                        borderRadius: '10px',
                         border: '1px solid #E2E8F0',
                         padding: '1.15rem',
                         display: 'flex',
@@ -1487,7 +1487,7 @@ const TravelPlannerPage = () => {
         }}>
           <div style={{
             background: '#FFFFFF',
-            borderRadius: '20px',
+            borderRadius: '12px',
             width: '100%',
             maxWidth: '480px',
             padding: '1.75rem',

@@ -13,7 +13,7 @@ const SearchFilter = ({ searchTerm, setSearchTerm, regionFilter, setRegionFilter
       justifyContent: 'space-between',
       background: '#FFFFFF',
       border: '1px solid #E2E8F0',
-      borderRadius: '16px',
+      borderRadius: '10px',
       boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)'
     }}>
       <div style={{ 
@@ -54,7 +54,7 @@ const SearchFilter = ({ searchTerm, setSearchTerm, regionFilter, setRegionFilter
             border: '1px solid',
             borderColor: regionFilter === 'all' ? 'var(--brand-navy)' : '#CBD5E1',
             padding: '0.5rem 1.1rem',
-            borderRadius: '20px',
+            borderRadius: '8px',
             cursor: 'pointer',
             transition: 'all 0.2s',
             display: 'flex',
@@ -78,7 +78,7 @@ const SearchFilter = ({ searchTerm, setSearchTerm, regionFilter, setRegionFilter
               border: '1px solid',
               borderColor: regionFilter === r.code ? 'var(--brand-navy)' : '#CBD5E1',
               padding: '0.5rem 1.1rem',
-              borderRadius: '20px',
+              borderRadius: '8px',
               cursor: 'pointer',
               transition: 'all 0.2s',
               display: 'flex',

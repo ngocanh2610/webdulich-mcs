@@ -338,7 +338,7 @@ const ProfilePage = () => {
         
         <div style={{
           background: 'linear-gradient(135deg, #FF385C 0%, #E0284F 50%, #BD1E59 100%)',
-          borderRadius: '24px',
+          borderRadius: '12px',
           padding: '2.5rem 2rem 2rem',
           color: '#FFFFFF',
           position: 'relative',
@@ -471,7 +471,7 @@ const ProfilePage = () => {
                       fontSize: '0.75rem',
                       fontWeight: 800,
                       padding: '0.2rem 0.65rem',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
                     }}>
                       QUẢN TRỊ VIÊN
@@ -514,7 +514,7 @@ const ProfilePage = () => {
                   color: '#FFFFFF',
                   border: '1px solid rgba(255, 255, 255, 0.4)',
                   padding: '0.6rem 1.1rem',
-                  borderRadius: '14px',
+                  borderRadius: '8px',
                   fontWeight: 600,
                   fontSize: '0.875rem',
                   cursor: 'pointer',
@@ -539,7 +539,7 @@ const ProfilePage = () => {
                   color: '#FFFFFF',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   padding: '0.6rem 1.1rem',
-                  borderRadius: '14px',
+                  borderRadius: '8px',
                   fontWeight: 600,
                   fontSize: '0.875rem',
                   cursor: 'pointer',
@@ -560,7 +560,7 @@ const ProfilePage = () => {
           gap: '0.75rem',
           background: '#FFFFFF',
           padding: '0.5rem',
-          borderRadius: '16px',
+          borderRadius: '10px',
           boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
           marginBottom: '2rem',
           border: '1px solid #E2E8F0'
@@ -633,7 +633,7 @@ const ProfilePage = () => {
             
             <div style={{
               background: '#FFFFFF',
-              borderRadius: '20px',
+              borderRadius: '10px',
               padding: '1.75rem',
               boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
               border: '1px solid #E2E8F0'
@@ -664,7 +664,7 @@ const ProfilePage = () => {
                   <div style={{
                     padding: '0.75rem 1rem',
                     background: '#F8FAFC',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: '1px solid #E2E8F0',
                     fontSize: '0.95rem',
                     fontWeight: 600,
@@ -681,7 +681,7 @@ const ProfilePage = () => {
                   <div style={{
                     padding: '0.75rem 1rem',
                     background: '#F8FAFC',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: '1px solid #E2E8F0',
                     fontSize: '0.95rem',
                     color: '#334155'
@@ -699,7 +699,7 @@ const ProfilePage = () => {
                     alignItems: 'center',
                     gap: '0.45rem',
                     padding: '0.5rem 0.9rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     fontSize: '0.875rem',
                     fontWeight: 700,
                     background: user.role === 'admin' ? '#FEF2F2' : '#F0FDF4',
@@ -720,7 +720,7 @@ const ProfilePage = () => {
                     alignItems: 'center',
                     gap: '0.45rem',
                     padding: '0.5rem 0.9rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     fontSize: '0.875rem',
                     fontWeight: 700,
                     background: '#F0FDF4',
@@ -785,7 +785,7 @@ const ProfilePage = () => {
 
             <div style={{
               background: '#FFFFFF',
-              borderRadius: '20px',
+              borderRadius: '10px',
               padding: '1.75rem',
               boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
               border: '1px solid #E2E8F0'
@@ -821,7 +821,7 @@ const ProfilePage = () => {
                     style={{
                       width: '100%',
                       padding: '0.75rem 1rem',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       border: '1px solid #CBD5E1',
                       fontSize: '0.95rem',
                       outline: 'none',
@@ -842,7 +842,7 @@ const ProfilePage = () => {
                     style={{
                       width: '100%',
                       padding: '0.75rem 1rem',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       border: '1px solid #CBD5E1',
                       fontSize: '0.95rem',
                       outline: 'none',
@@ -863,7 +863,7 @@ const ProfilePage = () => {
                     style={{
                       width: '100%',
                       padding: '0.75rem 1rem',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       border: '1px solid #CBD5E1',
                       fontSize: '0.95rem',
                       outline: 'none',
@@ -878,7 +878,7 @@ const ProfilePage = () => {
                   style={{
                     marginTop: '0.5rem',
                     padding: '0.8rem 1.25rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: 'none',
                     background: isChangingPassword ? '#94A3B8' : 'linear-gradient(135deg, #4F46E5 0%, #4338CA 100%)',
                     color: '#FFFFFF',
@@ -920,7 +920,7 @@ const ProfilePage = () => {
             }}>
               <div style={{
                 background: '#FFFFFF',
-                borderRadius: '16px',
+                borderRadius: '10px',
                 padding: '1.25rem',
                 border: '1px solid #E2E8F0',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
@@ -948,7 +948,7 @@ const ProfilePage = () => {
 
               <div style={{
                 background: '#FFFFFF',
-                borderRadius: '16px',
+                borderRadius: '10px',
                 padding: '1.25rem',
                 border: '1px solid #E2E8F0',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
@@ -976,7 +976,7 @@ const ProfilePage = () => {
 
               <div style={{
                 background: '#FFFFFF',
-                borderRadius: '16px',
+                borderRadius: '10px',
                 padding: '1.25rem',
                 border: '1px solid #E2E8F0',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
@@ -1004,7 +1004,7 @@ const ProfilePage = () => {
 
               <div style={{
                 background: '#FFFFFF',
-                borderRadius: '16px',
+                borderRadius: '10px',
                 padding: '1.25rem',
                 border: '1px solid #E2E8F0',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
@@ -1033,7 +1033,7 @@ const ProfilePage = () => {
 
             <div style={{
               background: '#FFFFFF',
-              borderRadius: '18px',
+              borderRadius: '10px',
               padding: '1.25rem',
               boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
               border: '1px solid #E2E8F0',
@@ -1058,7 +1058,7 @@ const ProfilePage = () => {
                   style={{
                     width: '100%',
                     padding: '0.7rem 1rem 0.7rem 2.6rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: '1px solid #CBD5E1',
                     fontSize: '0.9rem',
                     outline: 'none',
@@ -1073,7 +1073,7 @@ const ProfilePage = () => {
                   onChange={(e) => setRoleFilter(e.target.value)}
                   style={{
                     padding: '0.65rem 1rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: '1px solid #CBD5E1',
                     fontSize: '0.875rem',
                     background: '#FFFFFF',
@@ -1092,7 +1092,7 @@ const ProfilePage = () => {
                   onChange={(e) => setStatusFilter(e.target.value)}
                   style={{
                     padding: '0.65rem 1rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: '1px solid #CBD5E1',
                     fontSize: '0.875rem',
                     background: '#FFFFFF',
@@ -1115,7 +1115,7 @@ const ProfilePage = () => {
                     alignItems: 'center',
                     gap: '0.4rem',
                     padding: '0.65rem 1rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: '1px solid #E2E8F0',
                     background: '#F8FAFC',
                     color: '#475569',
@@ -1133,7 +1133,7 @@ const ProfilePage = () => {
 
             <div style={{
               background: '#FFFFFF',
-              borderRadius: '20px',
+              borderRadius: '10px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
               border: '1px solid #E2E8F0',
               overflow: 'hidden'
@@ -1259,7 +1259,7 @@ const ProfilePage = () => {
                                   alignItems: 'center',
                                   gap: '0.3rem',
                                   padding: '0.25rem 0.65rem',
-                                  borderRadius: '12px',
+                                  borderRadius: '8px',
                                   fontSize: '0.75rem',
                                   fontWeight: 800,
                                   background: '#FEF2F2',
@@ -1275,7 +1275,7 @@ const ProfilePage = () => {
                                   alignItems: 'center',
                                   gap: '0.3rem',
                                   padding: '0.25rem 0.65rem',
-                                  borderRadius: '12px',
+                                  borderRadius: '8px',
                                   fontSize: '0.75rem',
                                   fontWeight: 700,
                                   background: '#EFF6FF',
@@ -1295,7 +1295,7 @@ const ProfilePage = () => {
                                   alignItems: 'center',
                                   gap: '0.3rem',
                                   padding: '0.25rem 0.65rem',
-                                  borderRadius: '12px',
+                                  borderRadius: '8px',
                                   fontSize: '0.75rem',
                                   fontWeight: 700,
                                   background: '#FEE2E2',
@@ -1311,7 +1311,7 @@ const ProfilePage = () => {
                                   alignItems: 'center',
                                   gap: '0.3rem',
                                   padding: '0.25rem 0.65rem',
-                                  borderRadius: '12px',
+                                  borderRadius: '8px',
                                   fontSize: '0.75rem',
                                   fontWeight: 700,
                                   background: '#F0FDF4',
@@ -1430,7 +1430,7 @@ const ProfilePage = () => {
         }}>
           <div style={{
             background: '#FFFFFF',
-            borderRadius: '24px',
+            borderRadius: '12px',
             width: '100%',
             maxWidth: '520px',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
@@ -1512,7 +1512,7 @@ const ProfilePage = () => {
                   style={{
                     width: '100%',
                     padding: '0.85rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: '2px dashed #CBD5E1',
                     background: '#F8FAFC',
                     color: '#475569',
@@ -1693,7 +1693,7 @@ const ProfilePage = () => {
         }}>
           <div style={{
             background: '#FFFFFF',
-            borderRadius: '24px',
+            borderRadius: '12px',
             width: '100%',
             maxWidth: '460px',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
@@ -1754,7 +1754,7 @@ const ProfilePage = () => {
                   style={{
                     flex: 1,
                     padding: '0.75rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: '1px solid #CBD5E1',
                     background: '#FFFFFF',
                     color: '#475569',
@@ -1773,7 +1773,7 @@ const ProfilePage = () => {
                   style={{
                     flex: 1,
                     padding: '0.75rem',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     border: 'none',
                     background: actionModal.type === 'delete' ? '#DC2626' : actionModal.type === 'disable' ? '#D97706' : '#16A34A',
                     color: '#FFFFFF',

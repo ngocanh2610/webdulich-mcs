@@ -198,7 +198,7 @@ const NotificationDropdown = () => {
           overflowY: 'auto',
           background: '#FFFFFF',
           border: '1px solid #E5E7EB',
-          borderRadius: '16px',
+          borderRadius: '10px',
           boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
           zIndex: 1100,
           padding: '1rem',
