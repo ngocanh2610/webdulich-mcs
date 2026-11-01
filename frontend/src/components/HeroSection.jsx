@@ -66,7 +66,7 @@ const HeroSection = () => {
           backdropFilter: 'blur(8px)',
           border: '1px solid rgba(255, 255, 255, 0.3)',
           padding: '0.4rem 1.15rem',
-          borderRadius: '30px',
+          borderRadius: '6px',
           color: '#FFFFFF',
           fontSize: '0.85rem',
           fontWeight: 700,
@@ -118,7 +118,7 @@ const HeroSection = () => {
           onSubmit={handleSearchSubmit}
           style={{
             background: '#FFFFFF',
-            borderRadius: '18px',
+            borderRadius: '10px',
             padding: '0.85rem 1rem',
             width: '100%',
             maxWidth: '900px',

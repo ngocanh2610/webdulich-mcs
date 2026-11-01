@@ -16,7 +16,7 @@ const ProvinceCard = ({ province }) => {
           flexDirection: 'column',
           background: '#FFFFFF',
           border: '1px solid #E2E8F0',
-          borderRadius: '16px',
+          borderRadius: '10px',
           overflow: 'hidden',
           height: '100%',
           boxShadow: '0 4px 16px rgba(2, 50, 106, 0.06)',

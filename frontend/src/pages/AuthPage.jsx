@@ -263,7 +263,7 @@ const AuthPage = () => {
         position: 'relative',
         width: '100%', maxWidth: '440px',
         padding: '3rem 2.5rem',
-        borderRadius: '16px',
+        borderRadius: '12px',
         background: '#FFFFFF',
         border: '1px solid var(--border-light)',
         boxShadow: 'var(--glass-shadow)',
@@ -305,13 +305,13 @@ const AuthPage = () => {
         </div>
 
         {error && (
-          <div style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid rgba(239,68,68,0.2)' }}>
+          <div style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid rgba(239,68,68,0.2)' }}>
             {error}
           </div>
         )}
 
         {successMsg && (
-          <div style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <CheckCircle2 size={18} />
             <span>{successMsg}</span>
           </div>

@@ -135,7 +135,7 @@ const ProvinceDetailPage = () => {
               cursor: 'pointer',
               marginBottom: '1.25rem',
               padding: '0.45rem 1rem',
-              borderRadius: '20px',
+              borderRadius: '6px',
               fontWeight: 600,
               fontSize: '0.875rem'
             }}
@@ -150,7 +150,7 @@ const ProvinceDetailPage = () => {
               backgroundColor: 'rgba(2, 50, 106, 0.85)',
               color: '#FFFFFF',
               border: '1px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '20px',
+              borderRadius: '6px',
               fontSize: '0.85rem',
               fontWeight: '700',
               textTransform: 'uppercase',
@@ -159,7 +159,7 @@ const ProvinceDetailPage = () => {
               {province.region}
             </span>
             {province.mergedFrom && province.mergedFrom.length > 0 && (
-              <span style={{ background: 'var(--brand-red)', color: 'white', padding: '0.3rem 0.85rem', borderRadius: '20px', fontSize: '0.825rem', fontWeight: 700 }}>
+              <span style={{ background: 'var(--brand-red)', color: 'white', padding: '0.3rem 0.85rem', borderRadius: '6px', fontSize: '0.825rem', fontWeight: 700 }}>
                 Sáp nhập từ: {province.mergedFrom.join(', ')}
               </span>
             )}
@@ -176,8 +176,8 @@ const ProvinceDetailPage = () => {
 
       <div className="container" style={{ marginTop: '2.5rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
-          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
-            <div style={{ background: '#EFF6FF', padding: '0.9rem', borderRadius: '12px', color: 'var(--brand-navy)' }}>
+          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+            <div style={{ background: '#EFF6FF', padding: '0.9rem', borderRadius: '8px', color: 'var(--brand-navy)' }}>
               <Maximize size={28} />
             </div>
             <div>
@@ -186,8 +186,8 @@ const ProvinceDetailPage = () => {
             </div>
           </div>
 
-          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
-            <div style={{ background: '#FEF2F2', padding: '0.9rem', borderRadius: '12px', color: 'var(--brand-red)' }}>
+          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+            <div style={{ background: '#FEF2F2', padding: '0.9rem', borderRadius: '8px', color: 'var(--brand-red)' }}>
               <Users size={28} />
             </div>
             <div>
@@ -196,8 +196,8 @@ const ProvinceDetailPage = () => {
             </div>
           </div>
 
-          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
-            <div style={{ background: '#FEF3C7', padding: '0.9rem', borderRadius: '12px', color: '#D97706' }}>
+          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', display: 'flex', alignItems: 'center', gap: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+            <div style={{ background: '#FEF3C7', padding: '0.9rem', borderRadius: '8px', color: '#D97706' }}>
               <MapPin size={28} />
             </div>
             <div>
@@ -213,7 +213,7 @@ const ProvinceDetailPage = () => {
             border: '1px solid #FDE68A',
             color: '#92400E',
             padding: '1rem 1.25rem',
-            borderRadius: '14px',
+            borderRadius: '8px',
             marginBottom: '2rem',
             display: 'flex',
             alignItems: 'center',

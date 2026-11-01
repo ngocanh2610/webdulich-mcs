@@ -381,7 +381,7 @@ const AdminChatPage = () => {
         minHeight: 0,
         display: 'flex',
         background: '#FFFFFF',
-        borderRadius: '16px',
+        borderRadius: '12px',
         border: '1px solid #E5E7EB',
         boxShadow: '0 8px 25px rgba(0,0,0,0.06)',
         overflow: 'hidden'
@@ -735,7 +735,7 @@ const AdminChatPage = () => {
                         <div style={{
                           maxWidth: '75%',
                           padding: '10px 15px',
-                          borderRadius: '14px',
+                          borderRadius: '8px',
                           fontSize: '0.9rem',
                           lineHeight: '1.45',
                           wordBreak: 'break-word',
@@ -831,7 +831,7 @@ const AdminChatPage = () => {
                     flex: 1,
                     minWidth: 0,
                     padding: '10px 16px',
-                    borderRadius: '20px',
+                    borderRadius: '8px',
                     border: '1px solid #D1D5DB',
                     outline: 'none',
                     fontSize: '0.88rem',

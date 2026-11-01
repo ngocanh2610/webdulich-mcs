@@ -28,7 +28,7 @@ const ModeSelector = () => {
         marginBottom: '0.5rem',
         background: '#EFF6FF',
         padding: '0.35rem 0.9rem',
-        borderRadius: '20px'
+        borderRadius: '6px'
       }}>
         <Info size={15} />
         <span>Tùy Chọn Bản Đồ Địa Giới</span>
@@ -47,7 +47,7 @@ const ModeSelector = () => {
           onClick={() => setMode('63')}
           style={{ 
             padding: '1.75rem', 
-            borderRadius: '16px',
+            borderRadius: '10px',
             border: `2px solid ${mode === '63' ? 'var(--brand-navy)' : '#E2E8F0'}`,
             background: mode === '63' ? '#F0F7FF' : '#FFFFFF',
             cursor: 'pointer',
@@ -86,7 +86,7 @@ const ModeSelector = () => {
           onClick={() => setMode('34')}
           style={{ 
             padding: '1.75rem', 
-            borderRadius: '16px',
+            borderRadius: '10px',
             border: `2px solid ${mode === '34' ? 'var(--brand-red)' : '#E2E8F0'}`,
             background: mode === '34' ? '#FFF1F2' : '#FFFFFF',
             cursor: 'pointer',

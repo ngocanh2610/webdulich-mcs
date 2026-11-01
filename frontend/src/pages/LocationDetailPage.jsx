@@ -337,7 +337,7 @@ const LocationDetailPage = () => {
           <div style={{
             background: '#FFFBEB',
             border: '1px solid #FDE68A',
-            borderRadius: '16px',
+            borderRadius: '10px',
             padding: '1.25rem 1.75rem',
             marginBottom: '2rem',
             display: 'flex',
@@ -404,7 +404,7 @@ const LocationDetailPage = () => {
           <div style={{
             background: '#FEF2F2',
             border: '1px solid #FECACA',
-            borderRadius: '16px',
+            borderRadius: '10px',
             padding: '1.25rem 1.75rem',
             marginBottom: '2rem',
             display: 'flex',
@@ -432,7 +432,7 @@ const LocationDetailPage = () => {
           <div>
             <div
               onClick={() => openLightbox(allImages.indexOf(selectedImg) !== -1 ? allImages.indexOf(selectedImg) : 0)}
-              style={{ borderRadius: '16px', overflow: 'hidden', height: '420px', border: '1px solid var(--border-light)', marginBottom: '1rem', cursor: 'zoom-in', background: '#F1F5F9' }}
+              style={{ borderRadius: '10px', overflow: 'hidden', height: '420px', border: '1px solid var(--border-light)', marginBottom: '1rem', cursor: 'zoom-in', background: '#F1F5F9' }}
             >
               <img
                 src={selectedImg || location.image || fallbackImg}
@@ -475,35 +475,35 @@ const LocationDetailPage = () => {
           <div>
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               {location.status === 'pending' && (
-                <span style={{ background: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <span style={{ background: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', padding: '0.25rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                   <Clock size={14} /> Chờ duyệt
                 </span>
               )}
               {location.status === 'rejected' && (
-                <span style={{ background: '#FEE2E2', color: '#DC2626', border: '1px solid #FECACA', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <span style={{ background: '#FEE2E2', color: '#DC2626', border: '1px solid #FECACA', padding: '0.25rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                   <X size={14} /> Bị từ chối
                 </span>
               )}
               {location.status === 'approved' && (
-                <span style={{ background: '#DCFCE7', color: '#15803D', border: '1px solid #BBF7D0', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <span style={{ background: '#DCFCE7', color: '#15803D', border: '1px solid #BBF7D0', padding: '0.25rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                   <Check size={14} /> Đã duyệt
                 </span>
               )}
-              <span style={{ background: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <span style={{ background: '#FEF3C7', color: '#B45309', border: '1px solid #FDE68A', padding: '0.25rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 <Star size={14} fill="#F59E0B" color="#F59E0B" /> {location.rating || '4.8'}
               </span>
-              <span style={{ background: '#EFF6FF', color: 'var(--accent-primary)', border: '1px solid #BFDBFE', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <span style={{ background: '#EFF6FF', color: 'var(--accent-primary)', border: '1px solid #BFDBFE', padding: '0.25rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 <MapPin size={14} /> Mã Tỉnh: {location.provinceId || location.province_id}
               </span>
               {location.author && (
-                <span style={{ background: '#FFF1F2', color: 'var(--accent-secondary)', border: '1px solid #FECDD3', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <span style={{ background: '#FFF1F2', color: 'var(--accent-secondary)', border: '1px solid #FECDD3', padding: '0.25rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                   <User size={14} /> Tác giả: {location.author}
                 </span>
               )}
               {(isAuthor || (user && user.role === 'admin')) && (
                 <button
                   onClick={() => setIsEditModalOpen(true)}
-                  style={{ background: 'var(--accent-primary)', color: 'white', border: 'none', padding: '0.25rem 0.85rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}
+                  style={{ background: 'var(--accent-primary)', color: 'white', border: 'none', padding: '0.25rem 0.85rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}
                 >
                   <Edit size={14} /> Sửa bài viết
                 </button>
@@ -512,7 +512,7 @@ const LocationDetailPage = () => {
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FCA5A5', padding: '0.25rem 0.85rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: isDeleting ? 'not-allowed' : 'pointer', opacity: isDeleting ? 0.7 : 1 }}
+                  style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FCA5A5', padding: '0.25rem 0.85rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: isDeleting ? 'not-allowed' : 'pointer', opacity: isDeleting ? 0.7 : 1 }}
                 >
                   <Trash2 size={14} /> {isDeleting ? 'Đang xoá...' : 'Xoá bài'}
                 </button>
@@ -521,7 +521,7 @@ const LocationDetailPage = () => {
 
             <h1 style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', marginBottom: '1.25rem', lineHeight: 1.25, color: 'var(--brand-navy)', fontWeight: 900 }}>{location.name}</h1>
 
-            <div className="glass-panel" style={{ padding: '1.75rem 2rem', marginBottom: '2rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+            <div className="glass-panel" style={{ padding: '1.75rem 2rem', marginBottom: '2rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '10px', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
               <h3 style={{ fontSize: '1.15rem', marginBottom: '0.85rem', color: 'var(--brand-navy)', fontWeight: 800 }}>Thông Tin Giới Thiệu</h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '1.05rem', whiteSpace: 'pre-line' }}>
                 {location.description}
@@ -542,7 +542,7 @@ const LocationDetailPage = () => {
                 onClick={handleReact}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.4rem',
-                  borderRadius: '30px',
+                  borderRadius: '8px',
                   border: hasReacted ? 'none' : '1px solid #FECDD3',
                   background: hasReacted ? 'var(--brand-red)' : '#FFF1F2',
                   color: hasReacted ? 'white' : 'var(--brand-red)',
@@ -558,7 +558,7 @@ const LocationDetailPage = () => {
                 onClick={() => document.getElementById('comment-input')?.focus()}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.4rem',
-                  borderRadius: '30px',
+                  borderRadius: '8px',
                   border: '1px solid #BFDBFE',
                   background: '#EFF6FF',
                   color: 'var(--brand-navy)',
@@ -573,7 +573,7 @@ const LocationDetailPage = () => {
           </div>
         </div>
 
-        <div style={{ marginTop: '4rem', padding: '2rem', background: '#FFFFFF', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.04)' }}>
+        <div style={{ marginTop: '4rem', padding: '2rem', background: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.04)' }}>
           <h3 style={{ fontSize: '1.5rem', marginBottom: '1.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--brand-navy)' }}>
             <MessageSquare /> Bình luận ({comments.length})
           </h3>
@@ -609,7 +609,7 @@ const LocationDetailPage = () => {
                   onClick={handlePostComment}
                   disabled={!user || !newComment.trim() || isSubmittingComment}
                   style={{
-                    alignSelf: 'flex-end', padding: '0.7rem 1.85rem', borderRadius: '30px',
+                    alignSelf: 'flex-end', padding: '0.7rem 1.85rem', borderRadius: '8px',
                     background: 'var(--accent-primary)', color: 'white', border: 'none',
                     fontWeight: 700, cursor: (!user || !newComment.trim() || isSubmittingComment) ? 'not-allowed' : 'pointer',
                     opacity: (!user || !newComment.trim() || isSubmittingComment) ? 0.5 : 1
@@ -631,7 +631,7 @@ const LocationDetailPage = () => {
                     {(comment.username || '?').charAt(0).toUpperCase()}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ background: '#F8FAFC', padding: '0.95rem 1.15rem', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                    <div style={{ background: '#F8FAFC', padding: '0.95rem 1.15rem', borderRadius: '8px', border: '1px solid #E2E8F0' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', gap: '0.5rem', flexWrap: 'wrap' }}>
                         <span style={{ fontWeight: 700, color: 'var(--brand-navy)' }}>{comment.username}</span>
                         <span style={{ fontSize: '0.75rem', color: '#64748B' }}>{formatCommentDate(comment)}</span>

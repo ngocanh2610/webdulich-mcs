@@ -165,7 +165,7 @@ const AdminApprovalPage = () => {
                 background: pendingLocations.length > 0 ? '#FEF2F2' : '#F0FDF4',
                 color: pendingLocations.length > 0 ? '#DC2626' : '#16A34A',
                 border: `1px solid ${pendingLocations.length > 0 ? '#FECACA' : '#BBF7D0'}`,
-                padding: '0.3rem 0.85rem', borderRadius: '20px',
+                padding: '0.3rem 0.85rem', borderRadius: '6px',
                 fontSize: '0.875rem', fontWeight: 700,
                 display: 'inline-flex', alignItems: 'center', gap: '0.4rem'
               }}>
@@ -182,7 +182,7 @@ const AdminApprovalPage = () => {
         {successMessage && (
           <div style={{
             background: '#F0FDF4', border: '1px solid #BBF7D0',
-            color: '#15803D', padding: '1rem 1.25rem', borderRadius: '12px',
+            color: '#15803D', padding: '1rem 1.25rem', borderRadius: '8px',
             marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem',
             boxShadow: '0 2px 8px rgba(34,197,94,0.08)'
           }}>
@@ -194,7 +194,7 @@ const AdminApprovalPage = () => {
         {errorMessage && (
           <div style={{
             background: '#FEF2F2', border: '1px solid #FECACA',
-            color: '#B91C1C', padding: '1rem 1.25rem', borderRadius: '12px',
+            color: '#B91C1C', padding: '1rem 1.25rem', borderRadius: '8px',
             marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem',
             boxShadow: '0 2px 8px rgba(239,68,68,0.08)'
           }}>
@@ -208,7 +208,7 @@ const AdminApprovalPage = () => {
         ) : pendingLocations.length === 0 ? (
           <div style={{
             textAlign: 'center', padding: '5rem 2rem',
-            background: '#FFFFFF', borderRadius: '16px',
+            background: '#FFFFFF', borderRadius: '10px',
             border: '1px dashed #CBD5E1',
             boxShadow: '0 4px 16px rgba(2, 50, 106, 0.04)'
           }}>
@@ -230,7 +230,7 @@ const AdminApprovalPage = () => {
                   style={{
                     background: '#FFFFFF',
                     border: '1px solid #E2E8F0',
-                    borderRadius: '16px',
+                    borderRadius: '10px',
                     padding: '1.5rem',
                     display: 'flex',
                     flexWrap: 'wrap',
@@ -252,7 +252,7 @@ const AdminApprovalPage = () => {
                     onClick={() => setPreviewLocation(loc)}
                     style={{
                       width: '180px', height: '130px',
-                      borderRadius: '12px', overflow: 'hidden',
+                      borderRadius: '8px', overflow: 'hidden',
                       flexShrink: 0, cursor: 'pointer',
                       position: 'relative', background: '#F1F5F9',
                       border: '1px solid #E2E8F0'
@@ -282,7 +282,7 @@ const AdminApprovalPage = () => {
                       <span style={{
                         background: '#FEF3C7', color: '#B45309',
                         border: '1px solid #FDE68A',
-                        padding: '0.2rem 0.65rem', borderRadius: '12px',
+                        padding: '0.2rem 0.65rem', borderRadius: '6px',
                         fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px'
                       }}>
                         <Clock size={12} /> Chờ duyệt
@@ -290,7 +290,7 @@ const AdminApprovalPage = () => {
                       <span style={{
                         background: '#E0F2FE', color: '#0369A1',
                         border: '1px solid #BAE6FD',
-                        padding: '0.2rem 0.65rem', borderRadius: '12px',
+                        padding: '0.2rem 0.65rem', borderRadius: '6px',
                         fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px'
                       }}>
                         <MapPin size={12} /> {loc.provinceId || loc.province_id}
@@ -298,7 +298,7 @@ const AdminApprovalPage = () => {
                       <span style={{
                         background: '#F3E8FF', color: '#7E22CE',
                         border: '1px solid #E9D5FF',
-                        padding: '0.2rem 0.65rem', borderRadius: '12px',
+                        padding: '0.2rem 0.65rem', borderRadius: '6px',
                         fontSize: '0.75rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px'
                       }}>
                         <User size={12} /> Tác giả: {loc.author}
@@ -340,7 +340,7 @@ const AdminApprovalPage = () => {
                         color: '#334155',
                         border: '1px solid #CBD5E1',
                         padding: '0.65rem 1rem',
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         fontWeight: 600,
                         fontSize: '0.875rem',
                         display: 'flex',
@@ -364,7 +364,7 @@ const AdminApprovalPage = () => {
                         color: '#FFFFFF',
                         border: 'none',
                         padding: '0.65rem 1.25rem',
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         fontWeight: 700,
                         fontSize: '0.875rem',
                         display: 'flex',
@@ -392,7 +392,7 @@ const AdminApprovalPage = () => {
                         color: '#DC2626',
                         border: '1px solid #FECACA',
                         padding: '0.65rem 1rem',
-                        borderRadius: '10px',
+                        borderRadius: '8px',
                         fontWeight: 600,
                         fontSize: '0.875rem',
                         display: 'flex',
@@ -423,7 +423,7 @@ const AdminApprovalPage = () => {
           }}>
             <div style={{
               background: '#FFFFFF', border: '1px solid #E2E8F0',
-              borderRadius: '20px', width: '100%', maxWidth: '800px',
+              borderRadius: '12px', width: '100%', maxWidth: '800px',
               maxHeight: '90vh', overflowY: 'auto', padding: '2rem',
               position: 'relative', boxShadow: '0 25px 60px rgba(2, 50, 106, 0.18)'
             }}>
@@ -446,7 +446,7 @@ const AdminApprovalPage = () => {
                 <span style={{
                   background: '#FEF3C7', color: '#B45309',
                   border: '1px solid #FDE68A',
-                  padding: '0.25rem 0.75rem', borderRadius: '20px',
+                  padding: '0.25rem 0.75rem', borderRadius: '6px',
                   fontSize: '0.825rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px'
                 }}>
                   <Clock size={14} /> Trạng thái: CHỜ DUYỆT
@@ -454,7 +454,7 @@ const AdminApprovalPage = () => {
                 <span style={{
                   background: '#E0F2FE', color: '#0369A1',
                   border: '1px solid #BAE6FD',
-                  padding: '0.25rem 0.75rem', borderRadius: '20px',
+                  padding: '0.25rem 0.75rem', borderRadius: '6px',
                   fontSize: '0.825rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px'
                 }}>
                   <MapPin size={14} /> Mã Tỉnh: {previewLocation.provinceId || previewLocation.province_id}
@@ -462,7 +462,7 @@ const AdminApprovalPage = () => {
                 <span style={{
                   background: '#F3E8FF', color: '#7E22CE',
                   border: '1px solid #E9D5FF',
-                  padding: '0.25rem 0.75rem', borderRadius: '20px',
+                  padding: '0.25rem 0.75rem', borderRadius: '6px',
                   fontSize: '0.825rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px'
                 }}>
                   <User size={14} /> Tác giả: {previewLocation.author}
@@ -474,7 +474,7 @@ const AdminApprovalPage = () => {
               </h2>
 
               <div style={{
-                width: '100%', height: '340px', borderRadius: '14px',
+                width: '100%', height: '340px', borderRadius: '8px',
                 overflow: 'hidden', marginBottom: '1.5rem', background: '#F1F5F9',
                 border: '1px solid #E2E8F0'
               }}>
@@ -502,7 +502,7 @@ const AdminApprovalPage = () => {
 
               <div style={{
                 background: '#F8FAFC', border: '1px solid #E2E8F0',
-                borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem'
+                borderRadius: '8px', padding: '1.25rem', marginBottom: '1.5rem'
               }}>
                 <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0F172A' }}>
                   Nội dung mô tả địa điểm:
@@ -521,7 +521,7 @@ const AdminApprovalPage = () => {
                     <span key={idx} style={{
                       background: '#EFF6FF', color: '#1D4ED8',
                       border: '1px solid #DBEAFE',
-                      padding: '0.25rem 0.75rem', borderRadius: '12px', fontSize: '0.8rem',
+                      padding: '0.25rem 0.75rem', borderRadius: '6px', fontSize: '0.8rem',
                       fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px'
                     }}>
                       <Tag size={12} /> {tag}
@@ -541,7 +541,7 @@ const AdminApprovalPage = () => {
                   }}
                   style={{
                     background: '#FFFFFF', border: '1px solid #CBD5E1',
-                    color: '#334155', padding: '0.65rem 1rem', borderRadius: '10px',
+                    color: '#334155', padding: '0.65rem 1rem', borderRadius: '8px',
                     fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
@@ -560,7 +560,7 @@ const AdminApprovalPage = () => {
                     style={{
                       background: '#FEF2F2', color: '#DC2626',
                       border: '1px solid #FECACA', padding: '0.65rem 1.25rem',
-                      borderRadius: '10px', fontWeight: 600, cursor: 'pointer',
+                      borderRadius: '8px', fontWeight: 600, cursor: 'pointer',
                       transition: 'all 0.2s'
                     }}
                     onMouseOver={e => { e.currentTarget.style.background = '#FEE2E2'; e.currentTarget.style.borderColor = '#FCA5A5'; }}
@@ -574,7 +574,7 @@ const AdminApprovalPage = () => {
                     style={{
                       background: '#16A34A', color: '#FFFFFF',
                       border: 'none', padding: '0.65rem 1.5rem',
-                      borderRadius: '10px', fontWeight: 700, cursor: 'pointer',
+                      borderRadius: '8px', fontWeight: 700, cursor: 'pointer',
                       transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(22, 163, 74, 0.25)'
                     }}
                     onMouseOver={e => e.currentTarget.style.background = '#15803D'}
@@ -597,7 +597,7 @@ const AdminApprovalPage = () => {
           }}>
             <div style={{
               background: '#FFFFFF', border: '1px solid #E2E8F0',
-              borderRadius: '16px', width: '100%', maxWidth: '480px', padding: '1.75rem',
+              borderRadius: '12px', width: '100%', maxWidth: '480px', padding: '1.75rem',
               boxShadow: '0 25px 50px rgba(2, 50, 106, 0.16)'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -624,7 +624,7 @@ const AdminApprovalPage = () => {
                   rows={3}
                   style={{
                     width: '100%', background: '#F8FAFC', border: '1px solid #CBD5E1',
-                    borderRadius: '10px', padding: '0.75rem 1rem', color: '#0F172A', fontSize: '0.9rem',
+                    borderRadius: '8px', padding: '0.75rem 1rem', color: '#0F172A', fontSize: '0.9rem',
                     outline: 'none', resize: 'vertical', boxSizing: 'border-box',
                     transition: 'all 0.2s'
                   }}

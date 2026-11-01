@@ -130,32 +130,32 @@ const Home = () => {
             gap: '2rem',
             textAlign: 'left'
           }}>
-            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand-navy)', marginBottom: '1.25rem' }}>
+            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '8px', background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand-navy)', marginBottom: '1.25rem' }}>
                 <Compass size={24} />
               </div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--brand-navy)', marginBottom: '0.5rem' }}>Dữ Liệu Toàn Diện 63/34 Tỉnh</h3>
               <p style={{ color: '#64748B', fontSize: '0.9rem', lineHeight: 1.6 }}>Hệ thống cơ sở dữ liệu địa phương cập nhật liên tục, bao gồm thông tin chi tiết từng địa danh, di tích và điểm check-in hấp dẫn.</p>
             </div>
 
-            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand-red)', marginBottom: '1.25rem' }}>
+            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '8px', background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand-red)', marginBottom: '1.25rem' }}>
                 <Sparkles size={24} />
               </div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--brand-navy)', marginBottom: '0.5rem' }}>Trợ Lý Du Lịch Thông Minh</h3>
               <p style={{ color: '#64748B', fontSize: '0.9rem', lineHeight: 1.6 }}>Hệ thống hỗ trợ tư vấn, sắp xếp hành trình cá nhân hóa theo từng sở thích, nhu cầu và ngân sách của bạn.</p>
             </div>
 
-            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D97706', marginBottom: '1.25rem' }}>
+            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '8px', background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D97706', marginBottom: '1.25rem' }}>
                 <Users size={24} />
               </div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--brand-navy)', marginBottom: '0.5rem' }}>Cộng Đồng Đánh Giá Thực</h3>
               <p style={{ color: '#64748B', fontSize: '0.9rem', lineHeight: 1.6 }}>Được đóng góp và phản hồi trực tiếp từ cộng đồng du khách trải nghiệm thực tế với hàng nghìn bình luận và hình ảnh chân thực.</p>
             </div>
 
-            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669', marginBottom: '1.25rem' }}>
+            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: '0 4px 16px rgba(2, 50, 106, 0.05)' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '8px', background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669', marginBottom: '1.25rem' }}>
                 <ShieldCheck size={24} />
               </div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--brand-navy)', marginBottom: '0.5rem' }}>Kiểm Duyệt Nghiêm Ngặt</h3>
